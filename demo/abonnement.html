@@ -1,0 +1,252 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Tarifs</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { font-family: 'Inter', sans-serif; }
+  .gradient-text {
+    background: linear-gradient(135deg, #16a34a, #4ade80);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .plan-popular {
+    background: linear-gradient(160deg, #16a34a 0%, #15803d 100%);
+    color: white;
+  }
+  .check { color: #16a34a; font-weight: 700; margin-right: 8px; }
+  .check-white { color: #86efac; font-weight: 700; margin-right: 8px; }
+  details summary { cursor: pointer; }
+  details summary::-webkit-details-marker { display: none; }
+</style>
+</head>
+<body class="bg-white text-gray-900">
+
+<script src="nav-public.js"></script>
+
+<!-- HERO -->
+<section class="pt-20 pb-12 px-6 text-center bg-gradient-to-b from-green-50 to-white">
+  <h1 class="text-5xl font-black mb-4">Des tarifs <span class="gradient-text">simples et transparents</span></h1>
+  <p class="text-xl text-gray-500 max-w-lg mx-auto">Un abonnement mensuel tout inclus. Pas de frais cachés. Résiliation à tout moment.</p>
+</section>
+
+<!-- PLANS -->
+<section class="pb-24 px-6">
+  <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <!-- Essentiel 99€ -->
+    <div class="border-2 border-gray-200 rounded-3xl p-8 flex flex-col">
+      <div class="mb-6">
+        <div class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Essentiel</div>
+        <div class="flex items-end gap-1">
+          <div class="text-5xl font-black text-gray-900">99</div>
+          <div class="text-gray-400 mb-2 text-lg">€<span class="text-base">/mois</span></div>
+        </div>
+        <div class="text-xs text-gray-400 mt-1">Pour les communes jusqu'à <strong>5 000 habitants</strong></div>
+      </div>
+      <p class="text-sm text-gray-500 mb-6 leading-relaxed">L'essentiel pour digitaliser votre collecte et suivre vos agents terrain.</p>
+      <ul class="space-y-3 mb-8 flex-1 text-sm text-gray-600">
+        <li><span class="check">✓</span>Jusqu'à <strong>100 poubelles</strong></li>
+        <li><span class="check">✓</span>Jusqu'à <strong>5 agents</strong></li>
+        <li><span class="check">✓</span>Carte interactive</li>
+        <li><span class="check">✓</span>App mobile agents (PWA)</li>
+        <li><span class="check">✓</span>Vérification GPS</li>
+        <li><span class="check">✓</span>Dashboard temps réel</li>
+        <li><span class="check">✓</span>Rapport PDF mensuel</li>
+        <li><span class="check">✓</span>Signalement d'incidents</li>
+        <li class="text-gray-300"><span style="color:#d1d5db">✗</span> Récapitulatifs avancés</li>
+        <li class="text-gray-300"><span style="color:#d1d5db">✗</span> Export données</li>
+      </ul>
+      <a href="login.html" class="block text-center border-2 border-green-600 text-green-700 hover:bg-green-50 font-bold py-3.5 rounded-2xl transition-colors text-sm">
+        Choisir Essentiel
+      </a>
+    </div>
+
+    <!-- Pro 199€ — Populaire -->
+    <div class="plan-popular rounded-3xl p-8 flex flex-col relative shadow-2xl shadow-green-200 scale-105">
+      <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-yellow-900 text-xs font-black px-4 py-1.5 rounded-full whitespace-nowrap">
+        ⭐ LE PLUS POPULAIRE
+      </div>
+      <div class="mb-6">
+        <div class="text-sm font-semibold text-green-200 uppercase tracking-wide mb-2">Pro</div>
+        <div class="flex items-end gap-1">
+          <div class="text-5xl font-black">199</div>
+          <div class="text-green-200 mb-2 text-lg">€<span class="text-base">/mois</span></div>
+        </div>
+        <div class="text-green-200 text-xs mt-1">Pour les communes jusqu'à <strong>10 000 habitants</strong></div>
+      </div>
+      <p class="text-green-100 text-sm mb-6 leading-relaxed">Une solution complète pour les communes avec plusieurs équipes et quartiers.</p>
+      <ul class="space-y-3 mb-8 flex-1 text-sm text-white">
+        <li><span class="check-white">✓</span>Jusqu'à <strong>500 poubelles</strong></li>
+        <li><span class="check-white">✓</span>Jusqu'à <strong>15 agents</strong></li>
+        <li><span class="check-white">✓</span>Tout le plan Essentiel</li>
+        <li><span class="check-white">✓</span>Récapitulatifs semaine/mois/3 mois</li>
+        <li><span class="check-white">✓</span>Vue agents en temps réel</li>
+        <li><span class="check-white">✓</span>Alertes email automatiques</li>
+        <li><span class="check-white">✓</span>Multi-secteurs</li>
+        <li><span class="check-white">✓</span>Export données CSV</li>
+        <li><span class="check-white">✓</span>Support email prioritaire 24h</li>
+      </ul>
+      <a href="login.html" class="block text-center bg-white text-green-700 hover:bg-green-50 font-black py-3.5 rounded-2xl transition-colors text-lg">
+        Choisir Pro →
+      </a>
+    </div>
+
+    <!-- Sur devis -->
+    <div class="border-2 border-gray-900 rounded-3xl p-8 flex flex-col bg-gray-900 text-white">
+      <div class="mb-6">
+        <div class="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-2">Ville & Interco</div>
+        <div class="text-3xl font-black text-white mt-2">Sur devis</div>
+        <div class="text-gray-400 text-xs mt-2">Pour les communes de <strong class="text-white">+ 10 000 habitants</strong> et les intercommunalités</div>
+      </div>
+      <p class="text-gray-400 text-sm mb-6 leading-relaxed">Une solution sur-mesure adaptée à votre taille, votre organisation et vos besoins spécifiques.</p>
+      <ul class="space-y-3 mb-8 flex-1 text-sm text-gray-300">
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>Poubelles <strong class="text-white">illimitées</strong></li>
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>Agents <strong class="text-white">illimités</strong></li>
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>Tout le plan Pro</li>
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>Intégration logiciels mairie</li>
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>Onboarding & formation sur site</li>
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>SLA garanti</li>
+        <li><span style="color:#4ade80;font-weight:700;margin-right:8px">✓</span>Support dédié 7j/7</li>
+      </ul>
+      <a href="mailto:contact@LaRonde.fr" class="block text-center bg-white text-gray-900 hover:bg-gray-100 font-bold py-3.5 rounded-2xl transition-colors text-sm">
+        Nous contacter →
+      </a>
+    </div>
+
+  </div>
+
+  <p class="text-center text-sm text-gray-400 mt-10">
+    Tous les prix sont HT · TVA 20% applicable · Facturation mensuelle · Résiliation à tout moment
+  </p>
+</section>
+
+<!-- COMPARATIF -->
+<section class="py-16 px-6 bg-gray-50">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-3xl font-black text-center mb-10">Comparatif détaillé</h2>
+    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-gray-100">
+            <th class="text-left px-6 py-4 font-semibold text-gray-500 w-1/2">Fonctionnalité</th>
+            <th class="text-center px-4 py-4 font-semibold text-gray-500">Essentiel<br><span class="text-green-600 font-black">99 €</span></th>
+            <th class="text-center px-4 py-4 font-bold text-green-700 bg-green-50">Pro<br><span class="text-green-600 font-black">199 €</span></th>
+            <th class="text-center px-4 py-4 font-semibold text-gray-500">Ville & Interco<br><span class="text-gray-800 font-black">Sur devis</span></th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-50 text-center">
+          <tr><td class="px-6 py-3 text-left text-gray-600">Habitants couverts</td><td class="px-4 py-3 text-gray-600">≤ 5 000</td><td class="bg-green-50 font-semibold px-4 py-3">≤ 10 000</td><td class="px-4 py-3">Illimité</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Poubelles</td><td class="px-4 py-3">100</td><td class="bg-green-50 font-semibold px-4 py-3">500</td><td class="px-4 py-3">Illimité</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Agents</td><td class="px-4 py-3">5</td><td class="bg-green-50 font-semibold px-4 py-3">15</td><td class="px-4 py-3">Illimité</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Carte interactive</td><td class="px-4 py-3">✅</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">App mobile (PWA)</td><td class="px-4 py-3">✅</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Vérification GPS</td><td class="px-4 py-3">✅</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Dashboard temps réel</td><td class="px-4 py-3">✅</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Rapport PDF mensuel</td><td class="px-4 py-3">✅</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Récapitulatifs semaine/mois/3 mois</td><td class="px-4 py-3 text-gray-300">—</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Vue agents en temps réel</td><td class="px-4 py-3 text-gray-300">—</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Export CSV</td><td class="px-4 py-3 text-gray-300">—</td><td class="bg-green-50 px-4 py-3">✅</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Onboarding sur site</td><td class="px-4 py-3 text-gray-300">—</td><td class="bg-green-50 px-4 py-3 text-gray-300">—</td><td class="px-4 py-3">✅</td></tr>
+          <tr><td class="px-6 py-3 text-left text-gray-600">Support</td><td class="px-4 py-3 text-gray-500">Email</td><td class="bg-green-50 px-4 py-3 font-semibold text-green-700">Prioritaire 24h</td><td class="px-4 py-3 font-semibold text-gray-800">Dédié 7j/7</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-20 px-6">
+  <div class="max-w-3xl mx-auto">
+    <h2 class="text-3xl font-black text-center mb-12">Questions fréquentes</h2>
+    <div class="border border-gray-200 rounded-2xl overflow-hidden divide-y divide-gray-100">
+
+      <details class="group p-6">
+        <summary class="flex items-center justify-between font-semibold text-gray-800">
+          Puis-je annuler à tout moment ?
+          <span class="text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+        </summary>
+        <p class="mt-3 text-sm text-gray-500 leading-relaxed">Oui, sans engagement ni pénalité. Votre abonnement est mensuel et vous pouvez résilier à tout moment depuis votre espace de facturation.</p>
+      </details>
+
+      <details class="group p-6">
+        <summary class="flex items-center justify-between font-semibold text-gray-800">
+          Comment obtenir un devis pour une grande commune ?
+          <span class="text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+        </summary>
+        <p class="mt-3 text-sm text-gray-500 leading-relaxed">Contactez-nous par email à <strong>contact@LaRonde.fr</strong> en indiquant le nombre d'habitants, de poubelles et d'agents. Nous vous revenons sous 48h avec une proposition personnalisée.</p>
+      </details>
+
+      <details class="group p-6">
+        <summary class="flex items-center justify-between font-semibold text-gray-800">
+          Les données restent-elles en France ?
+          <span class="text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+        </summary>
+        <p class="mt-3 text-sm text-gray-500 leading-relaxed">Oui. Toutes les données sont hébergées sur des serveurs basés en France, conformément au RGPD. Chaque mairie dispose de sa propre base de données isolée.</p>
+      </details>
+
+      <details class="group p-6">
+        <summary class="flex items-center justify-between font-semibold text-gray-800">
+          Faut-il installer quelque chose sur les smartphones ?
+          <span class="text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+        </summary>
+        <p class="mt-3 text-sm text-gray-500 leading-relaxed">Non. LaRonde est une PWA. Vos agents ouvrent l'URL dans leur navigateur et ajoutent un raccourci sur leur écran d'accueil. Compatible Android et iOS, sans passer par l'App Store.</p>
+      </details>
+
+      <details class="group p-6">
+        <summary class="flex items-center justify-between font-semibold text-gray-800">
+          Que se passe-t-il si un agent n'a pas de réseau ?
+          <span class="text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+        </summary>
+        <p class="mt-3 text-sm text-gray-500 leading-relaxed">L'application fonctionne hors-ligne. Les collectes sont enregistrées localement et synchronisées automatiquement dès que l'agent retrouve du réseau.</p>
+      </details>
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA final -->
+<section class="pb-24 px-6">
+  <div class="max-w-3xl mx-auto">
+    <div class="bg-green-600 rounded-3xl p-12 text-white text-center">
+      <h2 class="text-3xl font-black mb-3">Prêt à démarrer ?</h2>
+      <p class="text-green-100 mb-8 text-lg">Sans engagement · Résiliable à tout moment</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="login.html" class="bg-white text-green-700 hover:bg-green-50 font-black px-8 py-4 rounded-2xl text-base transition-colors">
+          Voir en action →
+        </a>
+        <a href="mailto:contact@LaRonde.fr" class="bg-green-500 hover:bg-green-400 border-2 border-green-400 text-white font-bold px-8 py-4 rounded-2xl text-base transition-colors">
+          Demander un devis
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-gray-100 py-10 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🗑</span>
+      <span class="font-bold text-green-700">LaRonde</span>
+      <span class="text-gray-300 mx-2">·</span>
+      <span class="text-sm text-gray-400">Gestion des poubelles pour mairies françaises</span>
+    </div>
+    <div class="flex gap-6">
+      <a href="landing.html" class="text-sm text-gray-400 hover:text-gray-700">Accueil</a>
+      <a href="abonnement.html" class="text-sm text-gray-400 hover:text-gray-700">Tarifs</a>
+      <a href="login.html" class="text-sm text-gray-400 hover:text-gray-700">Connexion</a>
+    </div>
+    <p class="text-xs text-gray-300">© 2026 LaRonde — Tous droits réservés</p>
+  </div>
+</footer>
+
+</body>
+</html>
+
+
+
+
+

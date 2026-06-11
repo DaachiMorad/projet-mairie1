@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Gestion des tournées de collecte pour mairies</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { font-family: 'Inter', sans-serif; }
+  .gradient-text {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 50%, #4ade80 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-bg { background: linear-gradient(160deg, #f0fdf4 0%, #dcfce7 40%, #ffffff 100%); }
+  .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+  .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+  .feature-icon {
+    width: 48px; height: 48px; background: #f0fdf4; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 14px;
+  }
+  html { scroll-behavior: smooth; }
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px 24px; }
+</style>
+</head>
+<body class="bg-white text-gray-900">
+
+<script src="nav-public.js"></script>
+
+<!-- ── HERO ─────────────────────────────────────────────────────── -->
+<section class="hero-bg pt-20 pb-24 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <div class="inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
+      <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot"></span>
+      Spécialement conçu pour les mairies françaises
+    </div>
+    <h1 class="text-5xl md:text-6xl font-black leading-tight mb-6">
+      Gérez vos tournées de<br>
+      <span class="gradient-text">collecte en temps réel</span>
+    </h1>
+    <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+      LaRonde connecte votre chef de service et vos agents terrain sur une plateforme unique. Carte interactive, suivi GPS, rapports automatiques.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="contact.html" class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg shadow-green-200">
+        Demander une démo gratuite →
+      </a>
+      <a href="dashboard.html"
+        onclick="sessionStorage.setItem('ub_user', JSON.stringify({email:'chef@mairie.fr',role:'chef',name:'Marie Dupont',mairie:'Mairie de Lyon'}))"
+        class="bg-white border-2 border-gray-200 hover:border-green-300 text-gray-700 font-bold px-8 py-4 rounded-2xl text-lg transition-colors">
+        Voir en action ▶
+      </a>
+    </div>
+    <p class="text-sm text-gray-400 mt-5">Aucune carte bancaire · Déploiement en moins d'une heure · Support inclus</p>
+  </div>
+
+  <!-- Mockup dashboard -->
+  <div class="max-w-4xl mx-auto mt-16">
+    <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+      <div class="bg-gray-50 border-b border-gray-100 px-4 py-3 flex items-center gap-2">
+        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+        <div class="flex-1 bg-white rounded-md mx-4 py-1 px-3 text-xs text-gray-400 text-center">laronde.fr/dashboard</div>
+      </div>
+      <div class="p-6">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h3 class="font-bold text-gray-800">Tableau de bord — Mairie de Lyon</h3>
+            <p class="text-xs text-gray-400" id="mockDate">Lundi 7 juin 2026</p>
+          </div>
+          <span class="flex items-center gap-1.5 text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot"></span> Temps réel actif
+          </span>
+        </div>
+        <div class="grid grid-cols-4 gap-3 mb-5">
+          <div class="bg-blue-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">🗑</span><div><p class="font-bold text-lg">142</p><p class="text-xs text-gray-500">Poubelles</p></div></div>
+          <div class="bg-green-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">✅</span><div><p class="font-bold text-lg text-green-600" id="mockCollected">108</p><p class="text-xs text-gray-500">Collectées</p></div></div>
+          <div class="bg-orange-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">⏳</span><div><p class="font-bold text-lg text-orange-500" id="mockRemaining">34</p><p class="text-xs text-gray-500">Restantes</p></div></div>
+          <div class="bg-red-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">⚠️</span><div><p class="font-bold text-lg text-red-500">3</p><p class="text-xs text-gray-500">Incidents</p></div></div>
+        </div>
+        <div class="bg-gray-50 rounded-xl p-3">
+          <div class="flex justify-between mb-1.5">
+            <span class="text-xs font-semibold text-gray-600">Progression du jour</span>
+            <span class="text-xs font-bold text-green-600" id="mockPct">76%</span>
+          </div>
+          <div class="bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div class="bg-green-500 h-3 rounded-full transition-all duration-700" id="mockBar" style="width:76%"></div>
+          </div>
+          <p class="text-xs text-gray-400 mt-1.5" id="mockText">108 / 142 poubelles collectées</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STATS ─────────────────────────────────────────────────────── -->
+<section class="py-12 px-6 border-y border-gray-100">
+  <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div>
+      <p class="text-4xl font-black text-green-600">-35%</p>
+      <p class="text-sm text-gray-500 mt-1">de trajet inutile par agent</p>
+    </div>
+    <div>
+      <p class="text-4xl font-black text-green-600">&lt; 1h</p>
+      <p class="text-sm text-gray-500 mt-1">pour déployer LaRonde</p>
+    </div>
+    <div>
+      <p class="text-4xl font-black text-green-600">100%</p>
+      <p class="text-sm text-gray-500 mt-1">hors-ligne possible</p>
+    </div>
+    <div>
+      <p class="text-4xl font-black text-green-600">0€</p>
+      <p class="text-sm text-gray-500 mt-1">de matériel à acheter</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── FONCTIONNALITÉS ───────────────────────────────────────────── -->
+<section id="fonctionnalites" class="py-24 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-black mb-4">Tout ce qu'il faut, rien de plus</h2>
+      <p class="text-lg text-gray-500 max-w-xl mx-auto">Une solution simple pensée pour le personnel municipal, pas pour des informaticiens.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
+        <div class="feature-icon">🗺</div>
+        <h3 class="font-bold text-lg mb-2">Carte interactive</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Toutes vos poubelles sur une carte en temps réel. Rouge = à collecter, vert = validée. Cliquez pour voir l'agent, l'heure, le statut.</p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
+        <div class="feature-icon">📱</div>
+        <h3 class="font-bold text-lg mb-2">App mobile agent (PWA)</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Vos agents installent l'app sur leur smartphone en un clic. Pas d'App Store. Fonctionne hors-ligne, synchronise au retour du réseau.</p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
+        <div class="feature-icon">📍</div>
+        <h3 class="font-bold text-lg mb-2">Vérification GPS</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Un agent ne peut valider une collecte que s'il est physiquement à moins de 100m de la poubelle. Zéro fraude possible.</p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
+        <div class="feature-icon">⚡</div>
+        <h3 class="font-bold text-lg mb-2">Temps réel pour le chef</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Le superviseur voit chaque collecte apparaître instantanément. Notification immédiate en cas d'incident signalé par un agent.</p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
+        <div class="feature-icon">📄</div>
+        <h3 class="font-bold text-lg mb-2">Rapports PDF automatiques</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Chaque 1er du mois, un rapport complet est généré et envoyé par email : collectes, taux, performance par agent, incidents.</p>
+      </div>
+      <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
+        <div class="feature-icon">🗓</div>
+        <h3 class="font-bold text-lg mb-2">Planning par zone</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Définissez quel quartier est collecté quel jour. Les agents voient leur tournée du jour automatiquement à l'ouverture de l'app.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMMENT ÇA MARCHE ─────────────────────────────────────────── -->
+<section id="comment" class="py-24 px-6 bg-gray-50">
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-black mb-4">En place en moins d'une heure</h2>
+      <p class="text-lg text-gray-500">On s'occupe de tout. Vous n'avez qu'à entrer vos poubelles et inviter vos agents.</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <div class="hidden md:block absolute top-7 left-[calc(16.66%+28px)] right-[calc(16.66%+28px)] h-0.5 bg-green-100"></div>
+      <div class="text-center relative">
+        <div class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-5 relative z-10">1</div>
+        <h4 class="font-bold text-lg mb-2">On crée votre compte</h4>
+        <p class="text-sm text-gray-500 leading-relaxed">On configure votre mairie, vos secteurs, vos zones et vos agents en quelques minutes.</p>
+      </div>
+      <div class="text-center relative">
+        <div class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-5 relative z-10">2</div>
+        <h4 class="font-bold text-lg mb-2">Vous ajoutez vos poubelles</h4>
+        <p class="text-sm text-gray-500 leading-relaxed">Adresse, quartier, type, fréquence, agent assigné. Import CSV possible.</p>
+      </div>
+      <div class="text-center relative">
+        <div class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-5 relative z-10">3</div>
+        <h4 class="font-bold text-lg mb-2">Vos agents collectent</h4>
+        <p class="text-sm text-gray-500 leading-relaxed">Ils installent l'app, se connectent, et valident chaque poubelle sur le terrain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TÉMOIGNAGE / SOCIAL PROOF ─────────────────────────────────── -->
+<section class="py-20 px-6">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-green-50 border border-green-100 rounded-3xl p-10 text-center">
+      <div class="text-4xl mb-5">💬</div>
+      <p class="text-xl text-gray-700 font-medium leading-relaxed max-w-2xl mx-auto mb-6">
+        "Avant LaRonde, je devais appeler chaque agent pour savoir où il en était. Maintenant je vois tout en temps réel sur mon écran."
+      </p>
+      <div class="flex items-center justify-center gap-3">
+        <div class="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center font-bold text-green-700">M</div>
+        <div class="text-left">
+          <p class="font-semibold text-gray-800 text-sm">Marc D.</p>
+          <p class="text-xs text-gray-500">Chef du service propreté — Commune de 8 000 hab.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA FINAL ─────────────────────────────────────────────────── -->
+<section class="py-20 px-6 bg-gray-50">
+  <div class="max-w-3xl mx-auto text-center">
+    <div class="bg-green-600 rounded-3xl p-12 text-white">
+      <h2 class="text-4xl font-black mb-3">Prêt à moderniser votre collecte ?</h2>
+      <p class="text-green-100 text-lg mb-8">Déploiement rapide · Support inclus · Aucun engagement.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="contact.html" class="bg-white text-green-700 hover:bg-green-50 font-bold px-8 py-4 rounded-2xl text-lg transition-colors">
+          Demander une démo →
+        </a>
+        <a href="abonnement.html" class="bg-green-500 hover:bg-green-400 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors border-2 border-green-400">
+          Voir les tarifs
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────── -->
+<footer class="border-t border-gray-100 py-10 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🗑</span>
+      <span class="font-bold text-green-700">LaRonde</span>
+      <span class="text-gray-300 mx-2">·</span>
+      <span class="text-sm text-gray-400">Gestion des tournées pour mairies françaises</span>
+    </div>
+    <div class="flex gap-6">
+      <a href="abonnement.html" class="text-sm text-gray-400 hover:text-gray-700">Tarifs</a>
+      <a href="contact.html" class="text-sm text-gray-400 hover:text-gray-700">Contact</a>
+      <a href="login.html" class="text-sm text-gray-400 hover:text-gray-700">Connexion</a>
+    </div>
+    <p class="text-xs text-gray-300">© 2026 LaRonde — Tous droits réservés</p>
+  </div>
+</footer>
+
+<script>
+// Date dynamique dans le mockup
+document.getElementById('mockDate').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+// Animation live du mockup
+let c = 108, r = 34;
+setInterval(() => {
+  if (c >= 140) return;
+  c++; r--;
+  document.getElementById('mockCollected').textContent = c;
+  document.getElementById('mockRemaining').textContent = r;
+  const pct = Math.round(c / 142 * 100);
+  document.getElementById('mockPct').textContent = pct + '%';
+  document.getElementById('mockBar').style.width = pct + '%';
+  document.getElementById('mockText').textContent = c + ' / 142 poubelles collectées';
+}, 3000);
+</script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Demander une démo</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { font-family: 'Inter', sans-serif; }
+  html { scroll-behavior: smooth; }
+  .inp {
+    width: 100%;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    background: white;
+  }
+  .inp:focus { border-color: #16a34a; box-shadow: 0 0 0 3px rgba(22,163,74,0.12); }
+  .inp.error { border-color: #ef4444; }
+  .pulse-dot { animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+</style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+<script src="nav-public.js"></script>
+
+<main class="max-w-6xl mx-auto px-6 py-16">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+
+    <!-- ── COLONNE GAUCHE : infos ─────────────────────────────────── -->
+    <div class="lg:sticky lg:top-28">
+      <div class="inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot"></span>
+        Réponse sous 24h ouvrées
+      </div>
+      <h1 class="text-4xl font-black leading-tight mb-4">
+        On vous rappelle pour<br><span class="text-green-600">une démo gratuite</span>
+      </h1>
+      <p class="text-gray-500 text-lg leading-relaxed mb-10">
+        Remplissez le formulaire, on vous contacte pour organiser une démonstration de 30 minutes, en visio ou en présentiel.
+      </p>
+
+      <!-- Ce qui se passe ensuite -->
+      <div class="space-y-5 mb-10">
+        <div class="flex items-start gap-4">
+          <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center text-lg shrink-0">📞</div>
+          <div>
+            <p class="font-semibold text-gray-800">On vous rappelle</p>
+            <p class="text-sm text-gray-500">Sous 24h ouvrées pour fixer un créneau qui vous convient.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center text-lg shrink-0">🖥</div>
+          <div>
+            <p class="font-semibold text-gray-800">Démo de 30 min</p>
+            <p class="text-sm text-gray-500">On vous montre l'interface complète, chef + agent, avec vos données.</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-4">
+          <div class="w-9 h-9 bg-green-100 rounded-xl flex items-center justify-center text-lg shrink-0">🚀</div>
+          <div>
+            <p class="font-semibold text-gray-800">Déploiement si vous êtes convaincu</p>
+            <p class="text-sm text-gray-500">On configure tout. Vos agents peuvent démarrer le lendemain.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Garanties -->
+      <div class="bg-white border border-gray-100 rounded-2xl p-6 space-y-3">
+        <p class="font-semibold text-gray-700 text-sm mb-1">Ce que vous ne risquez pas :</p>
+        <div class="flex items-center gap-2 text-sm text-gray-500"><span class="text-green-500">✓</span> Aucune carte bancaire demandée</div>
+        <div class="flex items-center gap-2 text-sm text-gray-500"><span class="text-green-500">✓</span> Aucun engagement, aucun contrat à signer</div>
+        <div class="flex items-center gap-2 text-sm text-gray-500"><span class="text-green-500">✓</span> Vos données restent sur des serveurs français</div>
+        <div class="flex items-center gap-2 text-sm text-gray-500"><span class="text-green-500">✓</span> Vous pouvez arrêter à tout moment</div>
+      </div>
+    </div>
+
+    <!-- ── COLONNE DROITE : formulaire ────────────────────────────── -->
+    <div>
+      <div id="formWrap" class="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Votre demande de démo</h2>
+
+        <div class="space-y-4">
+
+          <!-- Nom + Prénom -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Prénom <span class="text-red-400">*</span></label>
+              <input id="f-prenom" type="text" placeholder="Marie" class="inp">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Nom <span class="text-red-400">*</span></label>
+              <input id="f-nom" type="text" placeholder="Dupont" class="inp">
+            </div>
+          </div>
+
+          <!-- Fonction -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Votre fonction <span class="text-red-400">*</span></label>
+            <select id="f-fonction" class="inp text-gray-700">
+              <option value="">-- Sélectionnez --</option>
+              <option>Élu(e) / Maire</option>
+              <option>Directeur(trice) des services techniques</option>
+              <option>Chef du service propreté / collecte</option>
+              <option>Agent administratif</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <!-- Mairie -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Nom de votre commune <span class="text-red-400">*</span></label>
+            <input id="f-commune" type="text" placeholder="Mairie de Pontoise" class="inp">
+          </div>
+
+          <!-- Taille commune -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Taille de votre commune</label>
+            <select id="f-taille" class="inp text-gray-700">
+              <option value="">-- Sélectionnez --</option>
+              <option>Moins de 2 000 habitants</option>
+              <option>2 000 – 10 000 habitants</option>
+              <option>10 000 – 50 000 habitants</option>
+              <option>Plus de 50 000 habitants</option>
+              <option>Intercommunalité / EPCI</option>
+            </select>
+          </div>
+
+          <!-- Email + Tel -->
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Email professionnel <span class="text-red-400">*</span></label>
+              <input id="f-email" type="email" placeholder="m.dupont@mairie.fr" class="inp">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1.5">Téléphone</label>
+              <input id="f-tel" type="tel" placeholder="06 12 34 56 78" class="inp">
+            </div>
+          </div>
+
+          <!-- Nombre d'agents -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Combien d'agents de collecte avez-vous ?</label>
+            <select id="f-agents" class="inp text-gray-700">
+              <option value="">-- Sélectionnez --</option>
+              <option>1 à 2 agents</option>
+              <option>3 à 5 agents</option>
+              <option>6 à 10 agents</option>
+              <option>Plus de 10 agents</option>
+            </select>
+          </div>
+
+          <!-- Message -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Message (optionnel)</label>
+            <textarea id="f-message" rows="3" placeholder="Décrivez votre situation ou posez vos questions…"
+              class="inp resize-none"></textarea>
+          </div>
+
+          <!-- Comment avez-vous connu -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1.5">Comment vous avez connu LaRonde ?</label>
+            <select id="f-source" class="inp text-gray-700">
+              <option value="">-- Optionnel --</option>
+              <option>Bouche à oreille</option>
+              <option>Recherche Google</option>
+              <option>Réseau d'élus / association de communes</option>
+              <option>Réseaux sociaux</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <!-- Erreur -->
+          <p id="formError" class="hidden text-sm text-red-500 font-medium">Veuillez remplir tous les champs obligatoires.</p>
+
+          <!-- Submit -->
+          <button onclick="submitForm()"
+            class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-2xl text-base transition-colors mt-2 flex items-center justify-center gap-2">
+            <span id="submitTxt">Envoyer ma demande →</span>
+          </button>
+
+          <p class="text-xs text-gray-400 text-center">
+            En envoyant ce formulaire, vous acceptez d'être recontacté au sujet de LaRonde. Aucun spam, promis.
+          </p>
+        </div>
+      </div>
+
+      <!-- État succès -->
+      <div id="successWrap" class="hidden bg-white border border-green-200 rounded-3xl p-10 shadow-sm text-center">
+        <div class="text-6xl mb-5">🎉</div>
+        <h2 class="text-2xl font-black text-gray-900 mb-3">Demande reçue !</h2>
+        <p class="text-gray-500 text-lg mb-2">Merci <span id="successName" class="font-semibold text-gray-700"></span>.</p>
+        <p class="text-gray-500 mb-8">On vous contacte sous <strong>24h ouvrées</strong> pour organiser votre démo.</p>
+        <div class="bg-green-50 border border-green-100 rounded-2xl p-5 mb-8 text-left space-y-2">
+          <p class="text-sm font-semibold text-green-800 mb-2">En attendant, vous pouvez :</p>
+          <a href="dashboard.html"
+            onclick="sessionStorage.setItem('ub_user', JSON.stringify({email:'chef@mairie.fr',role:'chef',name:'Marie Dupont',mairie:'Mairie de Lyon'}))"
+            class="flex items-center gap-2 text-sm text-green-700 hover:underline font-medium">
+            ▶ Voir la démo interactive du dashboard chef
+          </a>
+          <a href="abonnement.html" class="flex items-center gap-2 text-sm text-green-700 hover:underline font-medium">
+            💳 Consulter les tarifs
+          </a>
+        </div>
+        <a href="index.html" class="text-sm text-gray-400 hover:text-gray-600">← Retour à l'accueil</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── FAQ ────────────────────────────────────────────────────── -->
+  <div class="mt-24">
+    <h2 class="text-3xl font-black text-center mb-12">Questions fréquentes</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto" id="faqList"></div>
+  </div>
+</main>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────── -->
+<footer class="border-t border-gray-100 py-10 px-6 mt-16">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🗑</span>
+      <span class="font-bold text-green-700">LaRonde</span>
+      <span class="text-gray-300 mx-2">·</span>
+      <span class="text-sm text-gray-400">Gestion des tournées pour mairies françaises</span>
+    </div>
+    <div class="flex gap-6">
+      <a href="abonnement.html" class="text-sm text-gray-400 hover:text-gray-700">Tarifs</a>
+      <a href="contact.html" class="text-sm text-gray-400 hover:text-gray-700">Contact</a>
+      <a href="login.html" class="text-sm text-gray-400 hover:text-gray-700">Connexion</a>
+    </div>
+    <p class="text-xs text-gray-300">© 2026 LaRonde — Tous droits réservés</p>
+  </div>
+</footer>
+
+<script>
+const FAQ = [
+  { q: "C'est combien ?", a: "Les tarifs dépendent du nombre de poubelles et d'agents. Comptez entre 49€ et 149€/mois selon votre commune. Tout est sur la page Tarifs." },
+  { q: "Faut-il acheter du matériel ?", a: "Non. Vos agents utilisent leurs smartphones personnels ou de service. L'app est une PWA : aucune installation App Store nécessaire." },
+  { q: "Est-ce que ça marche sans internet ?", a: "Oui. L'app agent fonctionne hors-ligne et synchronise les collectes automatiquement dès que le réseau est retrouvé." },
+  { q: "Qui voit quoi ?", a: "Le chef de service voit tout : carte, agents, collectes, rapports. Les agents ne voient que leur propre tournée du jour." },
+  { q: "Nos données sont-elles sécurisées ?", a: "Les données sont hébergées sur des serveurs français. Chaque mairie est isolée : aucune donnée n'est partagée entre communes." },
+  { q: "Combien de temps pour déployer ?", a: "Moins d'une heure. On configure votre compte, vous importez vos adresses (CSV ou saisie manuelle), et vos agents peuvent commencer." },
+];
+
+document.getElementById('faqList').innerHTML = FAQ.map(f => `
+  <div class="bg-white border border-gray-100 rounded-2xl p-6">
+    <p class="font-bold text-gray-800 mb-2">💬 ${f.q}</p>
+    <p class="text-sm text-gray-500 leading-relaxed">${f.a}</p>
+  </div>
+`).join('');
+
+function submitForm() {
+  const required = ['f-prenom','f-nom','f-fonction','f-commune','f-email'];
+  let ok = true;
+  required.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.classList.add('error'); ok = false; }
+    else el.classList.remove('error');
+  });
+  // Email format
+  const email = document.getElementById('f-email');
+  if (email.value && !email.value.includes('@')) { email.classList.add('error'); ok = false; }
+
+  if (!ok) {
+    document.getElementById('formError').classList.remove('hidden');
+    document.getElementById('formError').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  document.getElementById('formError').classList.add('hidden');
+
+  // Simule l'envoi
+  const btn = document.getElementById('submitTxt');
+  btn.textContent = '⏳ Envoi en cours…';
+  setTimeout(() => {
+    const prenom = document.getElementById('f-prenom').value.trim();
+    document.getElementById('successName').textContent = prenom;
+    document.getElementById('formWrap').classList.add('hidden');
+    document.getElementById('successWrap').classList.remove('hidden');
+    document.getElementById('successWrap').scrollIntoView({ behavior:'smooth', block:'start' });
+    // Sauvegarde locale pour référence
+    const lead = {
+      prenom, nom: document.getElementById('f-nom').value,
+      fonction: document.getElementById('f-fonction').value,
+      commune: document.getElementById('f-commune').value,
+      taille: document.getElementById('f-taille').value,
+      email: document.getElementById('f-email').value,
+      tel: document.getElementById('f-tel').value,
+      agents: document.getElementById('f-agents').value,
+      message: document.getElementById('f-message').value,
+      date: new Date().toISOString(),
+    };
+    localStorage.setItem('laronde_last_lead', JSON.stringify(lead));
+  }, 1200);
+}
+
+// Supprimer classe error au focus
+document.querySelectorAll('.inp').forEach(el => {
+  el.addEventListener('focus', () => el.classList.remove('error'));
+});
+</script>
+</body>
+</html>

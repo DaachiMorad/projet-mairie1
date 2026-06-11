@@ -1,0 +1,288 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { theme: { extend: { colors: { primary: '#16a34a' } } } }</script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- Navbar -->
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+    <div class="flex items-center gap-2">
+      <span class="text-xl">🗑</span>
+      <span class="font-bold text-green-700">LaRonde</span>
+      <span class="text-xs text-gray-400 ml-2" id="mairieLabel">Votre Mairie</span>
+    </div>
+    <div class="flex gap-1 overflow-x-auto">
+      <a href="dashboard.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">📊 Dashboard</a>
+      <a href="carte.html"     class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗺 Carte</a>
+      <a href="vue-agents.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">👥 Agents live</a>
+      <a href="poubelles.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗑 Poubelles</a>
+      <a href="recaps.html"    class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📈 Récaps</a>
+      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">⚙️ Paramètres</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <span class="text-sm text-gray-500" id="userName">Marie Dupont</span>
+      <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">⬅ Déco</a>
+    </div>
+  </div>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Tableau de bord</h1>
+      <p class="text-gray-500 text-sm mt-1" id="dateLabel"></p>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
+        <span>📶</span> Temps réel actif
+      </div>
+      <button onclick="downloadPDF()" class="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-3 py-2 rounded-lg transition-colors">
+        📄 Rapport PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- KPIs -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div class="bg-blue-50 rounded-xl p-4 flex items-center gap-3">
+      <span class="text-2xl">🗑</span>
+      <div><p class="text-2xl font-bold text-gray-900">24</p><p class="text-xs text-gray-500">Total poubelles</p></div>
+    </div>
+    <div class="bg-green-50 rounded-xl p-4 flex items-center gap-3">
+      <span class="text-2xl">✅</span>
+      <div><p class="text-2xl font-bold text-gray-900" id="collectedCount">17</p><p class="text-xs text-gray-500">Collectées</p></div>
+    </div>
+    <div class="bg-orange-50 rounded-xl p-4 flex items-center gap-3">
+      <span class="text-2xl">⏳</span>
+      <div><p class="text-2xl font-bold text-gray-900" id="remainingCount">7</p><p class="text-xs text-gray-500">Restantes</p></div>
+    </div>
+    <div class="bg-red-50 rounded-xl p-4 flex items-center gap-3">
+      <span class="text-2xl">⚠️</span>
+      <div><p class="text-2xl font-bold text-gray-900">3</p><p class="text-xs text-gray-500">Remarques ouvertes</p></div>
+    </div>
+  </div>
+
+  <!-- Barre de progression -->
+  <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
+    <div class="flex items-center justify-between mb-2">
+      <span class="font-semibold text-gray-700">Progression du jour</span>
+      <span class="text-lg font-bold text-green-600" id="pctLabel">71%</span>
+    </div>
+    <div class="w-full bg-gray-100 rounded-full h-4">
+      <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-700" style="width:71%"></div>
+    </div>
+    <p class="text-sm text-gray-500 mt-2" id="progressText">17 / 24 poubelles collectées</p>
+  </div>
+
+  <!-- Notification live simulée -->
+  <div id="liveNotif" class="hidden mb-4 bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center gap-3 animate-bounce">
+    <span>✅</span>
+    <div>
+      <p class="text-sm font-semibold text-green-800">Collecte enregistrée en temps réel</p>
+      <p class="text-xs text-green-600" id="notifText"></p>
+    </div>
+  </div>
+
+  <!-- Dernières collectes -->
+  <div class="bg-white rounded-xl border border-gray-200 p-5">
+    <h2 class="font-semibold text-gray-700 mb-4">Dernières collectes</h2>
+    <div id="collectList" class="space-y-0"></div>
+  </div>
+</main>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-4 right-4 z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg border-l-4 border-l-green-500 px-4 py-3 flex items-center gap-3">
+    <span>✅</span>
+    <div>
+      <p class="font-semibold text-sm text-gray-800" id="toastTitle"></p>
+      <p class="text-xs text-gray-500" id="toastMsg"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+// Auth check
+const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
+if (!user.role) window.location.href = 'index.html';
+
+// Infos utilisateur
+document.getElementById('userName').textContent = user.name || '';
+document.getElementById('mairieLabel').textContent = user.mairie || '';
+
+// Date
+document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+const isEmpty = user.empty === true;
+
+function showToast(title, msg) {
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 4000);
+}
+
+function renderList(list) {
+  const el = document.getElementById('collectList');
+  if (!list.length) {
+    el.innerHTML = '<p class="text-sm text-gray-400 text-center py-6">Aucune collecte enregistrée aujourd\'hui.</p>';
+    return;
+  }
+  el.innerHTML = list.map(c => `
+    <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
+      <div>
+        <p class="text-sm font-medium text-gray-800">${c.adresse}</p>
+        <p class="text-xs text-gray-400">par ${c.agent}</p>
+      </div>
+      <span class="text-xs text-gray-500 font-mono">${c.heure}</span>
+    </div>
+  `).join('');
+}
+
+if (isEmpty) {
+  // Compte vierge — tout à zéro
+  document.getElementById('collectedCount').textContent = '0';
+  document.getElementById('remainingCount').textContent = '0';
+  document.querySelector('.bg-blue-50 p.text-2xl').textContent = '0';
+  document.querySelector('.bg-red-50 p.text-2xl').textContent = '0';
+  document.getElementById('pctLabel').textContent = '0%';
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressText').textContent = '0 / 0 poubelles configurées';
+  renderList([]);
+} else {
+  const collectes = [
+    { adresse: '1 Rue de Rivoli', agent: 'Jean Martin', heure: '14:32' },
+    { adresse: '15 Rue Saint-Antoine', agent: 'Paul Bernard', heure: '14:18' },
+    { adresse: '3 Bd Haussmann', agent: 'Jean Martin', heure: '13:55' },
+    { adresse: '8 Rue de la Paix', agent: 'Paul Bernard', heure: '13:41' },
+    { adresse: '22 Avenue du Nord', agent: 'Paul Bernard', heure: '13:22' },
+    { adresse: '5 Place du Marché', agent: 'Jean Martin', heure: '13:10' },
+    { adresse: '12 Rue Victor Hugo', agent: 'Jean Martin', heure: '12:48' },
+    { adresse: '9 Allée des Roses', agent: 'Paul Bernard', heure: '12:35' },
+  ];
+  renderList(collectes);
+
+  let collected = 17, remaining = 7;
+  const newCollectes = [
+    { adresse: '7 Rue des Lilas', agent: 'Jean Martin', heure: null },
+    { adresse: '33 Boulevard Voltaire', agent: 'Paul Bernard', heure: null },
+  ];
+
+  setTimeout(() => {
+    const nc = newCollectes[0];
+    nc.heure = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    collected++; remaining--;
+    document.getElementById('collectedCount').textContent = collected;
+    document.getElementById('remainingCount').textContent = remaining;
+    const pct = Math.round((collected/24)*100);
+    document.getElementById('pctLabel').textContent = pct + '%';
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectées';
+    collectes.unshift(nc);
+    renderList(collectes.slice(0,8));
+    showToast('Collecte enregistrée', nc.adresse + ' — ' + nc.agent);
+  }, 5000);
+
+  setTimeout(() => {
+    const nc = newCollectes[1];
+    nc.heure = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    collected++; remaining--;
+    document.getElementById('collectedCount').textContent = collected;
+    document.getElementById('remainingCount').textContent = remaining;
+    const pct = Math.round((collected/24)*100);
+    document.getElementById('pctLabel').textContent = pct + '%';
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectées';
+    collectes.unshift(nc);
+    renderList(collectes.slice(0,8));
+    showToast('Collecte enregistrée', nc.adresse + ' — ' + nc.agent);
+  }, 10000);
+}
+
+function downloadPDF() {
+  const now = new Date();
+  const collected = parseInt(document.getElementById('collectedCount').textContent) || 0;
+  const total     = parseInt(document.querySelector('.bg-blue-50 p.text-2xl')?.textContent) || 0;
+  const remaining = parseInt(document.getElementById('remainingCount').textContent) || 0;
+  const remarks   = parseInt(document.querySelector('.bg-red-50 p.text-2xl')?.textContent) || 0;
+  const pct       = document.getElementById('pctLabel').textContent || '0%';
+
+  // Dernières collectes depuis le DOM
+  const recentCollections = [...document.querySelectorAll('#collectList > div')].map(el => ({
+    adresse: el.querySelector('p.font-medium')?.textContent || '',
+    agent:   (el.querySelector('p.text-xs')?.textContent || '').replace('par ',''),
+    heure:   el.querySelector('span.font-mono')?.textContent || '',
+  })).filter(c => c.adresse);
+
+  // Graphique hebdo : on simule les 4 semaines du mois à partir des données du jour
+  const dailyRate = total > 0 ? collected / total : 0;
+  const weekChart = [
+    { label:'S1', val: Math.round(total * dailyRate * 0.9  * 5) },
+    { label:'S2', val: Math.round(total * dailyRate * 1.05 * 5) },
+    { label:'S3', val: Math.round(total * dailyRate * 0.95 * 5) },
+    { label:'S4', val: Math.round(total * dailyRate * 1.1  * 5) },
+  ];
+
+  // Agents : depuis les collectes récentes
+  const agentMap = {};
+  recentCollections.forEach(c => {
+    if (!c.agent) return;
+    agentMap[c.agent] = (agentMap[c.agent] || 0) + 1;
+  });
+  // Compléter avec données mensuelles estimées
+  const agents = Object.entries(agentMap).length > 0
+    ? Object.entries(agentMap).map(([name, count]) => ({ name, count: count * 20 }))
+    : [{ name: 'Agent principal', count: collected }];
+
+  // Types de poubelles (depuis poubelles.html via sessionStorage ou estimation)
+  const savedBins = JSON.parse(sessionStorage.getItem('laronde_bins_snapshot') || 'null');
+  let types;
+  if (savedBins) {
+    const typeMap = {};
+    savedBins.forEach(b => { typeMap[b.type] = (typeMap[b.type] || 0) + 1; });
+    const tot = Object.values(typeMap).reduce((a,b) => a+b, 0);
+    types = Object.entries(typeMap).map(([t, n]) => ({ type:t, pct: Math.round(n/tot*100) }));
+  } else {
+    types = [
+      { type:'Ordures ménagères', pct: 60 },
+      { type:'Recyclable',        pct: 22 },
+      { type:'Verre',             pct: 12 },
+      { type:'Encombrants',       pct: 6  },
+    ];
+  }
+
+  // Incidents depuis sessionStorage (si la page remarques a été visitée)
+  const incidents = JSON.parse(sessionStorage.getItem('laronde_incidents') || 'null') || [
+    { type:'Débordante', adresse:'—', agent:'—', date:'—', statut:'ouvert' },
+  ];
+
+  const stats = {
+    mairie: user.mairie || 'Votre Mairie',
+    collected, total, remaining, remarks, pct,
+    periode: now.toLocaleDateString('fr-FR', { month:'long', year:'numeric' }),
+    genDate: now.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }),
+    recentCollections,
+    weekChart,
+    agents,
+    types,
+    incidents,
+  };
+
+  sessionStorage.setItem('laronde_rapport_stats', JSON.stringify(stats));
+  showToast('Rapport PDF', 'Ouverture du rapport…');
+  setTimeout(() => window.open('rapport.html', '_blank'), 400);
+}
+</script>
+</body>
+</html>
+
+
+
+

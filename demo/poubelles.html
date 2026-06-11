@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Poubelles</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+    <div class="flex items-center gap-2"><span class="text-xl">🗑</span><span class="font-bold text-green-700">LaRonde</span></div>
+    <div class="flex gap-1 overflow-x-auto">
+      <a href="dashboard.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📊 Dashboard</a>
+      <a href="carte.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗺 Carte</a>
+      <a href="vue-agents.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">👥 Agents live</a>
+      <a href="poubelles.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">🗑 Poubelles</a>
+      <a href="recaps.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📈 Récaps</a>
+      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">⚙️ Paramètres</a>
+    </div>
+    <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">⬅ Déco</a>
+  </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-6">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Poubelles <span class="text-gray-400 font-normal text-lg" id="countLabel">(24)</span></h1>
+    <div class="flex gap-2">
+      <button onclick="exportCSV()" class="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+        ⬇ Export CSV
+      </button>
+      <button onclick="toggleForm()" class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg">
+        ➕ Ajouter
+      </button>
+    </div>
+  </div>
+
+  <!-- Formulaire -->
+  <div id="addForm" class="hidden bg-white rounded-xl border border-gray-200 p-5 mb-6">
+    <h2 class="font-semibold mb-4">Ajouter une poubelle</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <input id="f-address" placeholder="Adresse complète *" class="inp md:col-span-2">
+      <input id="f-neighborhood" placeholder="Quartier" class="inp">
+      <input id="f-sector" placeholder="Secteur" class="inp">
+      <input id="f-lat" placeholder="Latitude (ex: 48.8566)" class="inp">
+      <input id="f-lng" placeholder="Longitude (ex: 2.3522)" class="inp">
+      <select id="f-type" class="inp">
+        <option>ordures</option><option>recyclable</option><option>verre</option><option>encombrants</option><option>autre</option>
+      </select>
+      <select id="f-agent" class="inp">
+        <option value="">-- Assigner un agent --</option>
+        <option>Jean Martin</option><option>Paul Bernard</option>
+      </select>
+    </div>
+    <div class="flex justify-end gap-2 mt-4">
+      <button onclick="toggleForm()" class="px-4 py-2 text-sm border border-gray-300 rounded-lg">Annuler</button>
+      <button onclick="addBin()" class="px-4 py-2 text-sm bg-green-600 text-white rounded-lg">Ajouter</button>
+    </div>
+  </div>
+
+  <!-- Filtres -->
+  <div class="flex gap-2 mb-4">
+    <input id="searchInput" oninput="filterBins()" placeholder="Rechercher..." class="inp w-64">
+    <select id="typeFilter" onchange="filterBins()" class="inp w-40">
+      <option value="">Tous les types</option>
+      <option>ordures</option><option>recyclable</option><option>verre</option><option>encombrants</option>
+    </select>
+  </div>
+
+  <!-- Liste -->
+  <div class="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100" id="binList"></div>
+</main>
+
+<div id="toast" class="fixed bottom-4 right-4 z-50 hidden bg-green-600 text-white px-4 py-2 rounded-lg text-sm shadow-lg"></div>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
+if (!user.role) window.location.href = 'index.html';
+
+if (user.empty) {
+  document.querySelector('nav .text-xs.text-gray-400').textContent = user.mairie || 'Mairie de Test';
+  document.querySelector('main').innerHTML = `
+    <div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-bold text-gray-900">Poubelles</h1></div>
+    <div class="bg-white rounded-xl border border-dashed border-gray-300 p-16 text-center text-gray-400">
+      <p class="text-5xl mb-3">🗑</p>
+      <p class="font-semibold text-gray-500 text-lg">Aucune poubelle configurée</p>
+      <p class="text-sm mt-2">Ajoutez vos premières poubelles pour démarrer vos tournées.</p>
+      <button class="mt-6 bg-green-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-green-700" onclick="alert('Fonctionnalité disponible dans la version complète.')">+ Ajouter une poubelle</button>
+    </div>`;
+  throw new Error('empty');
+}
+
+const TYPE_COLORS = { ordures:'bg-gray-100 text-gray-700', recyclable:'bg-blue-100 text-blue-700', verre:'bg-green-100 text-green-700', encombrants:'bg-orange-100 text-orange-700', autre:'bg-purple-100 text-purple-700' };
+
+let BINS = [
+  { id:1,  address:'1 Rue de Rivoli',        neighborhood:'Centre-ville', type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:2,  address:'15 Rue Saint-Antoine',   neighborhood:'Centre-ville', type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:3,  address:'3 Bd Haussmann',         neighborhood:'Centre-ville', type:'recyclable',  agent:'Jean Martin',  frequency:'bihebdomadaire' },
+  { id:4,  address:'22 Avenue du Nord',      neighborhood:'Nord',         type:'ordures',     agent:'Paul Bernard', frequency:'hebdomadaire' },
+  { id:5,  address:'8 Rue de la Paix',       neighborhood:'Centre',       type:'verre',       agent:'Paul Bernard', frequency:'hebdomadaire' },
+  { id:6,  address:'7 Rue des Lilas',        neighborhood:'Sud',          type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:7,  address:'33 Bd Voltaire',         neighborhood:'Est',          type:'recyclable',  agent:'Paul Bernard', frequency:'bihebdomadaire' },
+  { id:8,  address:'2 Place de la Bastille', neighborhood:'Est',          type:'ordures',     agent:'Paul Bernard', frequency:'quotidienne' },
+  { id:9,  address:'18 Rue Oberkampf',       neighborhood:'Est',          type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:10, address:'4 Rue du Temple',        neighborhood:'Centre',       type:'verre',       agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:11, address:'29 Rue de Bretagne',     neighborhood:'Nord',         type:'ordures',     agent:'Paul Bernard', frequency:'hebdomadaire' },
+  { id:12, address:'11 Av. de la République',neighborhood:'Est',          type:'recyclable',  agent:'Jean Martin',  frequency:'bihebdomadaire' },
+  { id:13, address:'5 Place du Marché',      neighborhood:'Centre',       type:'ordures',     agent:'Paul Bernard', frequency:'quotidienne' },
+  { id:14, address:'44 Rue Saint-Denis',     neighborhood:'Centre',       type:'ordures',     agent:'Paul Bernard', frequency:'hebdomadaire' },
+  { id:15, address:'6 Rue Beaubourg',        neighborhood:'Centre',       type:'verre',       agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:16, address:'27 Rue de Rivoli',       neighborhood:'Centre-ville', type:'encombrants', agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:17, address:'3 Quai des Célestins',   neighborhood:'Centre',       type:'ordures',     agent:'Paul Bernard', frequency:'hebdomadaire' },
+  { id:18, address:'16 Rue François Miron',  neighborhood:'Centre',       type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:19, address:'8 Bd de Sébastopol',     neighborhood:'Centre',       type:'recyclable',  agent:'Paul Bernard', frequency:'bihebdomadaire' },
+  { id:20, address:'21 Rue des Archives',    neighborhood:'Marais',       type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:21, address:'5 Rue de Turbigo',       neighborhood:'Centre',       type:'verre',       agent:'Paul Bernard', frequency:'hebdomadaire' },
+  { id:22, address:'33 Rue Rambuteau',       neighborhood:'Marais',       type:'ordures',     agent:'Jean Martin',  frequency:'hebdomadaire' },
+  { id:23, address:'2 Pl. Georges Pompidou', neighborhood:'Marais',       type:'ordures',     agent:'Paul Bernard', frequency:'quotidienne' },
+  { id:24, address:'14 Rue du Renard',       neighborhood:'Marais',       type:'recyclable',  agent:'Jean Martin',  frequency:'bihebdomadaire' },
+];
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+function toggleForm() {
+  document.getElementById('addForm').classList.toggle('hidden');
+}
+
+function addBin() {
+  const addr = document.getElementById('f-address').value.trim();
+  if (!addr) { alert('Adresse obligatoire'); return; }
+  const newBin = {
+    id: BINS.length + 1,
+    address: addr,
+    neighborhood: document.getElementById('f-neighborhood').value || 'Autre',
+    type: document.getElementById('f-type').value,
+    agent: document.getElementById('f-agent').value || 'Non assigné',
+    frequency: 'hebdomadaire',
+  };
+  BINS.unshift(newBin);
+  document.getElementById('f-address').value = '';
+  document.getElementById('f-neighborhood').value = '';
+  toggleForm();
+  renderBins(BINS);
+  toast('✅ Poubelle ajoutée');
+}
+
+function archiveBin(id) {
+  BINS = BINS.filter(b => b.id !== id);
+  filterBins();
+  toast('📦 Poubelle archivée');
+}
+
+function filterBins() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const type   = document.getElementById('typeFilter').value;
+  const filtered = BINS.filter(b =>
+    (!search || b.address.toLowerCase().includes(search) || (b.agent||'').toLowerCase().includes(search)) &&
+    (!type   || b.type === type)
+  );
+  renderBins(filtered);
+}
+
+function renderBins(list) {
+  document.getElementById('countLabel').textContent = `(${BINS.length})`;
+  document.getElementById('binList').innerHTML = list.length === 0
+    ? '<div class="p-10 text-center text-gray-400">Aucune poubelle trouvée</div>'
+    : list.map(b => `
+      <div class="flex items-center justify-between px-5 py-3 gap-3">
+        <div class="flex-1 min-w-0">
+          <p class="font-medium text-gray-800 truncate">${b.address}</p>
+          <p class="text-sm text-gray-400">${b.neighborhood} · ${b.agent || 'Non assigné'} · ${b.frequency}</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[b.type]||'bg-gray-100 text-gray-700'}">${b.type}</span>
+          <button onclick="archiveBin(${b.id})" class="text-gray-300 hover:text-red-400 transition-colors text-lg" title="Archiver">📦</button>
+        </div>
+      </div>
+    `).join('');
+}
+
+renderBins(BINS);
+
+function exportCSV() {
+  const today = new Date().toISOString().slice(0, 10);
+  let csv = '﻿'; // BOM UTF-8 pour Excel
+  csv += 'ID,Adresse,Quartier,Type,Agent assigné,Fréquence\r\n';
+  BINS.forEach(b => {
+    csv += `${b.id},"${b.address}","${b.neighborhood || ''}","${b.type}","${b.agent || 'Non assigné'}","${b.frequency || ''}"\r\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `laronde-poubelles-${today}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('⬇ Export CSV téléchargé');
+}
+</script>
+<style>.inp { border:1px solid #d1d5db; border-radius:0.5rem; padding:0.5rem 0.75rem; font-size:0.875rem; width:100%; outline:none; } .inp:focus { border-color:#16a34a; box-shadow:0 0 0 2px rgba(22,163,74,0.2); }</style>
+</body>
+</html>
+
+
+
+

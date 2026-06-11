@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Créer mon espace</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { font-family:'Inter',sans-serif; }
+  .inp {
+    width:100%; border:1.5px solid #e5e7eb; border-radius:10px;
+    padding:11px 14px; font-size:14px; outline:none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .inp:focus { border-color:#16a34a; box-shadow:0 0 0 3px rgba(22,163,74,.12); }
+  .inp.error  { border-color:#ef4444; }
+  label { display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:5px; }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center px-4 py-12">
+
+<div class="w-full max-w-lg">
+
+  <!-- Logo -->
+  <div class="text-center mb-8">
+    <a href="index.html" class="inline-flex items-center gap-2">
+      <span class="text-3xl">🗑</span>
+      <span class="font-black text-2xl text-green-700">LaRonde</span>
+    </a>
+    <p class="text-gray-500 text-sm mt-2">Créez l'espace de votre mairie en 2 minutes</p>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+    <h1 class="text-xl font-bold text-gray-900 mb-6">Créer mon compte</h1>
+
+    <div class="space-y-4">
+
+      <!-- Mairie -->
+      <div>
+        <label>Nom de la commune <span class="text-red-400">*</span></label>
+        <input id="f-mairie" class="inp" placeholder="Mairie de Pontoise" type="text">
+      </div>
+
+      <!-- Nom + Prénom -->
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label>Prénom <span class="text-red-400">*</span></label>
+          <input id="f-prenom" class="inp" placeholder="Marie" type="text">
+        </div>
+        <div>
+          <label>Nom <span class="text-red-400">*</span></label>
+          <input id="f-nom" class="inp" placeholder="Dupont" type="text">
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label>Email professionnel <span class="text-red-400">*</span></label>
+        <input id="f-email" class="inp" placeholder="m.dupont@mairie.fr" type="email">
+      </div>
+
+      <!-- Mot de passe -->
+      <div>
+        <label>Mot de passe <span class="text-red-400">*</span></label>
+        <div class="relative">
+          <input id="f-password" class="inp pr-10" placeholder="8 caractères minimum" type="password">
+          <button type="button" onclick="togglePwd()" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">👁</button>
+        </div>
+        <div class="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div id="pwdBar" class="h-full rounded-full transition-all duration-300 w-0"></div>
+        </div>
+        <p id="pwdHint" class="text-xs text-gray-400 mt-1">Entrez un mot de passe</p>
+      </div>
+
+      <!-- Erreur -->
+      <p id="formError" class="hidden text-sm text-red-500 font-medium bg-red-50 border border-red-100 rounded-lg px-3 py-2"></p>
+
+      <!-- Submit -->
+      <button id="submitBtn" onclick="submitRegister()"
+        class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 rounded-xl text-sm transition-colors flex items-center justify-center gap-2 mt-2">
+        Créer mon espace →
+      </button>
+
+      <p class="text-xs text-gray-400 text-center">
+        En créant un compte, vous acceptez nos conditions d'utilisation.
+        Aucune carte bancaire requise.
+      </p>
+    </div>
+  </div>
+
+  <p class="text-center text-sm text-gray-500 mt-5">
+    Déjà un compte ?
+    <a href="login.html" class="text-green-700 font-semibold hover:underline">Se connecter</a>
+  </p>
+
+</div>
+
+<script>
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000/api'
+  : '/api';
+
+function togglePwd() {
+  const f = document.getElementById('f-password');
+  f.type = f.type === 'password' ? 'text' : 'password';
+}
+
+// Indicateur force mot de passe
+document.getElementById('f-password').addEventListener('input', function () {
+  const v = this.value;
+  const bar = document.getElementById('pwdBar');
+  const hint = document.getElementById('pwdHint');
+  let score = 0;
+  if (v.length >= 8)  score++;
+  if (v.length >= 12) score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const levels = [
+    { w:'0%',   color:'',            label:'Entrez un mot de passe' },
+    { w:'25%',  color:'bg-red-400',  label:'Trop court' },
+    { w:'50%',  color:'bg-orange-400', label:'Faible' },
+    { w:'75%',  color:'bg-yellow-400', label:'Correct' },
+    { w:'90%',  color:'bg-green-400',  label:'Bon' },
+    { w:'100%', color:'bg-green-600',  label:'Excellent' },
+  ];
+  const l = levels[Math.min(score, 5)];
+  bar.style.width = l.w;
+  bar.className = `h-full rounded-full transition-all duration-300 ${l.color}`;
+  hint.textContent = l.label;
+});
+
+async function submitRegister() {
+  const mairie   = document.getElementById('f-mairie').value.trim();
+  const prenom   = document.getElementById('f-prenom').value.trim();
+  const nom      = document.getElementById('f-nom').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
+  const password = document.getElementById('f-password').value;
+
+  // Validation front
+  const fields = [
+    ['f-mairie', mairie],
+    ['f-prenom', prenom],
+    ['f-nom', nom],
+    ['f-email', email],
+    ['f-password', password],
+  ];
+  let ok = true;
+  fields.forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (!val) { el.classList.add('error'); ok = false; }
+    else el.classList.remove('error');
+  });
+
+  if (!ok) return showError('Veuillez remplir tous les champs obligatoires.');
+  if (password.length < 8) {
+    document.getElementById('f-password').classList.add('error');
+    return showError('Le mot de passe doit faire au moins 8 caractères.');
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('f-email').classList.add('error');
+    return showError('Adresse email invalide.');
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Création en cours…';
+  hideError();
+
+  try {
+    const res = await fetch(`${API}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        municipalityName: mairie,
+        firstName: prenom,
+        lastName: nom,
+        email,
+        password,
+        plan: 'pilot',
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.error || 'Erreur lors de la création du compte.');
+      btn.disabled = false;
+      btn.textContent = 'Créer mon espace →';
+      return;
+    }
+
+    // Sauvegarde la session et redirige
+    sessionStorage.setItem('ub_user', JSON.stringify({
+      ...data.user,
+      token: data.token,
+      mairie: data.user.municipalityName,
+      role: data.user.role,
+      name: `${data.user.firstName} ${data.user.lastName}`,
+      empty: true,
+    }));
+
+    btn.textContent = '✅ Compte créé !';
+    setTimeout(() => window.location.href = 'dashboard.html', 600);
+
+  } catch (err) {
+    showError('Impossible de joindre le serveur. Vérifiez votre connexion.');
+    btn.disabled = false;
+    btn.textContent = 'Créer mon espace →';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('formError');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+function hideError() {
+  document.getElementById('formError').classList.add('hidden');
+}
+
+// Effacer erreur au focus
+document.querySelectorAll('.inp').forEach(el => {
+  el.addEventListener('focus', () => el.classList.remove('error'));
+});
+</script>
+</body>
+</html>

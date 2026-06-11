@@ -1,0 +1,458 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Paramètres</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+    <div class="flex items-center gap-2"><span class="text-xl">🗑</span><span class="font-bold text-green-700">LaRonde</span><span class="text-xs text-gray-400 ml-2" id="mairieLabel">Votre Mairie</span></div>
+    <div class="flex gap-1 overflow-x-auto">
+      <a href="dashboard.html"   class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📊 Dashboard</a>
+      <a href="carte.html"       class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗺 Carte</a>
+      <a href="vue-agents.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">👥 Agents live</a>
+      <a href="poubelles.html"   class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗑 Poubelles</a>
+      <a href="recaps.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📈 Récaps</a>
+      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">⚙️ Paramètres</a>
+    </div>
+    <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">⬅ Déco</a>
+  </div>
+</nav>
+
+<main class="max-w-3xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-gray-900 mb-1">Paramètres</h1>
+  <p class="text-gray-400 text-sm mb-8">Configuration de votre compte et de vos notifications.</p>
+
+  <!-- Section récaps email -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-5">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-xl">📧</div>
+      <div>
+        <h2 class="font-semibold text-gray-800">Récapitulatifs par email</h2>
+        <p class="text-xs text-gray-400">Recevez un rapport de collecte à la fréquence de votre choix</p>
+      </div>
+    </div>
+
+    <div class="space-y-5">
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1.5">Adresse email de réception</label>
+        <div class="flex gap-2">
+          <input id="emailInput" type="email" placeholder="chef@mairie.fr"
+            class="flex-1 border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+          <button onclick="testEmail()" class="text-sm px-4 py-2.5 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 font-medium whitespace-nowrap transition-colors">
+            ✉️ Tester
+          </button>
+        </div>
+        <p class="text-xs text-gray-400 mt-1.5">Le rapport sera envoyé à cette adresse uniquement.</p>
+      </div>
+
+      <!-- Fréquence -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Fréquence d'envoi</label>
+        <div class="grid grid-cols-2 gap-3">
+          <label id="card-weekly" onclick="selectFreq('weekly')"
+            class="cursor-pointer border-2 border-green-500 bg-green-50 rounded-xl p-4 flex items-start gap-3 transition-all">
+            <div class="mt-0.5 w-5 h-5 rounded-full border-2 border-green-500 flex items-center justify-center shrink-0">
+              <div id="dot-weekly" class="w-2.5 h-2.5 rounded-full bg-green-500"></div>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Hebdomadaire</p>
+              <p class="text-xs text-gray-500 mt-0.5">Chaque lundi matin à 8h — résumé des 7 derniers jours</p>
+            </div>
+          </label>
+
+          <label id="card-monthly" onclick="selectFreq('monthly')"
+            class="cursor-pointer border-2 border-gray-200 bg-white rounded-xl p-4 flex items-start gap-3 transition-all">
+            <div class="mt-0.5 w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center shrink-0">
+              <div id="dot-monthly" class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+            </div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Mensuel</p>
+              <p class="text-xs text-gray-500 mt-0.5">Le 1er de chaque mois à 8h — bilan complet du mois</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Aperçu du prochain envoi -->
+      <div class="bg-gray-50 rounded-xl px-4 py-3 flex items-center gap-3">
+        <span class="text-lg">🗓</span>
+        <div>
+          <p class="text-xs text-gray-500">Prochain envoi estimé</p>
+          <p class="text-sm font-semibold text-gray-700" id="nextSendLabel">Lundi 9 juin 2026 à 08:00</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section alertes -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-5">
+    <div class="flex items-center gap-3 mb-5">
+      <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-xl">🔔</div>
+      <div>
+        <h2 class="font-semibold text-gray-800">Alertes automatiques</h2>
+        <p class="text-xs text-gray-400">Notifications en cas d'anomalie détectée</p>
+      </div>
+    </div>
+
+    <div class="space-y-3">
+      <div class="flex items-center justify-between py-2 border-b border-gray-50">
+        <div>
+          <p class="text-sm font-medium text-gray-700">Alerte si +50% non collecté à 18h</p>
+          <p class="text-xs text-gray-400">Un email est envoyé si la moitié des poubelles n'est pas collectée en fin de journée</p>
+        </div>
+        <button onclick="toggleAlert(this)" data-on="true"
+          class="relative w-12 h-6 rounded-full transition-colors bg-green-500 shrink-0 ml-4">
+          <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform translate-x-6"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-2 border-b border-gray-50">
+        <div>
+          <p class="text-sm font-medium text-gray-700">Notification incident signalé</p>
+          <p class="text-xs text-gray-400">Email immédiat quand un agent signale une poubelle endommagée ou débordante</p>
+        </div>
+        <button onclick="toggleAlert(this)" data-on="true"
+          class="relative w-12 h-6 rounded-full transition-colors bg-green-500 shrink-0 ml-4">
+          <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform translate-x-6"></span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between py-2">
+        <div>
+          <p class="text-sm font-medium text-gray-700">Résumé quotidien de fin de journée</p>
+          <p class="text-xs text-gray-400">Email à 19h avec le bilan du jour (collectes, incidents, agents actifs)</p>
+        </div>
+        <button onclick="toggleAlert(this)" data-on="false"
+          class="relative w-12 h-6 rounded-full transition-colors bg-gray-200 shrink-0 ml-4">
+          <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform translate-x-0"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section planification par zone -->
+  <div class="bg-white rounded-2xl border border-gray-200 p-6 mb-5">
+    <div class="flex items-center justify-between gap-3 mb-5">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-xl">🗺</div>
+        <div>
+          <h2 class="font-semibold text-gray-800">Planification par zone</h2>
+          <p class="text-xs text-gray-400">Définissez quel jour chaque quartier est collecté</p>
+        </div>
+      </div>
+      <button onclick="addZone()" class="flex items-center gap-1.5 text-sm px-3 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl font-medium transition-colors shrink-0">
+        ➕ Ajouter une zone
+      </button>
+    </div>
+
+    <!-- Liste des zones -->
+    <div id="zoneList" class="space-y-2 mb-4"></div>
+
+    <!-- Formulaire ajout/édition zone (caché par défaut) -->
+    <div id="zoneForm" class="hidden bg-gray-50 rounded-xl border border-gray-200 p-4 mt-3">
+      <p class="text-sm font-semibold text-gray-700 mb-3" id="zoneFormTitle">Nouvelle zone</p>
+      <div class="grid grid-cols-1 gap-3">
+        <input id="zf-name" placeholder="Nom de la zone (ex: Centre-ville, Parc, Zone Nord…)"
+          class="border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+        <div>
+          <p class="text-xs font-medium text-gray-600 mb-2">Jours de collecte</p>
+          <div class="flex gap-2 flex-wrap" id="dayPicker">
+            <!-- généré par JS -->
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-medium text-gray-600 block mb-1">Heure de début</label>
+            <input id="zf-time" type="time" value="07:00"
+              class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+          </div>
+          <div>
+            <label class="text-xs font-medium text-gray-600 block mb-1">Agent assigné</label>
+            <select id="zf-agent" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+              <option value="">— Non assigné —</option>
+              <option>Jean Martin</option>
+              <option>Paul Bernard</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 mt-4">
+        <button onclick="cancelZoneForm()" class="px-4 py-2 text-sm border border-gray-300 rounded-xl text-gray-600 hover:bg-gray-100">Annuler</button>
+        <button onclick="saveZone()" class="px-4 py-2 text-sm bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700">Enregistrer</button>
+      </div>
+    </div>
+
+    <!-- Aperçu semaine -->
+    <div id="weekPreview" class="mt-4 hidden">
+      <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Aperçu de la semaine</p>
+      <div class="grid grid-cols-7 gap-1" id="weekGrid"></div>
+    </div>
+  </div>
+
+  <!-- Bouton sauvegarder -->
+  <div class="flex items-center justify-between">
+    <p class="text-xs text-gray-400" id="saveStatus"></p>
+    <button onclick="save()" class="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors">
+      💾 Sauvegarder les paramètres
+    </button>
+  </div>
+</main>
+
+<!-- Toast -->
+<div id="toast" class="fixed top-4 right-4 z-50 hidden">
+  <div class="bg-white rounded-xl shadow-lg border-l-4 px-4 py-3 flex items-center gap-3" id="toastInner">
+    <span id="toastIcon"></span>
+    <p class="text-sm font-semibold text-gray-800" id="toastMsg"></p>
+  </div>
+</div>
+
+<script>
+const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
+if (!user.role) window.location.href = 'index.html';
+document.getElementById('mairieLabel').textContent = user.mairie || '';
+
+// Charger les paramètres sauvegardés
+const STORAGE_KEY = 'laronde_settings';
+const defaults = { email: user.email || '', freq: 'weekly', alerts: { half: true, incident: true, daily: false } };
+let settings = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || defaults;
+
+// Initialiser l'UI
+document.getElementById('emailInput').value = settings.email;
+selectFreq(settings.freq, false);
+
+let currentFreq = settings.freq;
+
+function selectFreq(freq, animate = true) {
+  currentFreq = freq;
+  const weekly  = freq === 'weekly';
+  document.getElementById('card-weekly').className  = `cursor-pointer border-2 rounded-xl p-4 flex items-start gap-3 transition-all ${weekly  ? 'border-green-500 bg-green-50'  : 'border-gray-200 bg-white'}`;
+  document.getElementById('card-monthly').className = `cursor-pointer border-2 rounded-xl p-4 flex items-start gap-3 transition-all ${!weekly ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white'}`;
+  document.getElementById('dot-weekly').className   = `w-2.5 h-2.5 rounded-full ${weekly  ? 'bg-green-500'  : 'bg-transparent'}`;
+  document.getElementById('dot-monthly').className  = `w-2.5 h-2.5 rounded-full ${!weekly ? 'bg-green-500' : 'bg-transparent'}`;
+  document.getElementById('card-weekly').querySelector('.mt-0.5').className  = `mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${weekly  ? 'border-green-500' : 'border-gray-300'}`;
+  document.getElementById('card-monthly').querySelector('.mt-0.5').className = `mt-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${!weekly ? 'border-green-500' : 'border-gray-300'}`;
+  updateNextSend(freq);
+}
+
+function updateNextSend(freq) {
+  const now = new Date();
+  let next;
+  if (freq === 'weekly') {
+    // Prochain lundi
+    const day = now.getDay(); // 0=dim
+    const daysUntilMonday = day === 1 ? 7 : (8 - day) % 7 || 7;
+    next = new Date(now);
+    next.setDate(now.getDate() + daysUntilMonday);
+    next.setHours(8, 0, 0, 0);
+    document.getElementById('nextSendLabel').textContent =
+      'Lundi ' + next.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' }) + ' à 08:00';
+  } else {
+    // 1er du mois prochain
+    next = new Date(now.getFullYear(), now.getMonth() + 1, 1, 8, 0, 0);
+    document.getElementById('nextSendLabel').textContent =
+      '1er ' + next.toLocaleDateString('fr-FR', { month:'long', year:'numeric' }) + ' à 08:00';
+  }
+}
+
+function toggleAlert(btn) {
+  const on = btn.dataset.on === 'true';
+  btn.dataset.on = (!on).toString();
+  const span = btn.querySelector('span');
+  if (!on) {
+    btn.className = 'relative w-12 h-6 rounded-full transition-colors bg-green-500 shrink-0 ml-4';
+    span.className = 'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform translate-x-6';
+  } else {
+    btn.className = 'relative w-12 h-6 rounded-full transition-colors bg-gray-200 shrink-0 ml-4';
+    span.className = 'absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform translate-x-0';
+  }
+}
+
+function testEmail() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('⚠️', 'Entrez une adresse email valide', 'orange');
+    return;
+  }
+  showToast('✉️', `Email de test envoyé à ${email}`, 'green');
+}
+
+function save() {
+  const email = document.getElementById('emailInput').value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('⚠️', 'Entrez une adresse email valide avant de sauvegarder', 'orange');
+    return;
+  }
+  settings = { email, freq: currentFreq };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+  document.getElementById('saveStatus').textContent = '✅ Sauvegardé le ' + new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+  showToast('✅', 'Paramètres sauvegardés', 'green');
+}
+
+function showToast(icon, msg, color) {
+  const colors = { green: 'border-l-green-500', orange: 'border-l-orange-400' };
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastInner').className = `bg-white rounded-xl shadow-lg border-l-4 px-4 py-3 flex items-center gap-3 ${colors[color] || 'border-l-green-500'}`;
+  const t = document.getElementById('toast');
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 3500);
+}
+
+/* ── Planification par zone ──────────────────────────────────────────── */
+const JOURS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const JOURS_FULL = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
+const ZONE_COLORS = ['#16a34a','#3b82f6','#f97316','#8b5cf6','#ec4899','#14b8a6','#f59e0b'];
+
+let zones = JSON.parse(localStorage.getItem('laronde_zones') || 'null') || [
+  { id:1, name:'Centre-ville', days:[0,2,4], time:'07:00', agent:'Jean Martin' },
+  { id:2, name:'Zone Nord',    days:[1,3],   time:'07:30', agent:'Paul Bernard' },
+  { id:3, name:'Parc & Espaces verts', days:[2], time:'08:00', agent:'Jean Martin' },
+];
+let editingZoneId = null;
+let selectedDays = [];
+
+function zoneColor(idx) { return ZONE_COLORS[idx % ZONE_COLORS.length]; }
+
+function renderZones() {
+  const list = document.getElementById('zoneList');
+  if (!zones.length) {
+    list.innerHTML = '<p class="text-sm text-gray-400 text-center py-4">Aucune zone configurée. Cliquez sur "Ajouter une zone".</p>';
+    document.getElementById('weekPreview').classList.add('hidden');
+    return;
+  }
+  list.innerHTML = zones.map((z, i) => `
+    <div class="flex items-center gap-3 bg-gray-50 rounded-xl px-4 py-3 border border-gray-100">
+      <div class="w-3 h-3 rounded-full shrink-0" style="background:${zoneColor(i)}"></div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="text-sm font-semibold text-gray-800">${z.name}</span>
+          <span class="text-xs text-gray-400">${z.time} ${z.agent ? '· ' + z.agent : ''}</span>
+        </div>
+        <div class="flex gap-1 mt-1.5 flex-wrap">
+          ${z.days.map(d => `<span class="text-xs px-2 py-0.5 rounded-full font-medium text-white" style="background:${zoneColor(i)}">${JOURS[d]}</span>`).join('')}
+          ${!z.days.length ? '<span class="text-xs text-gray-400">Aucun jour</span>' : ''}
+        </div>
+      </div>
+      <div class="flex gap-1 shrink-0">
+        <button onclick="editZone(${z.id})" class="text-gray-400 hover:text-blue-500 text-sm px-2 py-1 rounded-lg hover:bg-blue-50 transition-colors">✏️</button>
+        <button onclick="deleteZone(${z.id})" class="text-gray-400 hover:text-red-500 text-sm px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">🗑</button>
+      </div>
+    </div>
+  `).join('');
+  renderWeekPreview();
+}
+
+function renderWeekPreview() {
+  const grid = document.getElementById('weekGrid');
+  const preview = document.getElementById('weekPreview');
+  preview.classList.remove('hidden');
+
+  grid.innerHTML = JOURS_FULL.map((jour, di) => {
+    const zonesOfDay = zones.filter(z => z.days.includes(di));
+    return `
+      <div class="rounded-xl border border-gray-100 p-2 min-h-[80px] bg-gray-50">
+        <p class="text-[10px] font-bold text-gray-400 uppercase mb-1.5">${jour.slice(0,3)}</p>
+        ${zonesOfDay.length
+          ? zonesOfDay.map((z,_) => {
+              const i = zones.indexOf(z);
+              return `<div class="text-[10px] font-medium text-white rounded-lg px-1.5 py-1 mb-1 leading-tight truncate" style="background:${zoneColor(i)}" title="${z.name} · ${z.time}">${z.name}</div>`;
+            }).join('')
+          : '<p class="text-[10px] text-gray-300 text-center mt-3">—</p>'
+        }
+      </div>`;
+  }).join('');
+}
+
+function buildDayPicker(selected = []) {
+  selectedDays = [...selected];
+  document.getElementById('dayPicker').innerHTML = JOURS.map((j, i) => `
+    <button type="button" id="dp-${i}" onclick="toggleDay(${i})"
+      class="px-3 py-1.5 rounded-xl text-sm font-medium border-2 transition-all ${selectedDays.includes(i) ? 'border-green-500 bg-green-500 text-white' : 'border-gray-200 bg-white text-gray-600 hover:border-green-300'}">
+      ${j}
+    </button>
+  `).join('');
+}
+
+function toggleDay(i) {
+  if (selectedDays.includes(i)) {
+    selectedDays = selectedDays.filter(d => d !== i);
+  } else {
+    selectedDays.push(i);
+    selectedDays.sort();
+  }
+  buildDayPicker(selectedDays);
+}
+
+function addZone() {
+  editingZoneId = null;
+  document.getElementById('zoneFormTitle').textContent = 'Nouvelle zone';
+  document.getElementById('zf-name').value = '';
+  document.getElementById('zf-time').value = '07:00';
+  document.getElementById('zf-agent').value = '';
+  buildDayPicker([]);
+  document.getElementById('zoneForm').classList.remove('hidden');
+  document.getElementById('zf-name').focus();
+}
+
+function editZone(id) {
+  const z = zones.find(z => z.id === id);
+  if (!z) return;
+  editingZoneId = id;
+  document.getElementById('zoneFormTitle').textContent = 'Modifier la zone';
+  document.getElementById('zf-name').value = z.name;
+  document.getElementById('zf-time').value = z.time;
+  document.getElementById('zf-agent').value = z.agent || '';
+  buildDayPicker(z.days);
+  document.getElementById('zoneForm').classList.remove('hidden');
+  document.getElementById('zf-name').focus();
+}
+
+function cancelZoneForm() {
+  document.getElementById('zoneForm').classList.add('hidden');
+  editingZoneId = null;
+}
+
+function saveZone() {
+  const name = document.getElementById('zf-name').value.trim();
+  if (!name) { showToast('⚠️', 'Donnez un nom à la zone', 'orange'); return; }
+  if (!selectedDays.length) { showToast('⚠️', 'Sélectionnez au moins un jour', 'orange'); return; }
+  const zone = {
+    id: editingZoneId || Date.now(),
+    name,
+    days: [...selectedDays],
+    time: document.getElementById('zf-time').value || '07:00',
+    agent: document.getElementById('zf-agent').value,
+  };
+  if (editingZoneId) {
+    zones = zones.map(z => z.id === editingZoneId ? zone : z);
+    showToast('✅', `Zone "${name}" modifiée`, 'green');
+  } else {
+    zones.push(zone);
+    showToast('✅', `Zone "${name}" ajoutée`, 'green');
+  }
+  localStorage.setItem('laronde_zones', JSON.stringify(zones));
+  cancelZoneForm();
+  renderZones();
+}
+
+function deleteZone(id) {
+  const z = zones.find(z => z.id === id);
+  if (!z) return;
+  zones = zones.filter(z => z.id !== id);
+  localStorage.setItem('laronde_zones', JSON.stringify(zones));
+  renderZones();
+  showToast('🗑', `Zone "${z.name}" supprimée`, 'orange');
+}
+
+// Init zones
+renderZones();
+</script>
+</body>
+</html>
+
