@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Rapport Juin 2026</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#e5e7eb; font-family: Arial, sans-serif; padding: 32px 16px; }
+
+.toolbar {
+  max-width: 794px; margin: 0 auto 16px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.toolbar a { color:#6b7280; font-size:13px; text-decoration:none; }
+.btn-pdf {
+  background:#16a34a; color:white; border:none; padding:10px 24px;
+  border-radius:8px; font-size:14px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+}
+.btn-pdf:hover { background:#15803d; }
+
+.page {
+  background: white;
+  width: 794px;
+  margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  position: relative;
+  padding-bottom: 52px;
+}
+.hdr {
+  background: #16a34a; padding: 24px 36px;
+  display: flex; justify-content: space-between; align-items: center; color: white;
+}
+.hdr h1 { font-size: 22px; font-weight: 800; }
+.hdr p  { font-size: 11px; opacity: 0.8; margin-top: 3px; }
+.hdr-right { text-align: right; }
+.hdr-right .mairie { font-size: 15px; font-weight: 700; }
+.hdr-right .period { font-size: 12px; opacity: 0.85; margin-top: 3px; }
+.hdr-right .gendate { font-size: 10px; opacity: 0.65; margin-top: 5px; }
+
+.body { padding: 28px 36px; }
+.section-title {
+  font-size: 13px; font-weight: 700; color: #111;
+  border-bottom: 2px solid #16a34a;
+  padding-bottom: 5px; margin-bottom: 14px; margin-top: 22px;
+}
+.section-title:first-child { margin-top: 0; }
+
+.kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap:10px; margin-bottom:6px; }
+.kpi { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:12px 14px; }
+.kpi-val { font-size:24px; font-weight:800; color:#16a34a; }
+.kpi-val.blue { color:#2563eb; }
+.kpi-val.orange { color:#ea580c; }
+.kpi-lbl { font-size:10px; color:#6b7280; margin-top:2px; }
+
+.week-chart-wrap { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:14px 16px; }
+.week-chart { display:flex; align-items:flex-end; gap:8px; height:80px; }
+.wbar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.wbar-val { font-size:10px; font-weight:600; color:#374151; }
+.wbar { width:100%; background:#16a34a; border-radius:3px 3px 0 0; }
+.wbar-lbl { font-size:9px; color:#9ca3af; }
+
+.bar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.bar-lbl { font-size:11px; color:#374151; width:130px; flex-shrink:0; }
+.bar-sub { font-size:9px; color:#9ca3af; }
+.bar-track { flex:1; height:7px; background:#f3f4f6; border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:4px; }
+.bar-num { font-size:11px; font-weight:700; color:#111; width:40px; text-align:right; flex-shrink:0; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+
+table { width:100%; border-collapse:collapse; font-size:11px; }
+thead tr { background:#f3f4f6; }
+th { padding:7px 10px; text-align:left; color:#6b7280; font-weight:600; font-size:10px; text-transform:uppercase; }
+td { padding:7px 10px; border-bottom:1px solid #f3f4f6; color:#374151; }
+tr:last-child td { border-bottom:none; }
+tr:nth-child(even) td { background:#fafafa; }
+
+.badge { display:inline-block; padding:2px 7px; border-radius:999px; font-size:9px; font-weight:700; }
+.b-green  { background:#dcfce7; color:#16a34a; }
+.b-blue   { background:#dbeafe; color:#2563eb; }
+.b-orange { background:#ffedd5; color:#ea580c; }
+
+.footer {
+  position:absolute; bottom:0; left:0; right:0;
+  padding:10px 36px; border-top:1px solid #e5e7eb;
+  display:flex; justify-content:space-between;
+  font-size:9px; color:#9ca3af;
+}
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <a href="dashboard.html">← Retour dashboard</a>
+  <button class="btn-pdf" onclick="genererPDF()">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 16V4M6 10l6 6 6-6M4 20h16"/></svg>
+    Générer & ouvrir le PDF
+  </button>
+</div>
+
+<!-- Aperçu -->
+<div class="page" id="page">
+  <div class="hdr">
+    <div>
+      <h1>🗑 LaRonde</h1>
+      <p>Rapport mensuel de collecte des déchets</p>
+    </div>
+    <div class="hdr-right">
+      <div class="mairie">Votre Mairie</div>
+      <div class="period">Juin 2026</div>
+      <div class="gendate" id="gendate"></div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="section-title">Résumé du jour</div>
+    <div class="kpi-grid">
+      <div class="kpi"><div class="kpi-val" id="kpi-collected">—</div><div class="kpi-lbl">Collectes réalisées</div></div>
+      <div class="kpi"><div class="kpi-val blue" id="kpi-total">—</div><div class="kpi-lbl">Poubelles actives</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-pct">—</div><div class="kpi-lbl">Taux de collecte</div></div>
+      <div class="kpi"><div class="kpi-val orange" id="kpi-remarks">—</div><div class="kpi-lbl">Remarques signalées</div></div>
+    </div>
+
+    <div class="section-title">Collectes par semaine (mois en cours)</div>
+    <div class="week-chart-wrap">
+      <div class="week-chart" id="weekChartWrap">
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S1</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S2</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S3</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S4</div></div>
+      </div>
+    </div>
+
+    <div class="two-col" style="margin-top:20px">
+      <div>
+        <div class="section-title" style="margin-top:0">Performance par agent</div>
+        <div id="agentBars"><div style="color:#9ca3af;font-size:11px">Aucune donnée</div></div>
+      </div>
+      <div>
+        <div class="section-title" style="margin-top:0">Répartition par type</div>
+        <div id="typeBars"><div style="color:#9ca3af;font-size:11px">Aucune donnée</div></div>
+      </div>
+    </div>
+
+    <div class="section-title">Progression du jour</div>
+    <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px 16px;margin-bottom:6px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:11px;color:#374151">
+        <span style="font-weight:700">Taux de collecte</span>
+        <span id="progLabelPdf" style="font-weight:700;color:#16a34a">— / — poubelles collectées</span>
+      </div>
+      <div style="background:#e5e7eb;border-radius:4px;height:10px;overflow:hidden">
+        <div id="progBarPdf" style="height:100%;background:#16a34a;border-radius:4px;width:0%"></div>
+      </div>
+    </div>
+
+    <div class="section-title">Dernières collectes du jour</div>
+    <table>
+      <thead><tr><th>Heure</th><th>Adresse</th><th>Agent</th><th>Statut</th></tr></thead>
+      <tbody id="recentTbody">
+        <tr><td colspan="4" style="text-align:center;color:#9ca3af">Aucune collecte enregistrée</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-title">Incidents & remarques signalés</div>
+    <table>
+      <thead><tr><th>Type</th><th>Adresse</th><th>Signalé par</th><th>Date</th><th>Statut</th></tr></thead>
+      <tbody id="incidentTbody">
+        <tr><td colspan="5" style="text-align:center;color:#9ca3af">Aucun incident</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer">
+    <span>LaRonde — Rapport généré automatiquement · laronde.fr</span>
+    <span id="footerRight">Votre Mairie</span>
+  </div>
+</div>
+
+<script>
+// ── Lecture des données du dashboard ────────────────────────────────────────
+const raw = sessionStorage.getItem('laronde_rapport_stats');
+const S = raw ? JSON.parse(raw) : null;
+
+function render() {
+  if (!S) return;
+
+  // ── Header ────────────────────────────────────────────────────────────────
+  document.querySelector('.mairie').textContent = S.mairie || 'Votre Mairie';
+  document.querySelector('.period').textContent = S.periode || '';
+  document.getElementById('gendate').textContent = 'Généré le ' + (S.genDate || new Date().toLocaleDateString('fr-FR'));
+
+  // ── KPIs ─────────────────────────────────────────────────────────────────
+  document.getElementById('kpi-collected').textContent = S.collected ?? '—';
+  document.getElementById('kpi-total').textContent     = S.total ?? '—';
+  document.getElementById('kpi-pct').textContent       = S.pct ?? '—';
+  document.getElementById('kpi-remarks').textContent   = S.remarks ?? '—';
+
+  // ── Graphique hebdo ───────────────────────────────────────────────────────
+  if (S.weekChart && S.weekChart.length) {
+    const maxVal = Math.max(...S.weekChart.map(w => w.val));
+    document.getElementById('weekChartWrap').innerHTML = S.weekChart.map(w => {
+      const h = maxVal > 0 ? Math.round((w.val / maxVal) * 76) : 4;
+      return `<div class="wbar-col">
+        <div class="wbar-val">${w.val}</div>
+        <div class="wbar" style="height:${h}px"></div>
+        <div class="wbar-lbl">${w.label}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Agents ────────────────────────────────────────────────────────────────
+  if (S.agents && S.agents.length) {
+    const maxAgent = Math.max(...S.agents.map(a => a.count));
+    document.getElementById('agentBars').innerHTML = S.agents.map(a => {
+      const w = maxAgent > 0 ? Math.round((a.count / maxAgent) * 100) : 0;
+      return `<div class="bar-row">
+        <div class="bar-lbl">${a.name}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${w}%;background:#16a34a"></div></div>
+        <div class="bar-num">${a.count}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Types ─────────────────────────────────────────────────────────────────
+  const TYPE_COLORS = { 'Ordures ménagères':'#6b7280', 'Recyclable':'#3b82f6', 'Verre':'#22c55e', 'Encombrants':'#f97316', 'ordures':'#6b7280', 'recyclable':'#3b82f6', 'verre':'#22c55e', 'encombrants':'#f97316' };
+  if (S.types && S.types.length) {
+    document.getElementById('typeBars').innerHTML = S.types.map(t => {
+      const color = TYPE_COLORS[t.type] || '#6b7280';
+      return `<div class="bar-row">
+        <div class="bar-lbl">${t.type}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${t.pct}%;background:${color}"></div></div>
+        <div class="bar-num">${t.pct}%</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Progression du jour ───────────────────────────────────────────────────
+  document.getElementById('progBarPdf').style.width = S.pct || '0%';
+  document.getElementById('progLabelPdf').textContent = (S.collected ?? 0) + ' / ' + (S.total ?? 0) + ' poubelles collectées (' + (S.pct || '0%') + ')';
+
+  // ── Dernières collectes ───────────────────────────────────────────────────
+  const tbody = document.getElementById('recentTbody');
+  if (S.recentCollections && S.recentCollections.length) {
+    tbody.innerHTML = S.recentCollections.map(c => `
+      <tr>
+        <td>${c.heure || '—'}</td>
+        <td><b>${c.adresse}</b></td>
+        <td>${c.agent || '—'}</td>
+        <td><span class="badge b-green">collectée</span></td>
+      </tr>`).join('');
+  } else {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#9ca3af">Aucune collecte enregistrée</td></tr>';
+  }
+
+  // ── Incidents ─────────────────────────────────────────────────────────────
+  const incTbody = document.getElementById('incidentTbody');
+  if (S.incidents && S.incidents.length) {
+    incTbody.innerHTML = S.incidents.map(i => {
+      const cls = i.statut === 'résolu' ? 'b-green' : i.statut === 'en cours' ? 'b-blue' : 'b-orange';
+      return `<tr>
+        <td><b>${i.type}</b></td>
+        <td>${i.adresse}</td>
+        <td>${i.agent}</td>
+        <td>${i.date}</td>
+        <td><span class="badge ${cls}">${i.statut}</span></td>
+      </tr>`;
+    }).join('');
+  } else {
+    incTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af">Aucun incident signalé</td></tr>';
+  }
+
+  // ── Footer ────────────────────────────────────────────────────────────────
+  document.getElementById('footerRight').textContent = (S.mairie || 'Votre Mairie') + ' · ' + (S.periode || '');
+}
+
+render();
+
+function genererPDF() {
+  // Récupère le HTML de la page de rapport
+  const contenu = document.getElementById('page').innerHTML;
+
+  // Ouvre une nouvelle fenêtre avec uniquement le rapport
+  const win = window.open('', '_blank', 'width=900,height=700');
+  win.document.write(`<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>LaRonde — Rapport Juin 2026</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial, sans-serif; background: white; }
+.page { width:100%; position:relative; padding-bottom:52px; min-height:100vh; }
+.hdr { background:#16a34a; padding:24px 36px; display:flex; justify-content:space-between; align-items:center; color:white; }
+.hdr h1 { font-size:22px; font-weight:800; }
+.hdr p { font-size:11px; opacity:0.8; margin-top:3px; }
+.hdr-right { text-align:right; }
+.hdr-right .mairie { font-size:15px; font-weight:700; }
+.hdr-right .period { font-size:12px; opacity:0.85; margin-top:3px; }
+.hdr-right .gendate { font-size:10px; opacity:0.65; margin-top:5px; }
+.body { padding:28px 36px; }
+.section-title { font-size:13px; font-weight:700; color:#111; border-bottom:2px solid #16a34a; padding-bottom:5px; margin-bottom:14px; margin-top:22px; }
+.section-title:first-child { margin-top:0; }
+.kpi-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:6px; }
+.kpi { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:12px 14px; }
+.kpi-val { font-size:24px; font-weight:800; color:#16a34a; }
+.kpi-val.blue { color:#2563eb; }
+.kpi-val.orange { color:#ea580c; }
+.kpi-lbl { font-size:10px; color:#6b7280; margin-top:2px; }
+.week-chart-wrap { background:#f9fafb; border:1px solid #e5e7eb; border-radius:8px; padding:14px 16px; }
+.week-chart { display:flex; align-items:flex-end; gap:8px; height:80px; }
+.wbar-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; }
+.wbar-val { font-size:10px; font-weight:600; color:#374151; }
+.wbar { width:100%; background:#16a34a; border-radius:3px 3px 0 0; }
+.wbar-lbl { font-size:9px; color:#9ca3af; }
+.bar-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.bar-lbl { font-size:11px; color:#374151; width:130px; flex-shrink:0; }
+.bar-sub { font-size:9px; color:#9ca3af; }
+.bar-track { flex:1; height:7px; background:#f3f4f6; border-radius:4px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:4px; }
+.bar-num { font-size:11px; font-weight:700; color:#111; width:40px; text-align:right; flex-shrink:0; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+table { width:100%; border-collapse:collapse; font-size:11px; }
+thead tr { background:#f3f4f6; }
+th { padding:7px 10px; text-align:left; color:#6b7280; font-weight:600; font-size:10px; text-transform:uppercase; }
+td { padding:7px 10px; border-bottom:1px solid #f3f4f6; color:#374151; }
+tr:last-child td { border-bottom:none; }
+tr:nth-child(even) td { background:#fafafa; }
+.badge { display:inline-block; padding:2px 7px; border-radius:999px; font-size:9px; font-weight:700; }
+.b-green { background:#dcfce7; color:#16a34a; }
+.b-blue { background:#dbeafe; color:#2563eb; }
+.b-orange { background:#ffedd5; color:#ea580c; }
+.footer { position:fixed; bottom:0; left:0; right:0; padding:10px 36px; border-top:1px solid #e5e7eb; display:flex; justify-content:space-between; font-size:9px; color:#9ca3af; background:white; }
+@page { size: A4; margin: 0; }
+@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+</style>
+</head>
+<body>
+<div class="page">${contenu}</div>
+<script>
+  window.onload = function() {
+    setTimeout(function() { window.print(); }, 400);
+  };
+<\/script>
+</body>
+</html>`);
+  win.document.close();
+}
+</script>
+</body>
+</html>
+
+
