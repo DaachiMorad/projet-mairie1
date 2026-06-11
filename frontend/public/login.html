@@ -39,9 +39,7 @@
 </div>
 
 <script>
-const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:3000/api'
-  : '/api';
+const API = 'https://projet-mairie1-production.up.railway.app/api';
 
 async function login() {
   const email    = document.getElementById('email').value.trim();
@@ -121,4 +119,5 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 </script>
 </body>
 </html>
+
 

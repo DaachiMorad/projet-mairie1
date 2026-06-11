@@ -97,5 +97,29 @@ router.put('/agents/:id', auth, chefOnly, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// POST /api/auth/register
+router.post('/register', async (req, res) => {
+  const { municipalityName, firstName, lastName, email, password } = req.body;
+  if (!municipalityName || !firstName || !lastName || !email || !password)
+    return res.status(400).json({ error: 'Champs requis manquants' });
+  try {
+    const [exists] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+    if (exists.length > 0) return res.status(409).json({ error: 'Email déjà utilisé' });
+    const { v4: uuidv4 } = require('uuid');
+    const bcrypt = require('bcryptjs');
+    const mId = uuidv4();
+    const uId = uuidv4();
+    await db.query('INSERT INTO municipalities (id, name, slug, email) VALUES (?, ?, ?, ?)',
+      [mId, municipalityName, municipalityName.toLowerCase().replace(/\s+/g,'-'), email]);
+    const hash = await bcrypt.hash(password, 10);
+    await db.query('INSERT INTO users (id, municipalityId, email, passwordHash, firstName, lastName, role) VALUES (?, ?, ?, ?, ?, ?, "chef")',
+      [uId, mId, email, hash, firstName, lastName]);
+    const jwt = require('jsonwebtoken');
+    const token = jwt.sign({ id: uId, role: 'chef', municipalityId: mId }, process.env.JWT_SECRET || 'secret_laronde', { expiresIn: '30d' });
+    res.status(201).json({ token, user: { id: uId, email, firstName, lastName, role: 'chef', municipalityId: mId, municipalityName } });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
