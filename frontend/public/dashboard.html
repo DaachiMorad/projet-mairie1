@@ -1,9 +1,9 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LaRonde â€” Dashboard</title>
+<title>LaRonde — Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>tailwind.config = { theme: { extend: { colors: { primary: '#16a34a' } } } }</script>
 </head>
@@ -13,21 +13,21 @@
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
     <div class="flex items-center gap-2">
-      <span class="text-xl">ğŸ—‘</span>
+      <span class="text-xl">??</span>
       <span class="font-bold text-green-700">LaRonde</span>
       <span class="text-xs text-gray-400 ml-2" id="mairieLabel">Votre Mairie</span>
     </div>
     <div class="flex gap-1 overflow-x-auto">
-      <a href="dashboard.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">ğŸ“Š Dashboard</a>
-      <a href="carte.html"     class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">ğŸ—º Carte</a>
-      <a href="vue-agents.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">ğŸ‘¥ Agents live</a>
-      <a href="poubelles.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">ğŸ—‘ Poubelles</a>
-      <a href="recaps.html"    class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">ğŸ“ˆ RÃ©caps</a>
-      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">âš™ï¸ ParamÃ¨tres</a>
+      <a href="dashboard.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">?? Dashboard</a>
+      <a href="carte.html"     class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Carte</a>
+      <a href="vue-agents.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Agents live</a>
+      <a href="poubelles.html" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Poubelles</a>
+      <a href="recaps.html"    class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Récaps</a>
+      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Paramètres</a>
     </div>
     <div class="flex items-center gap-3">
       <span class="text-sm text-gray-500" id="userName">Marie Dupont</span>
-      <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">â¬… DÃ©co</a>
+      <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">? Déco</a>
     </div>
   </div>
 </nav>
@@ -40,10 +40,10 @@
     </div>
     <div class="flex items-center gap-3">
       <div class="flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-green-100 text-green-700">
-        <span>ğŸ“¶</span> Temps rÃ©el actif
+        <span>??</span> Temps réel actif
       </div>
       <button onclick="downloadPDF()" class="flex items-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 text-sm font-medium px-3 py-2 rounded-lg transition-colors">
-        ğŸ“„ Rapport PDF
+        ?? Rapport PDF
       </button>
     </div>
   </div>
@@ -51,19 +51,19 @@
   <!-- KPIs -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
     <div class="bg-blue-50 rounded-xl p-4 flex items-center gap-3">
-      <span class="text-2xl">ğŸ—‘</span>
+      <span class="text-2xl">??</span>
       <div><p class="text-2xl font-bold text-gray-900">24</p><p class="text-xs text-gray-500">Total poubelles</p></div>
     </div>
     <div class="bg-green-50 rounded-xl p-4 flex items-center gap-3">
-      <span class="text-2xl">âœ…</span>
-      <div><p class="text-2xl font-bold text-gray-900" id="collectedCount">17</p><p class="text-xs text-gray-500">CollectÃ©es</p></div>
+      <span class="text-2xl">?</span>
+      <div><p class="text-2xl font-bold text-gray-900" id="collectedCount">17</p><p class="text-xs text-gray-500">Collectées</p></div>
     </div>
     <div class="bg-orange-50 rounded-xl p-4 flex items-center gap-3">
-      <span class="text-2xl">â³</span>
+      <span class="text-2xl">?</span>
       <div><p class="text-2xl font-bold text-gray-900" id="remainingCount">7</p><p class="text-xs text-gray-500">Restantes</p></div>
     </div>
     <div class="bg-red-50 rounded-xl p-4 flex items-center gap-3">
-      <span class="text-2xl">âš ï¸</span>
+      <span class="text-2xl">??</span>
       <div><p class="text-2xl font-bold text-gray-900">3</p><p class="text-xs text-gray-500">Remarques ouvertes</p></div>
     </div>
   </div>
@@ -77,21 +77,21 @@
     <div class="w-full bg-gray-100 rounded-full h-4">
       <div id="progressBar" class="bg-green-500 h-4 rounded-full transition-all duration-700" style="width:71%"></div>
     </div>
-    <p class="text-sm text-gray-500 mt-2" id="progressText">17 / 24 poubelles collectÃ©es</p>
+    <p class="text-sm text-gray-500 mt-2" id="progressText">17 / 24 poubelles collectées</p>
   </div>
 
-  <!-- Notification live simulÃ©e -->
+  <!-- Notification live simulée -->
   <div id="liveNotif" class="hidden mb-4 bg-green-50 border border-green-200 rounded-xl px-4 py-3 flex items-center gap-3 animate-bounce">
-    <span>âœ…</span>
+    <span>?</span>
     <div>
-      <p class="text-sm font-semibold text-green-800">Collecte enregistrÃ©e en temps rÃ©el</p>
+      <p class="text-sm font-semibold text-green-800">Collecte enregistrée en temps réel</p>
       <p class="text-xs text-green-600" id="notifText"></p>
     </div>
   </div>
 
-  <!-- DerniÃ¨res collectes -->
+  <!-- Dernières collectes -->
   <div class="bg-white rounded-xl border border-gray-200 p-5">
-    <h2 class="font-semibold text-gray-700 mb-4">DerniÃ¨res collectes</h2>
+    <h2 class="font-semibold text-gray-700 mb-4">Dernières collectes</h2>
     <div id="collectList" class="space-y-0"></div>
   </div>
 </main>
@@ -99,7 +99,7 @@
 <!-- Toast -->
 <div id="toast" class="fixed top-4 right-4 z-50 hidden">
   <div class="bg-white rounded-xl shadow-lg border-l-4 border-l-green-500 px-4 py-3 flex items-center gap-3">
-    <span>âœ…</span>
+    <span>?</span>
     <div>
       <p class="font-semibold text-sm text-gray-800" id="toastTitle"></p>
       <p class="text-xs text-gray-500" id="toastMsg"></p>
@@ -132,7 +132,7 @@ function showToast(title, msg) {
 function renderList(list) {
   const el = document.getElementById('collectList');
   if (!list.length) {
-    el.innerHTML = '<p class="text-sm text-gray-400 text-center py-6">Aucune collecte enregistrÃ©e aujourd\'hui.</p>';
+    el.innerHTML = '<p class="text-sm text-gray-400 text-center py-6">Aucune collecte enregistrée aujourd\'hui.</p>';
     return;
   }
   el.innerHTML = list.map(c => `
@@ -147,14 +147,14 @@ function renderList(list) {
 }
 
 if (isEmpty) {
-  // Compte vierge â€” tout Ã  zÃ©ro
+  // Compte vierge — tout à zéro
   document.getElementById('collectedCount').textContent = '0';
   document.getElementById('remainingCount').textContent = '0';
   document.querySelector('.bg-blue-50 p.text-2xl').textContent = '0';
   document.querySelector('.bg-red-50 p.text-2xl').textContent = '0';
   document.getElementById('pctLabel').textContent = '0%';
   document.getElementById('progressBar').style.width = '0%';
-  document.getElementById('progressText').textContent = '0 / 0 poubelles configurÃ©es';
+  document.getElementById('progressText').textContent = '0 / 0 poubelles configurées';
   renderList([]);
 } else {
   const collectes = [
@@ -163,9 +163,9 @@ if (isEmpty) {
     { adresse: '3 Bd Haussmann', agent: 'Jean Martin', heure: '13:55' },
     { adresse: '8 Rue de la Paix', agent: 'Paul Bernard', heure: '13:41' },
     { adresse: '22 Avenue du Nord', agent: 'Paul Bernard', heure: '13:22' },
-    { adresse: '5 Place du MarchÃ©', agent: 'Jean Martin', heure: '13:10' },
+    { adresse: '5 Place du Marché', agent: 'Jean Martin', heure: '13:10' },
     { adresse: '12 Rue Victor Hugo', agent: 'Jean Martin', heure: '12:48' },
-    { adresse: '9 AllÃ©e des Roses', agent: 'Paul Bernard', heure: '12:35' },
+    { adresse: '9 Allée des Roses', agent: 'Paul Bernard', heure: '12:35' },
   ];
   renderList(collectes);
 
@@ -184,10 +184,10 @@ if (isEmpty) {
     const pct = Math.round((collected/24)*100);
     document.getElementById('pctLabel').textContent = pct + '%';
     document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectÃ©es';
+    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectées';
     collectes.unshift(nc);
     renderList(collectes.slice(0,8));
-    showToast('Collecte enregistrÃ©e', nc.adresse + ' â€” ' + nc.agent);
+    showToast('Collecte enregistrée', nc.adresse + ' — ' + nc.agent);
   }, 5000);
 
   setTimeout(() => {
@@ -199,10 +199,10 @@ if (isEmpty) {
     const pct = Math.round((collected/24)*100);
     document.getElementById('pctLabel').textContent = pct + '%';
     document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectÃ©es';
+    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectées';
     collectes.unshift(nc);
     renderList(collectes.slice(0,8));
-    showToast('Collecte enregistrÃ©e', nc.adresse + ' â€” ' + nc.agent);
+    showToast('Collecte enregistrée', nc.adresse + ' — ' + nc.agent);
   }, 10000);
 }
 
@@ -214,14 +214,14 @@ function downloadPDF() {
   const remarks   = parseInt(document.querySelector('.bg-red-50 p.text-2xl')?.textContent) || 0;
   const pct       = document.getElementById('pctLabel').textContent || '0%';
 
-  // DerniÃ¨res collectes depuis le DOM
+  // Dernières collectes depuis le DOM
   const recentCollections = [...document.querySelectorAll('#collectList > div')].map(el => ({
     adresse: el.querySelector('p.font-medium')?.textContent || '',
     agent:   (el.querySelector('p.text-xs')?.textContent || '').replace('par ',''),
     heure:   el.querySelector('span.font-mono')?.textContent || '',
   })).filter(c => c.adresse);
 
-  // Graphique hebdo : on simule les 4 semaines du mois Ã  partir des donnÃ©es du jour
+  // Graphique hebdo : on simule les 4 semaines du mois à partir des données du jour
   const dailyRate = total > 0 ? collected / total : 0;
   const weekChart = [
     { label:'S1', val: Math.round(total * dailyRate * 0.9  * 5) },
@@ -230,13 +230,13 @@ function downloadPDF() {
     { label:'S4', val: Math.round(total * dailyRate * 1.1  * 5) },
   ];
 
-  // Agents : depuis les collectes rÃ©centes
+  // Agents : depuis les collectes récentes
   const agentMap = {};
   recentCollections.forEach(c => {
     if (!c.agent) return;
     agentMap[c.agent] = (agentMap[c.agent] || 0) + 1;
   });
-  // ComplÃ©ter avec donnÃ©es mensuelles estimÃ©es
+  // Compléter avec données mensuelles estimées
   const agents = Object.entries(agentMap).length > 0
     ? Object.entries(agentMap).map(([name, count]) => ({ name, count: count * 20 }))
     : [{ name: 'Agent principal', count: collected }];
@@ -251,16 +251,16 @@ function downloadPDF() {
     types = Object.entries(typeMap).map(([t, n]) => ({ type:t, pct: Math.round(n/tot*100) }));
   } else {
     types = [
-      { type:'Ordures mÃ©nagÃ¨res', pct: 60 },
+      { type:'Ordures ménagères', pct: 60 },
       { type:'Recyclable',        pct: 22 },
       { type:'Verre',             pct: 12 },
       { type:'Encombrants',       pct: 6  },
     ];
   }
 
-  // Incidents depuis sessionStorage (si la page remarques a Ã©tÃ© visitÃ©e)
+  // Incidents depuis sessionStorage (si la page remarques a été visitée)
   const incidents = JSON.parse(sessionStorage.getItem('laronde_incidents') || 'null') || [
-    { type:'DÃ©bordante', adresse:'â€”', agent:'â€”', date:'â€”', statut:'ouvert' },
+    { type:'Débordante', adresse:'—', agent:'—', date:'—', statut:'ouvert' },
   ];
 
   const stats = {
@@ -276,12 +276,13 @@ function downloadPDF() {
   };
 
   sessionStorage.setItem('laronde_rapport_stats', JSON.stringify(stats));
-  showToast('Rapport PDF', 'Ouverture du rapportâ€¦');
+  showToast('Rapport PDF', 'Ouverture du rapport…');
   setTimeout(() => window.open('rapport.html', '_blank'), 400);
 }
 </script>
 </body>
 </html>
+
 
 
 

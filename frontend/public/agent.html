@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>LaRonde — Agent</title>
+<title>LaRonde � Agent</title>
 
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
@@ -22,8 +22,8 @@
 <!-- Banner installation PWA -->
 <div id="installBanner" class="hidden fixed bottom-0 left-0 right-0 z-50 bg-green-800 text-white px-4 py-3 flex items-center justify-between max-w-lg mx-auto shadow-2xl">
   <div>
-    <p class="font-semibold text-sm">📲 Installer LaRonde</p>
-    <p class="text-green-200 text-xs">Accès rapide depuis votre écran d'accueil</p>
+    <p class="font-semibold text-sm">?? Installer LaRonde</p>
+    <p class="text-green-200 text-xs">Acc�s rapide depuis votre �cran d'accueil</p>
   </div>
   <div class="flex gap-2">
     <button onclick="document.getElementById('installBanner').classList.add('hidden')" class="text-green-300 text-xs px-3 py-1.5">Plus tard</button>
@@ -37,11 +37,11 @@
     <div>
       <h1 class="font-bold text-lg">LaRonde</h1>
       <p class="text-green-200 text-sm" id="agentName">Jean Martin</p>
-      <p id="onlineStatus" class="text-xs text-green-200">🟢 En ligne</p>
+      <p id="onlineStatus" class="text-xs text-green-200">?? En ligne</p>
     </div>
     <div class="text-right">
       <p class="font-bold text-2xl" id="pctHeader">77%</p>
-      <p class="text-green-200 text-xs" id="countHeader">10/13 collectées</p>
+      <p class="text-green-200 text-xs" id="countHeader">10/13 collect�es</p>
     </div>
   </div>
   <div class="mt-3 bg-green-600 rounded-full h-2">
@@ -51,8 +51,8 @@
 
 <!-- Tabs -->
 <div class="flex bg-white border-b border-gray-200 max-w-lg mx-auto sticky top-0 z-10">
-  <button onclick="setTab('todo')"     id="tab-todo"     class="flex-1 py-3 text-xs font-medium text-green-700 border-b-2 border-green-600">À faire <span id="badge-todo" class="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-green-100 text-green-700">3</span></button>
-  <button onclick="setTab('done')"     id="tab-done"     class="flex-1 py-3 text-xs font-medium text-gray-500">Déjà fait <span id="badge-done" class="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-500">10</span></button>
+  <button onclick="setTab('todo')"     id="tab-todo"     class="flex-1 py-3 text-xs font-medium text-green-700 border-b-2 border-green-600">� faire <span id="badge-todo" class="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-green-100 text-green-700">3</span></button>
+  <button onclick="setTab('done')"     id="tab-done"     class="flex-1 py-3 text-xs font-medium text-gray-500">D�j� fait <span id="badge-done" class="ml-1 px-1.5 py-0.5 rounded-full text-xs bg-gray-100 text-gray-500">10</span></button>
   <button onclick="setTab('progress')" id="tab-progress" class="flex-1 py-3 text-xs font-medium text-gray-500">Progression</button>
   <button onclick="setTab('remark')"   id="tab-remark"   class="flex-1 py-3 text-xs font-medium text-gray-500">Remarque</button>
 </div>
@@ -65,11 +65,11 @@
     <h2 class="font-bold text-lg mb-2">Confirmer la collecte</h2>
     <p class="text-gray-600 text-sm mb-1" id="modalAddr"></p>
     <p class="text-gray-400 text-sm mb-4" id="modalNeighborhood"></p>
-    <p class="text-sm text-gray-500 mb-5">📍 Votre position GPS sera vérifiée automatiquement.</p>
+    <p class="text-sm text-gray-500 mb-5">?? Votre position GPS sera v�rifi�e automatiquement.</p>
     <div class="flex gap-3">
       <button onclick="closeModal()" class="flex-1 border border-gray-300 text-gray-700 rounded-xl py-3 font-medium">Annuler</button>
       <button onclick="confirmCollect()" id="confirmBtn" class="flex-1 bg-green-600 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2">
-        ✅ Marquer vidée
+        ? Marquer vid�e
       </button>
     </div>
   </div>
@@ -95,10 +95,10 @@ const BINS_BY_AGENT = {
     { id:4,  address:'1 Rue de Rivoli',         neighborhood:'Centre-ville', type:'ordures',     collected:true,  time:'14:32' },
     { id:5,  address:'3 Bd Haussmann',          neighborhood:'Centre-ville', type:'recyclable',  collected:true,  time:'13:55' },
     { id:6,  address:'15 Rue Saint-Antoine',    neighborhood:'Centre-ville', type:'ordures',     collected:true,  time:'14:18' },
-    { id:7,  address:'9 Allée des Roses',       neighborhood:'Centre',       type:'verre',       collected:true,  time:'12:35' },
-    { id:8,  address:'12 Av. de la République', neighborhood:'Est',          type:'recyclable',  collected:true,  time:'12:10' },
-    { id:9,  address:'5 Place du Marché',       neighborhood:'Centre',       type:'ordures',     collected:true,  time:'13:10' },
-    { id:10, address:'18 Rue François Miron',   neighborhood:'Centre',       type:'ordures',     collected:true,  time:'11:25' },
+    { id:7,  address:'9 All�e des Roses',       neighborhood:'Centre',       type:'verre',       collected:true,  time:'12:35' },
+    { id:8,  address:'12 Av. de la R�publique', neighborhood:'Est',          type:'recyclable',  collected:true,  time:'12:10' },
+    { id:9,  address:'5 Place du March�',       neighborhood:'Centre',       type:'ordures',     collected:true,  time:'13:10' },
+    { id:10, address:'18 Rue Fran�ois Miron',   neighborhood:'Centre',       type:'ordures',     collected:true,  time:'11:25' },
     { id:11, address:'20 Rue des Archives',     neighborhood:'Marais',       type:'ordures',     collected:true,  time:'10:58' },
     { id:12, address:'22 Rue Rambuteau',        neighborhood:'Marais',       type:'ordures',     collected:true,  time:'10:28' },
     { id:13, address:'14 Rue du Renard',        neighborhood:'Marais',       type:'recyclable',  collected:true,  time:'10:02' },
@@ -111,9 +111,9 @@ const BINS_BY_AGENT = {
     { id:5,  address:'22 Avenue du Nord',       neighborhood:'Nord',         type:'ordures',     collected:true,  time:'13:41' },
     { id:6,  address:'8 Rue de la Paix',        neighborhood:'Centre',       type:'verre',       collected:true,  time:'13:22' },
     { id:7,  address:'29 Rue de Bretagne',      neighborhood:'Nord',         type:'ordures',     collected:true,  time:'12:35' },
-    { id:8,  address:'13 Pl. du Marché',        neighborhood:'Centre',       type:'ordures',     collected:true,  time:'13:10' },
-    { id:9,  address:'17 Quai des Célestins',   neighborhood:'Centre',       type:'ordures',     collected:true,  time:'11:40' },
-    { id:10, address:'19 Bd de Sébastopol',     neighborhood:'Centre',       type:'recyclable',  collected:true,  time:'11:10' },
+    { id:8,  address:'13 Pl. du March�',        neighborhood:'Centre',       type:'ordures',     collected:true,  time:'13:10' },
+    { id:9,  address:'17 Quai des C�lestins',   neighborhood:'Centre',       type:'ordures',     collected:true,  time:'11:40' },
+    { id:10, address:'19 Bd de S�bastopol',     neighborhood:'Centre',       type:'recyclable',  collected:true,  time:'11:10' },
     { id:11, address:'21 Rue de Turbigo',       neighborhood:'Centre',       type:'verre',       collected:true,  time:'10:42' },
   ],
 };
@@ -127,7 +127,7 @@ function updateHeader() {
   const total = bins.length;
   const pct = Math.round((done/total)*100);
   document.getElementById('pctHeader').textContent = pct + '%';
-  document.getElementById('countHeader').textContent = done + '/' + total + ' collectées';
+  document.getElementById('countHeader').textContent = done + '/' + total + ' collect�es';
   document.getElementById('progressBar').style.width = pct + '%';
   document.getElementById('badge-todo').textContent = bins.filter(b=>!b.collected).length;
   document.getElementById('badge-done').textContent = bins.filter(b=>b.collected).length;
@@ -159,14 +159,14 @@ function closeModal() {
 
 function confirmCollect() {
   const btn = document.getElementById('confirmBtn');
-  btn.textContent = '📍 Vérification GPS...';
+  btn.textContent = '?? V�rification GPS...';
   btn.disabled = true;
   setTimeout(() => {
     const bin = bins.find(b=>b.id===pendingBinId);
     bin.collected = true;
     bin.time = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
     closeModal();
-    btn.innerHTML = '✅ Marquer vidée';
+    btn.innerHTML = '? Marquer vid�e';
     btn.disabled = false;
     updateHeader();
     render();
@@ -174,7 +174,7 @@ function confirmCollect() {
 }
 
 const REMARK_TYPES = ['dechire','degrade','debordant','manquant','autre'];
-const REMARK_LABELS = { dechire:'Déchirée', degrade:'Dégradée', debordant:'Débordante', manquant:'Manquante', autre:'Autre' };
+const REMARK_LABELS = { dechire:'D�chir�e', degrade:'D�grad�e', debordant:'D�bordante', manquant:'Manquante', autre:'Autre' };
 
 function render() {
   const todo = bins.filter(b=>!b.collected);
@@ -184,7 +184,7 @@ function render() {
 
   if (currentTab === 'todo') {
     document.getElementById('content').innerHTML = todo.length === 0
-      ? `<div class="text-center py-16"><div class="text-5xl mb-3">🎉</div><p class="text-gray-500 font-medium">Tournée terminée !</p><p class="text-gray-400 text-sm mt-1">Toutes les poubelles ont été collectées</p></div>`
+      ? `<div class="text-center py-16"><div class="text-5xl mb-3">??</div><p class="text-gray-500 font-medium">Tourn�e termin�e !</p><p class="text-gray-400 text-sm mt-1">Toutes les poubelles ont �t� collect�es</p></div>`
       : todo.map(bin => `
         <div class="bg-white rounded-xl border border-gray-200 p-4 mb-3">
           <div class="flex items-start justify-between gap-3">
@@ -194,7 +194,7 @@ function render() {
               <span class="inline-block mt-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${bin.type}</span>
             </div>
             <button onclick="openModal(${bin.id})" class="shrink-0 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1">
-              Collecter ▶
+              Collecter ?
             </button>
           </div>
         </div>
@@ -206,7 +206,7 @@ function render() {
       ? `<p class="text-center text-gray-400 py-12">Aucune collecte pour l'instant</p>`
       : done.map(bin => `
         <div class="bg-white rounded-xl border border-green-100 p-4 mb-2 flex items-center gap-3">
-          <span class="text-xl shrink-0">✅</span>
+          <span class="text-xl shrink-0">?</span>
           <div class="flex-1 min-w-0">
             <p class="text-sm font-medium text-gray-700 truncate">${bin.address}</p>
             <p class="text-xs text-gray-400">${bin.neighborhood}</p>
@@ -228,14 +228,14 @@ function render() {
       </div>
       <div class="grid grid-cols-2 gap-3">
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div class="text-2xl mb-1">⏳</div>
+          <div class="text-2xl mb-1">?</div>
           <p class="text-2xl font-bold text-gray-800">${todo.length}</p>
           <p class="text-xs text-gray-400">Restantes</p>
         </div>
         <div class="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div class="text-2xl mb-1">✅</div>
+          <div class="text-2xl mb-1">?</div>
           <p class="text-2xl font-bold text-gray-800">${done.length}</p>
-          <p class="text-xs text-gray-400">Collectées</p>
+          <p class="text-xs text-gray-400">Collect�es</p>
         </div>
       </div>
     `;
@@ -243,7 +243,7 @@ function render() {
 
   else if (currentTab === 'remark') {
     document.getElementById('content').innerHTML = `
-      <p class="text-sm text-gray-500 mb-3">Signaler un problème sur une poubelle</p>
+      <p class="text-sm text-gray-500 mb-3">Signaler un probl�me sur une poubelle</p>
       <div class="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
         <div>
           <label class="text-xs font-medium text-gray-600 mb-1 block">Poubelle</label>
@@ -253,17 +253,17 @@ function render() {
           </select>
         </div>
         <div>
-          <label class="text-xs font-medium text-gray-600 mb-1 block">Type de problème</label>
+          <label class="text-xs font-medium text-gray-600 mb-1 block">Type de probl�me</label>
           <select class="inp" id="remarkType">
             ${REMARK_TYPES.map(t=>`<option value="${t}">${REMARK_LABELS[t]}</option>`).join('')}
           </select>
         </div>
         <div>
           <label class="text-xs font-medium text-gray-600 mb-1 block">Description (optionnel)</label>
-          <textarea class="inp resize-none" id="remarkDesc" rows="3" placeholder="Décrivez le problème..."></textarea>
+          <textarea class="inp resize-none" id="remarkDesc" rows="3" placeholder="D�crivez le probl�me..."></textarea>
         </div>
         <button onclick="submitRemark()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2.5 rounded-lg text-sm">
-          ⚠️ Signaler
+          ?? Signaler
         </button>
       </div>
     `;
@@ -272,13 +272,13 @@ function render() {
 
 function submitRemark() {
   const bin = document.getElementById('remarkBin').value;
-  if (!bin) { alert('Sélectionne une poubelle'); return; }
+  if (!bin) { alert('S�lectionne une poubelle'); return; }
   document.getElementById('content').innerHTML = `
     <div class="bg-orange-50 border border-orange-200 rounded-xl p-5 text-center">
-      <div class="text-3xl mb-2">✅</div>
-      <p class="font-semibold text-orange-800">Remarque envoyée !</p>
-      <p class="text-sm text-orange-600 mt-1">Le chef a été notifié.</p>
-      <button onclick="setTab('remark')" class="mt-4 text-sm text-orange-700 underline">Signaler un autre problème</button>
+      <div class="text-3xl mb-2">?</div>
+      <p class="font-semibold text-orange-800">Remarque envoy�e !</p>
+      <p class="text-sm text-orange-600 mt-1">Le chef a �t� notifi�.</p>
+      <button onclick="setTab('remark')" class="mt-4 text-sm text-orange-700 underline">Signaler un autre probl�me</button>
     </div>
   `;
 }
@@ -286,21 +286,21 @@ function submitRemark() {
 updateHeader();
 render();
 
-// ── PWA : Service Worker ─────────────────────────────────────────────────────
+// -- PWA : Service Worker -----------------------------------------------------
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js').then(reg => {
-    console.log('[PWA] Service Worker enregistré', reg.scope);
+    console.log('[PWA] Service Worker enregistr�', reg.scope);
 
-    // Écouter les messages de sync depuis le SW
+    // �couter les messages de sync depuis le SW
     navigator.serviceWorker.addEventListener('message', e => {
       if (e.data?.type === 'SYNC_SUCCESS') {
-        showToast('✅ Collecte synchronisée hors-ligne : ' + (e.data.payload?.binId || ''));
+        showToast('? Collecte synchronis�e hors-ligne : ' + (e.data.payload?.binId || ''));
       }
     });
   }).catch(err => console.error('[PWA] SW erreur :', err));
 }
 
-// ── PWA : Bouton "Installer l'app" ──────────────────────────────────────────
+// -- PWA : Bouton "Installer l'app" ------------------------------------------
 let deferredPrompt = null;
 window.addEventListener('beforeinstallprompt', e => {
   e.preventDefault();
@@ -323,19 +323,19 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('installBanner').classList.add('hidden');
 });
 
-// ── Indicateur connexion ──────────────────────────────────────────────────────
+// -- Indicateur connexion ------------------------------------------------------
 function updateOnlineStatus() {
   const el = document.getElementById('onlineStatus');
   if (!el) return;
   if (navigator.onLine) {
-    el.textContent = '🟢 En ligne';
+    el.textContent = '?? En ligne';
     el.className = 'text-xs text-green-200';
     // Tenter sync des collectes offline
     if ('serviceWorker' in navigator && 'SyncManager' in window) {
       navigator.serviceWorker.ready.then(sw => sw.sync.register('sync-collections'));
     }
   } else {
-    el.textContent = '🔴 Hors ligne — collectes sauvegardées';
+    el.textContent = '?? Hors ligne � collectes sauvegard�es';
     el.className = 'text-xs text-orange-300 font-semibold';
   }
 }
@@ -357,6 +357,7 @@ function showToast(msg) {
 </style>
 </body>
 </html>
+
 
 
 
