@@ -37,12 +37,12 @@ async function migrate() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id VARCHAR(36) PRIMARY KEY,
-      municipalityId VARCHAR(36) NOT NULL,
+      municipalityId VARCHAR(36) NULL,
       email VARCHAR(255) UNIQUE NOT NULL,
       passwordHash VARCHAR(255) NOT NULL,
       firstName VARCHAR(100) NOT NULL,
       lastName VARCHAR(100) NOT NULL,
-      role ENUM('chef','technicien') NOT NULL DEFAULT 'technicien',
+      role ENUM('chef','technicien','superadmin') NOT NULL DEFAULT 'technicien',
       sector VARCHAR(100),
       phone VARCHAR(30),
       isActive BOOLEAN DEFAULT TRUE,
@@ -51,6 +51,13 @@ async function migrate() {
       FOREIGN KEY (municipalityId) REFERENCES municipalities(id)
     )
   `);
+
+  // Mise à jour de la table si elle existe déjà (alter enum + nullable)
+  await pool.query(`
+    ALTER TABLE users
+      MODIFY municipalityId VARCHAR(36) NULL,
+      MODIFY role ENUM('chef','technicien','superadmin') NOT NULL DEFAULT 'technicien'
+  `).catch(() => {});
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS bins (
@@ -116,6 +123,21 @@ async function migrate() {
       [uId, mId, 'admin@mairie.fr', hash, 'Admin', 'Chef', 'chef']
     );
     console.log('Seeded default admin: admin@mairie.fr / admin123');
+  }
+
+  // Seed superadmin si non existant
+  const { v4: uuidv4 } = require('uuid');
+  const bcrypt = require('bcryptjs');
+  const SUPERADMIN_EMAIL    = process.env.SUPERADMIN_EMAIL    || 'morad.daachi@gmail.com';
+  const SUPERADMIN_PASSWORD = process.env.SUPERADMIN_PASSWORD || 'Sdis7718';
+  const [saRows] = await pool.query('SELECT id FROM users WHERE role = "superadmin" LIMIT 1');
+  if (saRows.length === 0) {
+    const hash = await bcrypt.hash(SUPERADMIN_PASSWORD, 10);
+    await pool.query(
+      'INSERT INTO users (id, municipalityId, email, passwordHash, firstName, lastName, role) VALUES (?, NULL, ?, ?, ?, ?, "superadmin")',
+      [uuidv4(), SUPERADMIN_EMAIL, hash, 'Morad', 'Daachi']
+    );
+    console.log(`Superadmin créé : ${SUPERADMIN_EMAIL}`);
   }
 
   console.log('Database migrated');

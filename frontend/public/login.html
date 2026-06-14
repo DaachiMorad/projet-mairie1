@@ -60,26 +60,6 @@ async function login() {
   btn.disabled = true;
   btn.textContent = 'Connexion…';
 
-  // Comptes temporaires (supprimés dès que le backend est lancé)
-  const TEMP = {
-    'morad.daachi@gmail.com': { password:'Sdis7718', role:'superadmin', name:'Morad Daachi' },
-  };
-
-  if (TEMP[email]) {
-    const t = TEMP[email];
-    if (t.password !== password) {
-      err.textContent = 'Identifiants incorrects.';
-      err.classList.remove('hidden');
-      btn.disabled = false;
-      btn.textContent = 'Se connecter';
-      return;
-    }
-    sessionStorage.setItem('ub_user', JSON.stringify({ email, ...t }));
-    sessionStorage.setItem('sa_secret', 'laronde_superadmin_2024');
-    window.location.href = 'superadmin.html';
-    return;
-  }
-
   try {
     const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
@@ -107,6 +87,7 @@ async function login() {
     if (data.mustChangePassword) {
       window.location.href = 'change-password.html';
     } else if (data.user.role === 'superadmin') {
+      sessionStorage.setItem('sa_secret', 'laronde_superadmin_2024');
       window.location.href = 'superadmin.html';
     } else {
       window.location.href = data.user.role === 'chef' ? 'dashboard.html' : 'agent.html';

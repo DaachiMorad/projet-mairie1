@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
   try {
     const [rows] = await db.query(
       `SELECT u.*, m.name as municipalityName, m.slug as municipalitySlug
-       FROM users u JOIN municipalities m ON u.municipalityId = m.id
+       FROM users u LEFT JOIN municipalities m ON u.municipalityId = m.id
        WHERE u.email = ? AND u.isActive = 1`,
       [email]
     );
