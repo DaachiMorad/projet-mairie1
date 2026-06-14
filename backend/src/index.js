@@ -14,8 +14,9 @@ const superadminRoutes = require('./routes/superadmin');
 
 const app = express();
 
-app.use(helmet());
-app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*', methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization','x-super-secret'] }));
+app.options('*', cors());
+app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false }));
 app.use(express.json());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }));
 
