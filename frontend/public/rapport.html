@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LaRonde � Rapport Juin 2026</title>
+<title>LaRonde — Rapport Juin 2026</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { background:#e5e7eb; font-family: Arial, sans-serif; padding: 32px 16px; }
@@ -92,19 +92,19 @@ tr:nth-child(even) td { background:#fafafa; }
 <body>
 
 <div class="toolbar">
-  <a href="dashboard.html">? Retour dashboard</a>
+  <a href="dashboard.html">← Retour dashboard</a>
   <button class="btn-pdf" onclick="genererPDF()">
     <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 16V4M6 10l6 6 6-6M4 20h16"/></svg>
-    G�n�rer & ouvrir le PDF
+    Générer & ouvrir le PDF
   </button>
 </div>
 
-<!-- Aper�u -->
+<!-- Aperçu -->
 <div class="page" id="page">
   <div class="hdr">
     <div>
-      <h1>?? LaRonde</h1>
-      <p>Rapport mensuel de collecte des d�chets</p>
+      <h1>🗑 LaRonde</h1>
+      <p>Rapport mensuel de collecte des déchets</p>
     </div>
     <div class="hdr-right">
       <div class="mairie">Votre Mairie</div>
@@ -114,32 +114,32 @@ tr:nth-child(even) td { background:#fafafa; }
   </div>
 
   <div class="body">
-    <div class="section-title">R�sum� du jour</div>
+    <div class="section-title">Résumé du jour</div>
     <div class="kpi-grid">
-      <div class="kpi"><div class="kpi-val" id="kpi-collected">�</div><div class="kpi-lbl">Collectes r�alis�es</div></div>
-      <div class="kpi"><div class="kpi-val blue" id="kpi-total">�</div><div class="kpi-lbl">Poubelles actives</div></div>
-      <div class="kpi"><div class="kpi-val" id="kpi-pct">�</div><div class="kpi-lbl">Taux de collecte</div></div>
-      <div class="kpi"><div class="kpi-val orange" id="kpi-remarks">�</div><div class="kpi-lbl">Remarques signal�es</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-collected">—</div><div class="kpi-lbl">Collectes réalisées</div></div>
+      <div class="kpi"><div class="kpi-val blue" id="kpi-total">—</div><div class="kpi-lbl">Poubelles actives</div></div>
+      <div class="kpi"><div class="kpi-val" id="kpi-pct">—</div><div class="kpi-lbl">Taux de collecte</div></div>
+      <div class="kpi"><div class="kpi-val orange" id="kpi-remarks">—</div><div class="kpi-lbl">Remarques signalées</div></div>
     </div>
 
     <div class="section-title">Collectes par semaine (mois en cours)</div>
     <div class="week-chart-wrap">
       <div class="week-chart" id="weekChartWrap">
-        <div class="wbar-col"><div class="wbar-val">�</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S1</div></div>
-        <div class="wbar-col"><div class="wbar-val">�</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S2</div></div>
-        <div class="wbar-col"><div class="wbar-val">�</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S3</div></div>
-        <div class="wbar-col"><div class="wbar-val">�</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S4</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S1</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S2</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S3</div></div>
+        <div class="wbar-col"><div class="wbar-val">—</div><div class="wbar" style="height:4px"></div><div class="wbar-lbl">S4</div></div>
       </div>
     </div>
 
     <div class="two-col" style="margin-top:20px">
       <div>
         <div class="section-title" style="margin-top:0">Performance par agent</div>
-        <div id="agentBars"><div style="color:#9ca3af;font-size:11px">Aucune donn�e</div></div>
+        <div id="agentBars"><div style="color:#9ca3af;font-size:11px">Aucune donnée</div></div>
       </div>
       <div>
-        <div class="section-title" style="margin-top:0">R�partition par type</div>
-        <div id="typeBars"><div style="color:#9ca3af;font-size:11px">Aucune donn�e</div></div>
+        <div class="section-title" style="margin-top:0">Répartition par type</div>
+        <div id="typeBars"><div style="color:#9ca3af;font-size:11px">Aucune donnée</div></div>
       </div>
     </div>
 
@@ -147,24 +147,24 @@ tr:nth-child(even) td { background:#fafafa; }
     <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:14px 16px;margin-bottom:6px">
       <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:11px;color:#374151">
         <span style="font-weight:700">Taux de collecte</span>
-        <span id="progLabelPdf" style="font-weight:700;color:#16a34a">� / � poubelles collect�es</span>
+        <span id="progLabelPdf" style="font-weight:700;color:#16a34a">— / — poubelles collectées</span>
       </div>
       <div style="background:#e5e7eb;border-radius:4px;height:10px;overflow:hidden">
         <div id="progBarPdf" style="height:100%;background:#16a34a;border-radius:4px;width:0%"></div>
       </div>
     </div>
 
-    <div class="section-title">Derni�res collectes du jour</div>
+    <div class="section-title">Dernières collectes du jour</div>
     <table>
       <thead><tr><th>Heure</th><th>Adresse</th><th>Agent</th><th>Statut</th></tr></thead>
       <tbody id="recentTbody">
-        <tr><td colspan="4" style="text-align:center;color:#9ca3af">Aucune collecte enregistr�e</td></tr>
+        <tr><td colspan="4" style="text-align:center;color:#9ca3af">Aucune collecte enregistrée</td></tr>
       </tbody>
     </table>
 
-    <div class="section-title">Incidents & remarques signal�s</div>
+    <div class="section-title">Incidents & remarques signalés</div>
     <table>
-      <thead><tr><th>Type</th><th>Adresse</th><th>Signal� par</th><th>Date</th><th>Statut</th></tr></thead>
+      <thead><tr><th>Type</th><th>Adresse</th><th>Signalé par</th><th>Date</th><th>Statut</th></tr></thead>
       <tbody id="incidentTbody">
         <tr><td colspan="5" style="text-align:center;color:#9ca3af">Aucun incident</td></tr>
       </tbody>
@@ -172,31 +172,31 @@ tr:nth-child(even) td { background:#fafafa; }
   </div>
 
   <div class="footer">
-    <span>LaRonde � Rapport g�n�r� automatiquement � laronde.fr</span>
+    <span>LaRonde — Rapport généré automatiquement · laronde.fr</span>
     <span id="footerRight">Votre Mairie</span>
   </div>
 </div>
 
 <script>
-// -- Lecture des donn�es du dashboard ----------------------------------------
+// ── Lecture des données du dashboard ────────────────────────────────────────
 const raw = sessionStorage.getItem('laronde_rapport_stats');
 const S = raw ? JSON.parse(raw) : null;
 
 function render() {
   if (!S) return;
 
-  // -- Header ----------------------------------------------------------------
+  // ── Header ────────────────────────────────────────────────────────────────
   document.querySelector('.mairie').textContent = S.mairie || 'Votre Mairie';
   document.querySelector('.period').textContent = S.periode || '';
-  document.getElementById('gendate').textContent = 'G�n�r� le ' + (S.genDate || new Date().toLocaleDateString('fr-FR'));
+  document.getElementById('gendate').textContent = 'Généré le ' + (S.genDate || new Date().toLocaleDateString('fr-FR'));
 
-  // -- KPIs -----------------------------------------------------------------
-  document.getElementById('kpi-collected').textContent = S.collected ?? '�';
-  document.getElementById('kpi-total').textContent     = S.total ?? '�';
-  document.getElementById('kpi-pct').textContent       = S.pct ?? '�';
-  document.getElementById('kpi-remarks').textContent   = S.remarks ?? '�';
+  // ── KPIs ─────────────────────────────────────────────────────────────────
+  document.getElementById('kpi-collected').textContent = S.collected ?? '—';
+  document.getElementById('kpi-total').textContent     = S.total ?? '—';
+  document.getElementById('kpi-pct').textContent       = S.pct ?? '—';
+  document.getElementById('kpi-remarks').textContent   = S.remarks ?? '—';
 
-  // -- Graphique hebdo -------------------------------------------------------
+  // ── Graphique hebdo ───────────────────────────────────────────────────────
   if (S.weekChart && S.weekChart.length) {
     const maxVal = Math.max(...S.weekChart.map(w => w.val));
     document.getElementById('weekChartWrap').innerHTML = S.weekChart.map(w => {
@@ -209,7 +209,7 @@ function render() {
     }).join('');
   }
 
-  // -- Agents ----------------------------------------------------------------
+  // ── Agents ────────────────────────────────────────────────────────────────
   if (S.agents && S.agents.length) {
     const maxAgent = Math.max(...S.agents.map(a => a.count));
     document.getElementById('agentBars').innerHTML = S.agents.map(a => {
@@ -222,8 +222,8 @@ function render() {
     }).join('');
   }
 
-  // -- Types -----------------------------------------------------------------
-  const TYPE_COLORS = { 'Ordures m�nag�res':'#6b7280', 'Recyclable':'#3b82f6', 'Verre':'#22c55e', 'Encombrants':'#f97316', 'ordures':'#6b7280', 'recyclable':'#3b82f6', 'verre':'#22c55e', 'encombrants':'#f97316' };
+  // ── Types ─────────────────────────────────────────────────────────────────
+  const TYPE_COLORS = { 'Ordures ménagères':'#6b7280', 'Recyclable':'#3b82f6', 'Verre':'#22c55e', 'Encombrants':'#f97316', 'ordures':'#6b7280', 'recyclable':'#3b82f6', 'verre':'#22c55e', 'encombrants':'#f97316' };
   if (S.types && S.types.length) {
     document.getElementById('typeBars').innerHTML = S.types.map(t => {
       const color = TYPE_COLORS[t.type] || '#6b7280';
@@ -235,29 +235,29 @@ function render() {
     }).join('');
   }
 
-  // -- Progression du jour ---------------------------------------------------
+  // ── Progression du jour ───────────────────────────────────────────────────
   document.getElementById('progBarPdf').style.width = S.pct || '0%';
-  document.getElementById('progLabelPdf').textContent = (S.collected ?? 0) + ' / ' + (S.total ?? 0) + ' poubelles collect�es (' + (S.pct || '0%') + ')';
+  document.getElementById('progLabelPdf').textContent = (S.collected ?? 0) + ' / ' + (S.total ?? 0) + ' poubelles collectées (' + (S.pct || '0%') + ')';
 
-  // -- Derni�res collectes ---------------------------------------------------
+  // ── Dernières collectes ───────────────────────────────────────────────────
   const tbody = document.getElementById('recentTbody');
   if (S.recentCollections && S.recentCollections.length) {
     tbody.innerHTML = S.recentCollections.map(c => `
       <tr>
-        <td>${c.heure || '�'}</td>
+        <td>${c.heure || '—'}</td>
         <td><b>${c.adresse}</b></td>
-        <td>${c.agent || '�'}</td>
-        <td><span class="badge b-green">collect�e</span></td>
+        <td>${c.agent || '—'}</td>
+        <td><span class="badge b-green">collectée</span></td>
       </tr>`).join('');
   } else {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#9ca3af">Aucune collecte enregistr�e</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#9ca3af">Aucune collecte enregistrée</td></tr>';
   }
 
-  // -- Incidents -------------------------------------------------------------
+  // ── Incidents ─────────────────────────────────────────────────────────────
   const incTbody = document.getElementById('incidentTbody');
   if (S.incidents && S.incidents.length) {
     incTbody.innerHTML = S.incidents.map(i => {
-      const cls = i.statut === 'r�solu' ? 'b-green' : i.statut === 'en cours' ? 'b-blue' : 'b-orange';
+      const cls = i.statut === 'résolu' ? 'b-green' : i.statut === 'en cours' ? 'b-blue' : 'b-orange';
       return `<tr>
         <td><b>${i.type}</b></td>
         <td>${i.adresse}</td>
@@ -267,26 +267,26 @@ function render() {
       </tr>`;
     }).join('');
   } else {
-    incTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af">Aucun incident signal�</td></tr>';
+    incTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#9ca3af">Aucun incident signalé</td></tr>';
   }
 
-  // -- Footer ----------------------------------------------------------------
-  document.getElementById('footerRight').textContent = (S.mairie || 'Votre Mairie') + ' � ' + (S.periode || '');
+  // ── Footer ────────────────────────────────────────────────────────────────
+  document.getElementById('footerRight').textContent = (S.mairie || 'Votre Mairie') + ' · ' + (S.periode || '');
 }
 
 render();
 
 function genererPDF() {
-  // R�cup�re le HTML de la page de rapport
+  // Récupère le HTML de la page de rapport
   const contenu = document.getElementById('page').innerHTML;
 
-  // Ouvre une nouvelle fen�tre avec uniquement le rapport
+  // Ouvre une nouvelle fenêtre avec uniquement le rapport
   const win = window.open('', '_blank', 'width=900,height=700');
   win.document.write(`<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>LaRonde � Rapport Juin 2026</title>
+<title>LaRonde — Rapport Juin 2026</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family: Arial, sans-serif; background: white; }
@@ -349,6 +349,5 @@ tr:nth-child(even) td { background:#fafafa; }
 </script>
 </body>
 </html>
-
 
 

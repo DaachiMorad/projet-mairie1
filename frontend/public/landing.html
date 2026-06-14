@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LaRonde � Gestion des poubelles pour mairies</title>
+<title>LaRonde — Gestion des poubelles pour mairies</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
@@ -37,50 +37,50 @@
 </head>
 <body class="bg-white text-gray-900">
 
-<!-- -- NAVBAR ----------------------------------------------------- -->
+<!-- ── NAVBAR ───────────────────────────────────────────────────── -->
 <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-100">
   <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
     <a href="landing.html" class="flex items-center gap-2">
-      <span class="text-2xl">??</span>
+      <span class="text-2xl">🗑</span>
       <span class="font-bold text-xl text-green-700">LaRonde</span>
     </a>
     <div class="hidden md:flex items-center gap-8">
-      <a href="#fonctionnalites" class="text-sm text-gray-600 hover:text-green-700 font-medium transition-colors">Fonctionnalit�s</a>
-      <a href="#comment" class="text-sm text-gray-600 hover:text-green-700 font-medium transition-colors">Comment �a marche</a>
+      <a href="#fonctionnalites" class="text-sm text-gray-600 hover:text-green-700 font-medium transition-colors">Fonctionnalités</a>
+      <a href="#comment" class="text-sm text-gray-600 hover:text-green-700 font-medium transition-colors">Comment ça marche</a>
       <a href="abonnement.html" class="text-sm text-gray-600 hover:text-green-700 font-medium transition-colors">Tarifs</a>
     </div>
     <div class="flex items-center gap-3">
       <a href="abonnement.html" class="hidden md:block text-sm font-medium text-green-700 hover:text-green-800 transition-colors">Voir les tarifs</a>
       <a href="login.html" class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shadow-sm">
-        Se connecter ?
+        Se connecter →
       </a>
     </div>
   </div>
 </nav>
 
-<!-- -- HERO ------------------------------------------------------- -->
+<!-- ── HERO ─────────────────────────────────────────────────────── -->
 <section class="hero-bg pt-20 pb-24 px-6">
   <div class="max-w-5xl mx-auto text-center">
     <div class="inline-flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
-      ? Sp�cialement con�u pour les mairies fran�aises
+      ✅ Spécialement conçu pour les mairies françaises
     </div>
     <h1 class="text-5xl md:text-6xl font-black leading-tight mb-6">
-      G�rez vos tourn�es de<br>
-      <span class="gradient-text">collecte en temps r�el</span>
+      Gérez vos tournées de<br>
+      <span class="gradient-text">collecte en temps réel</span>
     </h1>
     <p class="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-      LaRonde connecte votre chef de service et vos agents terrain sur une plateforme unique. Carte interactive, suivi GPS, rapports automatiques � tout ce dont votre commune a besoin.
+      LaRonde connecte votre chef de service et vos agents terrain sur une plateforme unique. Carte interactive, suivi GPS, rapports automatiques — tout ce dont votre commune a besoin.
     </p>
     <div class="flex flex-col sm:flex-row gap-4 justify-center">
       <a href="abonnement.html" class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors shadow-lg shadow-green-200">
-        D�marrer gratuitement ?
+        Démarrer gratuitement →
       </a>
       <a href="dashboard.html" onclick="sessionStorage.setItem('ub_user', JSON.stringify({email:'chef@mairie.fr',role:'chef',name:'Marie Dupont'}))"
         class="bg-white border-2 border-gray-200 hover:border-green-300 text-gray-700 font-bold px-8 py-4 rounded-2xl text-lg transition-colors">
-        Voir en action ?
+        Voir en action ▶
       </a>
     </div>
-    <p class="text-sm text-gray-400 mt-5">Aucune carte bancaire requise � Pilote gratuit 3 mois</p>
+    <p class="text-sm text-gray-400 mt-5">Aucune carte bancaire requise · Pilote gratuit 3 mois</p>
   </div>
 
   <!-- Mockup dashboard -->
@@ -96,18 +96,18 @@
       <div class="p-6">
         <div class="flex items-center justify-between mb-5">
           <div>
-            <h3 class="font-bold text-gray-800">Tableau de bord � Mairie de Lyon</h3>
+            <h3 class="font-bold text-gray-800">Tableau de bord — Mairie de Lyon</h3>
             <p class="text-xs text-gray-400">Jeudi 4 juin 2026</p>
           </div>
           <span class="flex items-center gap-1.5 text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
-            ?? Temps r�el actif
+            📶 Temps réel actif
           </span>
         </div>
         <div class="grid grid-cols-4 gap-3 mb-5">
-          <div class="bg-blue-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">??</span><div><p class="font-bold text-lg">142</p><p class="text-xs text-gray-500">Poubelles</p></div></div>
-          <div class="bg-green-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">?</span><div><p class="font-bold text-lg text-green-600">108</p><p class="text-xs text-gray-500">Collect�es</p></div></div>
-          <div class="bg-orange-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">?</span><div><p class="font-bold text-lg text-orange-500">34</p><p class="text-xs text-gray-500">Restantes</p></div></div>
-          <div class="bg-red-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">??</span><div><p class="font-bold text-lg text-red-500">5</p><p class="text-xs text-gray-500">Incidents</p></div></div>
+          <div class="bg-blue-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">🗑</span><div><p class="font-bold text-lg">142</p><p class="text-xs text-gray-500">Poubelles</p></div></div>
+          <div class="bg-green-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">✅</span><div><p class="font-bold text-lg text-green-600">108</p><p class="text-xs text-gray-500">Collectées</p></div></div>
+          <div class="bg-orange-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">⏳</span><div><p class="font-bold text-lg text-orange-500">34</p><p class="text-xs text-gray-500">Restantes</p></div></div>
+          <div class="bg-red-50 rounded-xl p-3 flex items-center gap-2"><span class="text-xl">⚠️</span><div><p class="font-bold text-lg text-red-500">5</p><p class="text-xs text-gray-500">Incidents</p></div></div>
         </div>
         <div class="bg-gray-50 rounded-xl p-3">
           <div class="flex justify-between mb-1.5">
@@ -117,97 +117,97 @@
           <div class="bg-gray-200 rounded-full h-3">
             <div class="bg-green-500 h-3 rounded-full" style="width:76%"></div>
           </div>
-          <p class="text-xs text-gray-400 mt-1.5">108 / 142 poubelles collect�es</p>
+          <p class="text-xs text-gray-400 mt-1.5">108 / 142 poubelles collectées</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- -- LOGOS MAIRIES (social proof) ------------------------------- -->
+<!-- ── LOGOS MAIRIES (social proof) ─────────────────────────────── -->
 <section class="py-10 border-y border-gray-100 bg-gray-50">
   <div class="max-w-4xl mx-auto px-6 text-center">
-    <p class="text-xs text-gray-400 uppercase font-semibold tracking-widest mb-6">Fait pour les communes fran�aises</p>
+    <p class="text-xs text-gray-400 uppercase font-semibold tracking-widest mb-6">Fait pour les communes françaises</p>
     <div class="flex flex-wrap justify-center gap-8 text-gray-300 font-bold text-lg">
-      <span>?? Petites communes</span>
-      <span>?? Communes rurales</span>
-      <span>?? Communes urbaines</span>
-      <span>?? Intercommunalit�s</span>
+      <span>🏛 Petites communes</span>
+      <span>🏛 Communes rurales</span>
+      <span>🏛 Communes urbaines</span>
+      <span>🏛 Intercommunalités</span>
     </div>
   </div>
 </section>
 
-<!-- -- FONCTIONNALIT�S --------------------------------------------- -->
+<!-- ── FONCTIONNALITÉS ───────────────────────────────────────────── -->
 <section id="fonctionnalites" class="py-24 px-6">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-16">
       <h2 class="text-4xl font-black mb-4">Tout ce qu'il faut, rien de plus</h2>
-      <p class="text-lg text-gray-500 max-w-xl mx-auto">Une solution simple pens�e pour le personnel municipal.</p>
+      <p class="text-lg text-gray-500 max-w-xl mx-auto">Une solution simple pensée pour le personnel municipal.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
       <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
-        <div class="feature-icon">??</div>
+        <div class="feature-icon">🗺</div>
         <h3 class="font-bold text-lg mb-2">Carte interactive</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Visualisez toutes vos poubelles sur une carte en temps r�el. Rouge = � collecter, vert = valid�e. Cliquez pour voir l'agent, l'heure, le statut.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Visualisez toutes vos poubelles sur une carte en temps réel. Rouge = à collecter, vert = validée. Cliquez pour voir l'agent, l'heure, le statut.</p>
       </div>
 
       <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
-        <div class="feature-icon">??</div>
+        <div class="feature-icon">📱</div>
         <h3 class="font-bold text-lg mb-2">App mobile agents (PWA)</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Vos agents installent l'app sur leur smartphone en un clic. Pas d'App Store. Fonctionne hors-ligne et synchronise au retour du r�seau.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Vos agents installent l'app sur leur smartphone en un clic. Pas d'App Store. Fonctionne hors-ligne et synchronise au retour du réseau.</p>
       </div>
 
       <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
-        <div class="feature-icon">??</div>
-        <h3 class="font-bold text-lg mb-2">V�rification GPS</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Un agent ne peut valider une collecte que s'il est physiquement � moins de 100m de la poubelle. Z�ro fraude possible.</p>
+        <div class="feature-icon">📍</div>
+        <h3 class="font-bold text-lg mb-2">Vérification GPS</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Un agent ne peut valider une collecte que s'il est physiquement à moins de 100m de la poubelle. Zéro fraude possible.</p>
       </div>
 
       <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
-        <div class="feature-icon">?</div>
-        <h3 class="font-bold text-lg mb-2">Temps r�el pour le chef</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Le superviseur voit chaque collecte appara�tre instantan�ment sans recharger la page. Notification imm�diate en cas d'incident signal�.</p>
+        <div class="feature-icon">⚡</div>
+        <h3 class="font-bold text-lg mb-2">Temps réel pour le chef</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Le superviseur voit chaque collecte apparaître instantanément sans recharger la page. Notification immédiate en cas d'incident signalé.</p>
       </div>
 
       <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
-        <div class="feature-icon">??</div>
+        <div class="feature-icon">📄</div>
         <h3 class="font-bold text-lg mb-2">Rapports PDF automatiques</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Chaque 1er du mois, un rapport complet est g�n�r� et envoy� par email : collectes, taux, performance par agent, incidents.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Chaque 1er du mois, un rapport complet est généré et envoyé par email : collectes, taux, performance par agent, incidents.</p>
       </div>
 
       <div class="bg-white border border-gray-100 rounded-2xl p-7 card-hover shadow-sm">
-        <div class="feature-icon">??</div>
+        <div class="feature-icon">⚠️</div>
         <h3 class="font-bold text-lg mb-2">Signalement d'incidents</h3>
-        <p class="text-gray-500 text-sm leading-relaxed">Poubelle d�chir�e, d�bordante, manquante ? L'agent signale en 3 secondes. Le chef est notifi� et peut suivre la r�solution.</p>
+        <p class="text-gray-500 text-sm leading-relaxed">Poubelle déchirée, débordante, manquante ? L'agent signale en 3 secondes. Le chef est notifié et peut suivre la résolution.</p>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- -- COMMENT �A MARCHE ------------------------------------------- -->
+<!-- ── COMMENT ÇA MARCHE ─────────────────────────────────────────── -->
 <section id="comment" class="py-24 px-6 bg-gray-50">
   <div class="max-w-5xl mx-auto">
     <div class="text-center mb-16">
       <h2 class="text-4xl font-black mb-4">En place en moins d'une heure</h2>
-      <p class="text-lg text-gray-500">On s'occupe de tout. Vous n'avez qu'� entrer vos poubelles et inviter vos agents.</p>
+      <p class="text-lg text-gray-500">On s'occupe de tout. Vous n'avez qu'à entrer vos poubelles et inviter vos agents.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
       <div class="text-center">
         <div class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4">1</div>
-        <h4 class="font-bold mb-2">On cr�e votre compte</h4>
+        <h4 class="font-bold mb-2">On crée votre compte</h4>
         <p class="text-sm text-gray-500">On configure votre mairie, vos secteurs et vos agents en quelques minutes.</p>
       </div>
-      <div class="hidden md:flex items-center justify-center text-gray-200 text-3xl">?</div>
+      <div class="hidden md:flex items-center justify-center text-gray-200 text-3xl">→</div>
       <div class="text-center">
         <div class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4">2</div>
         <h4 class="font-bold mb-2">Vous ajoutez vos poubelles</h4>
-        <p class="text-sm text-gray-500">Adresse, quartier, type, fr�quence, agent assign�. Import possible.</p>
+        <p class="text-sm text-gray-500">Adresse, quartier, type, fréquence, agent assigné. Import possible.</p>
       </div>
-      <div class="hidden md:flex items-center justify-center text-gray-200 text-3xl">?</div>
+      <div class="hidden md:flex items-center justify-center text-gray-200 text-3xl">→</div>
       <div class="text-center">
         <div class="w-14 h-14 bg-green-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4">3</div>
         <h4 class="font-bold mb-2">Vos agents collectent</h4>
@@ -217,15 +217,15 @@
   </div>
 </section>
 
-<!-- -- CTA -------------------------------------------------------- -->
+<!-- ── CTA ──────────────────────────────────────────────────────── -->
 <section class="py-24 px-6">
   <div class="max-w-3xl mx-auto text-center">
     <div class="bg-green-600 rounded-3xl p-12 text-white">
-      <h2 class="text-4xl font-black mb-4">Pr�t � moderniser votre collecte ?</h2>
+      <h2 class="text-4xl font-black mb-4">Prêt à moderniser votre collecte ?</h2>
       <p class="text-green-100 text-lg mb-8">3 mois gratuits pour les mairies pilotes. Aucun engagement.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a href="abonnement.html" class="bg-white text-green-700 hover:bg-green-50 font-bold px-8 py-4 rounded-2xl text-lg transition-colors">
-          Voir les tarifs ?
+          Voir les tarifs →
         </a>
         <a href="login.html" class="bg-green-500 hover:bg-green-400 text-white font-bold px-8 py-4 rounded-2xl text-lg transition-colors border-2 border-green-400">
           Voir en action
@@ -235,26 +235,25 @@
   </div>
 </section>
 
-<!-- -- FOOTER ----------------------------------------------------- -->
+<!-- ── FOOTER ───────────────────────────────────────────────────── -->
 <footer class="border-t border-gray-100 py-10 px-6">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2">
-      <span class="text-xl">??</span>
+      <span class="text-xl">🗑</span>
       <span class="font-bold text-green-700">LaRonde</span>
-      <span class="text-gray-300 mx-2">�</span>
-      <span class="text-sm text-gray-400">Gestion des poubelles pour mairies fran�aises</span>
+      <span class="text-gray-300 mx-2">·</span>
+      <span class="text-sm text-gray-400">Gestion des poubelles pour mairies françaises</span>
     </div>
     <div class="flex gap-6">
       <a href="abonnement.html" class="text-sm text-gray-400 hover:text-gray-700">Tarifs</a>
       <a href="login.html" class="text-sm text-gray-400 hover:text-gray-700">Connexion</a>
     </div>
-    <p class="text-xs text-gray-300">� 2026 LaRonde � Tous droits r�serv�s</p>
+    <p class="text-xs text-gray-300">© 2026 LaRonde — Tous droits réservés</p>
   </div>
 </footer>
 
 </body>
 </html>
-
 
 
 

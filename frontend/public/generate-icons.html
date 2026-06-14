@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html>
-<head><title>Générer icônes PWA</title></head>
+<head><title>GÃ©nÃ©rer icÃ´nes PWA</title></head>
 <body>
-<p>Génération des icônes en cours...</p>
+<p>GÃ©nÃ©ration des icÃ´nes en cours...</p>
 <canvas id="c192" width="192" height="192" style="display:none"></canvas>
 <canvas id="c512" width="512" height="512" style="display:none"></canvas>
 <script>
@@ -20,12 +20,12 @@ async function generate() {
       const link = document.createElement('a');
       link.download = `icon-${size}.png`;
       link.href = canvas.toDataURL('image/png');
-      link.textContent = `? Télécharger icon-${size}.png`;
+      link.textContent = `â¬‡ TÃ©lÃ©charger icon-${size}.png`;
       link.style = 'display:block;margin:10px;font-size:18px;color:green;font-family:sans-serif';
       document.body.appendChild(link);
       link.click();
     });
-    document.body.innerHTML += '<p style="font-family:sans-serif;color:green;font-weight:bold">? Téléchargé ! Placez les deux fichiers dans le dossier  puis fermez cette page.</p>';
+    document.body.innerHTML += '<p style="font-family:sans-serif;color:green;font-weight:bold">âœ… TÃ©lÃ©chargÃ© ! Placez les deux fichiers dans le dossier  puis fermez cette page.</p>';
     URL.revokeObjectURL(url);
   };
   img.src = url;
@@ -34,6 +34,5 @@ generate();
 </script>
 </body>
 </html>
-
 
 

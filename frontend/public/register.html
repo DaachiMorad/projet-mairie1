@@ -97,7 +97,9 @@
 </div>
 
 <script>
-const API = 'https://projet-mairie1-production.up.railway.app/api';
+const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? 'http://localhost:3000/api'
+  : '/api';
 
 function togglePwd() {
   const f = document.getElementById('f-password');
@@ -225,5 +227,3 @@ document.querySelectorAll('.inp').forEach(el => {
 </script>
 </body>
 </html>
-
-

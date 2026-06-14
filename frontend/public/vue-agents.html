@@ -1,25 +1,25 @@
-<!DOCTYPE html>
+Ôªø<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LaRonde ó Vue Agents</title>
+<title>LaRonde ‚Äî Vue Agents</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-    <div class="flex items-center gap-2"><span class="text-xl">??</span><span class="font-bold text-green-700">LaRonde</span></div>
+    <div class="flex items-center gap-2"><span class="text-xl">üóë</span><span class="font-bold text-green-700">LaRonde</span></div>
     <div class="flex gap-1 overflow-x-auto">
-      <a href="dashboard.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Dashboard</a>
-      <a href="carte.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Carte</a>
-      <a href="vue-agents.html" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">?? Agents live</a>
-      <a href="poubelles.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Poubelles</a>
-      <a href="recaps.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? RÈcaps</a>
-      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? ParamËtres</a>
+      <a href="dashboard.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">üìä Dashboard</a>
+      <a href="carte.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">üó∫ Carte</a>
+      <a href="vue-agents.html" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">üë• Agents live</a>
+      <a href="poubelles.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">üóë Poubelles</a>
+      <a href="recaps.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">üìà R√©caps</a>
+      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">‚öôÔ∏è Param√®tres</a>
     </div>
-    <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">? DÈco</a>
+    <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">‚¨Ö D√©co</a>
   </div>
 </nav>
 
@@ -27,11 +27,11 @@
   <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
     <div>
       <h1 class="text-2xl font-bold text-gray-900">Vue agents</h1>
-      <p class="text-gray-400 text-xs mt-1">?? Mis ‡ jour il y a quelques secondes</p>
+      <p class="text-gray-400 text-xs mt-1">üì∂ Mis √† jour il y a quelques secondes</p>
     </div>
     <div class="bg-white border border-gray-200 rounded-xl px-5 py-3 text-center">
       <p class="text-2xl font-bold text-green-600" id="globalPct">71%</p>
-      <p class="text-xs text-gray-400" id="globalLabel">17/24 collectÈes</p>
+      <p class="text-xs text-gray-400" id="globalLabel">17/24 collect√©es</p>
     </div>
   </div>
 
@@ -41,7 +41,7 @@
 <!-- Toast -->
 <div id="toast" class="fixed top-4 right-4 z-50 hidden">
   <div class="bg-white rounded-xl shadow-lg border-l-4 border-l-green-500 px-4 py-3 flex items-center gap-3">
-    <span>?</span>
+    <span>‚úÖ</span>
     <div>
       <p class="font-semibold text-sm text-gray-800" id="toastTitle"></p>
       <p class="text-xs text-gray-500" id="toastMsg"></p>
@@ -56,11 +56,11 @@ if (!user.role) window.location.href = 'index.html';
 document.querySelector('nav .text-xs.text-gray-400').textContent = user.mairie || '';
 
 if (user.empty) {
-  document.getElementById('globalPct').textContent = 'ó';
-  document.getElementById('globalLabel').textContent = 'Aucun agent configurÈ';
+  document.getElementById('globalPct').textContent = '‚Äî';
+  document.getElementById('globalLabel').textContent = 'Aucun agent configur√©';
   document.getElementById('agentList').innerHTML = `
     <div class="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center text-gray-400">
-      <p class="text-4xl mb-3">??</p>
+      <p class="text-4xl mb-3">üë•</p>
       <p class="font-semibold text-gray-500">Aucun agent pour le moment</p>
       <p class="text-sm mt-1">Ajoutez vos agents depuis le panneau d'administration.</p>
     </div>`;
@@ -77,10 +77,10 @@ const AGENTS = [
       { address:'1 Rue de Rivoli', neighborhood:'Centre-ville', type:'ordures', collected:true },
       { address:'3 Bd Haussmann', neighborhood:'Centre-ville', type:'recyclable', collected:true },
       { address:'15 Rue Saint-Antoine', neighborhood:'Centre-ville', type:'ordures', collected:true },
-      { address:'9 AllÈe des Roses', neighborhood:'Centre', type:'verre', collected:true },
-      { address:'12 Av. de la RÈpublique', neighborhood:'Est', type:'recyclable', collected:true },
-      { address:'5 Place du MarchÈ', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'18 Rue FranÁois Miron', neighborhood:'Centre', type:'ordures', collected:true },
+      { address:'9 All√©e des Roses', neighborhood:'Centre', type:'verre', collected:true },
+      { address:'12 Av. de la R√©publique', neighborhood:'Est', type:'recyclable', collected:true },
+      { address:'5 Place du March√©', neighborhood:'Centre', type:'ordures', collected:true },
+      { address:'18 Rue Fran√ßois Miron', neighborhood:'Centre', type:'ordures', collected:true },
       { address:'20 Rue des Archives', neighborhood:'Marais', type:'ordures', collected:true },
       { address:'22 Rue Rambuteau', neighborhood:'Marais', type:'ordures', collected:true },
       { address:'14 Rue du Renard', neighborhood:'Marais', type:'recyclable', collected:true },
@@ -97,9 +97,9 @@ const AGENTS = [
       { address:'22 Avenue du Nord', neighborhood:'Nord', type:'ordures', collected:true },
       { address:'8 Rue de la Paix', neighborhood:'Centre', type:'verre', collected:true },
       { address:'11 Rue de Bretagne', neighborhood:'Nord', type:'ordures', collected:true },
-      { address:'13 Pl. du MarchÈ', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'17 Quai des CÈlestins', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'19 Bd de SÈbastopol', neighborhood:'Centre', type:'recyclable', collected:true },
+      { address:'13 Pl. du March√©', neighborhood:'Centre', type:'ordures', collected:true },
+      { address:'17 Quai des C√©lestins', neighborhood:'Centre', type:'ordures', collected:true },
+      { address:'19 Bd de S√©bastopol', neighborhood:'Centre', type:'recyclable', collected:true },
       { address:'21 Rue de Turbigo', neighborhood:'Centre', type:'verre', collected:true },
       { address:'33 Bd Voltaire', neighborhood:'Est', type:'recyclable', collected:false },
       { address:'2 Place de la Bastille', neighborhood:'Est', type:'ordures', collected:false },
@@ -132,7 +132,7 @@ function render() {
             <span class="font-semibold text-gray-900">${a.firstName} ${a.lastName}</span>
             <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${a.sector}</span>
           </div>
-          <p class="text-xs text-gray-400 mt-0.5">?? DerniËre collecte il y a quelques min ∑ ${a.lastAddress}</p>
+          <p class="text-xs text-gray-400 mt-0.5">üìç Derni√®re collecte il y a quelques min ¬∑ ${a.lastAddress}</p>
         </div>
         <div class="shrink-0 text-right mr-2">
           <p class="text-lg font-bold text-gray-900">${pct}%</p>
@@ -143,20 +143,20 @@ function render() {
             <div class="${pctColor(pct)} h-2 rounded-full transition-all" style="width:${pct}%"></div>
           </div>
         </div>
-        <span class="text-gray-300 text-lg">${isExp ? '?' : '?'}</span>
+        <span class="text-gray-300 text-lg">${isExp ? '‚ñ≤' : '‚ñº'}</span>
       </button>
 
       ${isExp ? `
       <div class="border-t border-gray-100">
         <div class="px-5 py-3 bg-gray-50 flex gap-4 text-xs text-gray-500">
-          <span>? ${a.collected} collectÈes</span>
-          <span>? ${a.total - a.collected} restantes</span>
-          <span>DerniËre connexion aujourd'hui ‡ 08:15</span>
+          <span>‚úÖ ${a.collected} collect√©es</span>
+          <span>‚è≥ ${a.total - a.collected} restantes</span>
+          <span>Derni√®re connexion aujourd'hui √† 08:15</span>
         </div>
         <div class="divide-y divide-gray-50 max-h-72 overflow-y-auto">
           ${a.bins.map(b => `
             <div class="flex items-center gap-3 px-5 py-2.5">
-              <span class="shrink-0 text-sm">${b.collected ? '?' : '?'}</span>
+              <span class="shrink-0 text-sm">${b.collected ? '‚úÖ' : '‚è≥'}</span>
               <div class="flex-1 min-w-0">
                 <p class="text-sm ${b.collected ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'} truncate">${b.address}</p>
                 ${b.neighborhood ? `<p class="text-xs text-gray-400">${b.neighborhood}</p>` : ''}
@@ -177,7 +177,7 @@ function toggle(id) {
 
 render();
 
-// Simulation temps rÈel
+// Simulation temps r√©el
 function showToast(title, msg) {
   document.getElementById('toastTitle').textContent = title;
   document.getElementById('toastMsg').textContent = msg;
@@ -195,7 +195,7 @@ setTimeout(() => {
   const coll  = AGENTS.reduce((s,a)=>s+a.collected,0);
   const pct   = Math.round((coll/total)*100);
   document.getElementById('globalPct').textContent = pct + '%';
-  document.getElementById('globalLabel').textContent = coll + '/' + total + ' collectÈes';
+  document.getElementById('globalLabel').textContent = coll + '/' + total + ' collect√©es';
   render();
   showToast('Jean Martin vient de collecter', '7 Rue des Lilas');
 }, 6000);
@@ -209,14 +209,13 @@ setTimeout(() => {
   const coll  = AGENTS.reduce((s,a)=>s+a.collected,0);
   const pct   = Math.round((coll/total)*100);
   document.getElementById('globalPct').textContent = pct + '%';
-  document.getElementById('globalLabel').textContent = coll + '/' + total + ' collectÈes';
+  document.getElementById('globalLabel').textContent = coll + '/' + total + ' collect√©es';
   render();
   showToast('Paul Bernard vient de collecter', '33 Bd Voltaire');
 }, 12000);
 </script>
 </body>
 </html>
-
 
 
 

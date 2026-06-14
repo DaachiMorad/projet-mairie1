@@ -1,30 +1,30 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LaRonde � R�capitulatifs</title>
+<title>LaRonde — Récapitulatifs</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-40">
   <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
-    <div class="flex items-center gap-2"><span class="text-xl">??</span><span class="font-bold text-green-700">LaRonde</span></div>
+    <div class="flex items-center gap-2"><span class="text-xl">🗑</span><span class="font-bold text-green-700">LaRonde</span></div>
     <div class="flex gap-1 overflow-x-auto">
-      <a href="dashboard.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Dashboard</a>
-      <a href="carte.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Carte</a>
-      <a href="vue-agents.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Agents live</a>
-      <a href="poubelles.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Poubelles</a>
-      <a href="recaps.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">?? R�caps</a>
-      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">?? Param�tres</a>
+      <a href="dashboard.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📊 Dashboard</a>
+      <a href="carte.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗺 Carte</a>
+      <a href="vue-agents.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">👥 Agents live</a>
+      <a href="poubelles.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗑 Poubelles</a>
+      <a href="recaps.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">📈 Récaps</a>
+      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">⚙️ Paramètres</a>
     </div>
-    <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">? D�co</a>
+    <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">⬅ Déco</a>
   </div>
 </nav>
 
 <main class="max-w-6xl mx-auto px-4 py-6">
   <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
-    <h1 class="text-2xl font-bold text-gray-900">R�capitulatifs</h1>
+    <h1 class="text-2xl font-bold text-gray-900">Récapitulatifs</h1>
     <div class="flex gap-2 flex-wrap">
       <div class="flex gap-2" id="periodBtns">
         <button onclick="setPeriod('week')"    id="btn-week"    class="text-sm px-4 py-1.5 rounded-lg font-medium bg-green-600 text-white">7 derniers jours</button>
@@ -32,7 +32,7 @@
         <button onclick="setPeriod('quarter')" id="btn-quarter" class="text-sm px-4 py-1.5 rounded-lg font-medium bg-white border border-gray-200 text-gray-600">3 mois</button>
       </div>
       <button onclick="exportCSV()" class="flex items-center gap-2 text-sm px-4 py-1.5 rounded-lg font-medium bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors">
-        ? Export CSV
+        ⬇ Export CSV
       </button>
     </div>
   </div>
@@ -42,7 +42,7 @@
 
   <!-- Chart -->
   <div class="bg-white rounded-xl border border-gray-200 p-5 mb-6">
-    <h2 class="font-semibold text-gray-700 mb-4">?? Collectes par jour</h2>
+    <h2 class="font-semibold text-gray-700 mb-4">📊 Collectes par jour</h2>
     <div class="flex items-end gap-1 h-40" id="barChart"></div>
     <div class="flex justify-between text-xs text-gray-400 mt-2 px-1" id="chartLabels"></div>
   </div>
@@ -50,19 +50,19 @@
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
     <!-- Agents -->
     <div class="bg-white rounded-xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-700 mb-4">?? Performance par agent</h2>
+      <h2 class="font-semibold text-gray-700 mb-4">👥 Performance par agent</h2>
       <div id="agentBars"></div>
     </div>
     <!-- Types -->
     <div class="bg-white rounded-xl border border-gray-200 p-5">
-      <h2 class="font-semibold text-gray-700 mb-4">?? Par type de poubelle</h2>
+      <h2 class="font-semibold text-gray-700 mb-4">🗑 Par type de poubelle</h2>
       <div id="typeBars"></div>
     </div>
   </div>
 
   <!-- Remarques -->
   <div class="bg-white rounded-xl border border-gray-200 p-5">
-    <h2 class="font-semibold text-gray-700 mb-4">?? Remarques & incidents</h2>
+    <h2 class="font-semibold text-gray-700 mb-4">⚠️ Remarques & incidents</h2>
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="remarkCards"></div>
   </div>
 </main>
@@ -73,11 +73,11 @@ if (!user.role) window.location.href = 'index.html';
 
 if (user.empty) {
   document.querySelector('main').innerHTML = `
-    <div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-bold text-gray-900">R�capitulatifs</h1></div>
+    <div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-bold text-gray-900">Récapitulatifs</h1></div>
     <div class="bg-white rounded-xl border border-dashed border-gray-300 p-16 text-center text-gray-400">
-      <p class="text-5xl mb-3">??</p>
-      <p class="font-semibold text-gray-500 text-lg">Pas encore de donn�es</p>
-      <p class="text-sm mt-2">Les statistiques appara�tront une fois vos premi�res tourn�es effectu�es.</p>
+      <p class="text-5xl mb-3">📈</p>
+      <p class="font-semibold text-gray-500 text-lg">Pas encore de données</p>
+      <p class="text-sm mt-2">Les statistiques apparaîtront une fois vos premières tournées effectuées.</p>
     </div>`;
   throw new Error('empty');
 }
@@ -89,7 +89,7 @@ const DATA = {
     labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
     agents: [{ name:'Jean Martin', sector:'Centre-ville', count:68 }, { name:'Paul Bernard', sector:'Nord', count:51 }],
     types:  [{ type:'ordures', count:72 }, { type:'recyclable', count:27 }, { type:'verre', count:14 }, { type:'encombrants', count:6 }],
-    remarks:[{ type:'D�bordante', count:2, status:'ouvert' }, { type:'D�grad�e', count:1, status:'en cours' }],
+    remarks:[{ type:'Débordante', count:2, status:'ouvert' }, { type:'Dégradée', count:1, status:'en cours' }],
   },
   month: {
     total: 504, bins: 24, rate: 75,
@@ -97,15 +97,15 @@ const DATA = {
     labels: Array.from({length:30}, (_,i) => i%5===0 ? `J-${30-i}` : ''),
     agents: [{ name:'Jean Martin', sector:'Centre-ville', count:286 }, { name:'Paul Bernard', sector:'Nord', count:218 }],
     types:  [{ type:'ordures', count:304 }, { type:'recyclable', count:112 }, { type:'verre', count:62 }, { type:'encombrants', count:26 }],
-    remarks:[{ type:'D�bordante', count:7, status:'ouvert' }, { type:'D�grad�e', count:4, status:'r�solu' }, { type:'D�chir�e', count:2, status:'ouvert' }],
+    remarks:[{ type:'Débordante', count:7, status:'ouvert' }, { type:'Dégradée', count:4, status:'résolu' }, { type:'Déchirée', count:2, status:'ouvert' }],
   },
   quarter: {
     total: 1512, bins: 24, rate: 75,
     chart: Array.from({length:12}, () => Math.floor(100+Math.random()*60)),
-    labels: ['Jan S1','S2','S3','S4','F�v S1','S2','S3','S4','Mar S1','S2','S3','S4'],
+    labels: ['Jan S1','S2','S3','S4','Fév S1','S2','S3','S4','Mar S1','S2','S3','S4'],
     agents: [{ name:'Jean Martin', sector:'Centre-ville', count:858 }, { name:'Paul Bernard', sector:'Nord', count:654 }],
     types:  [{ type:'ordures', count:912 }, { type:'recyclable', count:336 }, { type:'verre', count:186 }, { type:'encombrants', count:78 }],
-    remarks:[{ type:'D�bordante', count:21, status:'r�solu' }, { type:'D�grad�e', count:12, status:'r�solu' }, { type:'D�chir�e', count:6, status:'r�solu' }, { type:'Manquante', count:3, status:'r�solu' }],
+    remarks:[{ type:'Débordante', count:21, status:'résolu' }, { type:'Dégradée', count:12, status:'résolu' }, { type:'Déchirée', count:6, status:'résolu' }, { type:'Manquante', count:3, status:'résolu' }],
   }
 };
 
@@ -127,10 +127,10 @@ function render() {
 
   // KPIs
   document.getElementById('kpis').innerHTML = [
-    { icon:'??', label:'Collectes totales', val:d.total.toLocaleString('fr') },
-    { icon:'??', label:'Poubelles actives', val:d.bins },
-    { icon:'??', label:'Taux de collecte',  val:d.rate+'%' },
-    { icon:'??', label:'Remarques',         val:d.remarks.reduce((s,r)=>s+r.count,0) },
+    { icon:'📈', label:'Collectes totales', val:d.total.toLocaleString('fr') },
+    { icon:'🗑', label:'Poubelles actives', val:d.bins },
+    { icon:'📊', label:'Taux de collecte',  val:d.rate+'%' },
+    { icon:'⚠️', label:'Remarques',         val:d.remarks.reduce((s,r)=>s+r.count,0) },
   ].map(k => `
     <div class="bg-white rounded-xl border border-gray-200 p-4">
       <div class="flex items-center gap-2 mb-1 text-gray-500 text-xs">${k.icon} ${k.label}</div>
@@ -185,7 +185,7 @@ function render() {
   document.getElementById('remarkCards').innerHTML = d.remarks.map(r => `
     <div class="bg-orange-50 rounded-lg p-3">
       <p class="font-semibold text-orange-800">${r.type}</p>
-      <p class="text-xs text-orange-600">${r.count}x � ${r.status}</p>
+      <p class="text-xs text-orange-600">${r.count}x · ${r.status}</p>
     </div>
   `).join('');
 }
@@ -197,8 +197,8 @@ function exportCSV() {
   const periodLabel = { week: '7-jours', month: '30-jours', quarter: '3-mois' }[currentPeriod];
   const today = new Date().toISOString().slice(0, 10);
 
-  // -- Feuille 1 : Collectes par jour ---------------------------------------
-  let csv = '?'; // BOM UTF-8 pour Excel
+  // ── Feuille 1 : Collectes par jour ───────────────────────────────────────
+  let csv = '﻿'; // BOM UTF-8 pour Excel
   csv += '=== COLLECTES PAR JOUR ===\r\n';
   csv += 'Jour,Nombre de collectes\r\n';
   d.chart.forEach((v, i) => {
@@ -212,7 +212,7 @@ function exportCSV() {
     csv += `"${a.name}","${a.sector}",${a.count}\r\n`;
   });
 
-  csv += '\r\n=== R�PARTITION PAR TYPE ===\r\n';
+  csv += '\r\n=== RÉPARTITION PAR TYPE ===\r\n';
   csv += 'Type,Collectes,Pourcentage\r\n';
   const totalTypes = d.types.reduce((s, t) => s + t.count, 0);
   d.types.forEach(t => {
@@ -226,14 +226,14 @@ function exportCSV() {
     csv += `"${r.type}",${r.count},"${r.status}"\r\n`;
   });
 
-  csv += '\r\n=== R�SUM� ===\r\n';
-  csv += `P�riode,${periodLabel}\r\n`;
+  csv += '\r\n=== RÉSUMÉ ===\r\n';
+  csv += `Période,${periodLabel}\r\n`;
   csv += `Total collectes,${d.total}\r\n`;
   csv += `Poubelles actives,${d.bins}\r\n`;
   csv += `Taux de collecte,${d.rate}%\r\n`;
-  csv += `Export� le,${today}\r\n`;
+  csv += `Exporté le,${today}\r\n`;
 
-  // T�l�chargement
+  // Téléchargement
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -245,7 +245,6 @@ function exportCSV() {
 </script>
 </body>
 </html>
-
 
 
 
