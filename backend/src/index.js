@@ -10,6 +10,7 @@ const collectionRoutes = require('./routes/collections');
 const remarkRoutes = require('./routes/remarks');
 const reportRoutes = require('./routes/reports');
 const sseRoutes = require('./routes/sse');
+const superadminRoutes = require('./routes/superadmin');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/collections', collectionRoutes);
 app.use('/api/remarks', remarkRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/sse', sseRoutes);
+app.use('/api/superadmin', superadminRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, async () => {

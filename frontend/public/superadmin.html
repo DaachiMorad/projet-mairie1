@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaRonde — Super Admin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  .tab-btn.active { background:#16a34a; color:#fff; }
+  .modal-bg { background:rgba(0,0,0,0.5); }
+</style>
+</head>
+<body class="bg-gray-950 min-h-screen text-white">
+
+<!-- LOGIN -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center">
+  <div class="bg-gray-900 rounded-2xl p-8 w-full max-w-sm shadow-2xl border border-gray-800">
+    <div class="text-center mb-6">
+      <div class="text-4xl mb-3">🔐</div>
+      <h1 class="text-2xl font-bold text-white">Super Admin</h1>
+      <p class="text-gray-400 text-sm mt-1">LaRonde — Accès propriétaire</p>
+    </div>
+    <div id="loginErr" class="hidden bg-red-900 border border-red-700 text-red-300 rounded-lg px-3 py-2 text-sm mb-4"></div>
+    <input id="secretInput" type="password" placeholder="Clé secrète" autocomplete="off"
+      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 mb-4">
+    <button onclick="doLogin()"
+      class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg py-3 transition-colors">
+      Accéder
+    </button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+  <!-- Header -->
+  <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <span class="text-xl">🔐</span>
+        <span class="font-bold text-white">Super Admin</span>
+        <span class="text-xs bg-green-900 text-green-400 px-2 py-0.5 rounded-full">LaRonde</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div id="statsBar" class="flex gap-4 text-xs text-gray-400 mr-4"></div>
+        <button onclick="logout()" class="text-gray-400 hover:text-red-400 text-sm transition-colors">🚪 Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Tabs -->
+  <div class="bg-gray-900 border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 flex gap-2 py-2">
+      <button class="tab-btn active px-4 py-2 rounded-lg text-sm font-medium transition-colors" onclick="switchTab('mairies')">🏛 Mairies</button>
+      <button class="tab-btn px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:bg-gray-800 transition-colors" onclick="switchTab('users')">👥 Utilisateurs</button>
+    </div>
+  </div>
+
+  <main class="max-w-7xl mx-auto px-4 py-6">
+
+    <!-- MAIRIES TAB -->
+    <div id="tab-mairies">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-bold text-white">Toutes les mairies</h2>
+        <button onclick="openModal('modalMairie')"
+          class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+          + Nouvelle mairie
+        </button>
+      </div>
+      <div class="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-800 text-gray-400 text-xs uppercase">
+            <tr>
+              <th class="px-4 py-3 text-left">Mairie</th>
+              <th class="px-4 py-3 text-left">Email</th>
+              <th class="px-4 py-3 text-left">Plan</th>
+              <th class="px-4 py-3 text-center">Utilisateurs</th>
+              <th class="px-4 py-3 text-center">Poubelles</th>
+              <th class="px-4 py-3 text-center">Créée le</th>
+              <th class="px-4 py-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="mairieTable" class="divide-y divide-gray-800"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- USERS TAB -->
+    <div id="tab-users" class="hidden">
+      <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+        <h2 class="text-lg font-bold text-white">Tous les utilisateurs</h2>
+        <div class="flex gap-2">
+          <select id="filterMairie" onchange="loadUsers()"
+            class="bg-gray-800 border border-gray-700 text-white text-sm rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-600">
+            <option value="">Toutes les mairies</option>
+          </select>
+          <button onclick="openModal('modalUser')"
+            class="bg-green-600 hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+            + Nouvel utilisateur
+          </button>
+        </div>
+      </div>
+      <div class="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-800 text-gray-400 text-xs uppercase">
+            <tr>
+              <th class="px-4 py-3 text-left">Nom</th>
+              <th class="px-4 py-3 text-left">Email</th>
+              <th class="px-4 py-3 text-left">Mairie</th>
+              <th class="px-4 py-3 text-center">Rôle</th>
+              <th class="px-4 py-3 text-center">Statut</th>
+              <th class="px-4 py-3 text-center">Dernière connexion</th>
+              <th class="px-4 py-3 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="userTable" class="divide-y divide-gray-800"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL: Nouvelle mairie -->
+<div id="modalMairie" class="fixed inset-0 z-50 hidden modal-bg flex items-center justify-center p-4">
+  <div class="bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl">
+    <h3 class="text-lg font-bold text-white mb-4">🏛 Nouvelle mairie</h3>
+    <div class="space-y-3">
+      <input id="mNom" type="text" placeholder="Nom de la mairie *"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+      <input id="mEmail" type="email" placeholder="Email de contact *"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+      <select id="mPlan"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+        <option value="basic">Basic</option>
+        <option value="starter">Starter</option>
+        <option value="pro">Pro</option>
+      </select>
+    </div>
+    <div id="mairieErr" class="hidden mt-3 text-red-400 text-sm"></div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeModal('modalMairie')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg py-2 text-sm transition-colors">Annuler</button>
+      <button onclick="createMairie()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg py-2 text-sm transition-colors">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Nouvel utilisateur -->
+<div id="modalUser" class="fixed inset-0 z-50 hidden modal-bg flex items-center justify-center p-4">
+  <div class="bg-gray-900 rounded-2xl p-6 w-full max-w-md border border-gray-700 shadow-2xl">
+    <h3 class="text-lg font-bold text-white mb-4">👤 Nouvel utilisateur</h3>
+    <div class="space-y-3">
+      <select id="uMairie"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+        <option value="">Sélectionner une mairie *</option>
+      </select>
+      <div class="grid grid-cols-2 gap-3">
+        <input id="uPrenom" type="text" placeholder="Prénom *"
+          class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+        <input id="uNom" type="text" placeholder="Nom *"
+          class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+      </div>
+      <input id="uEmail" type="email" placeholder="Email *"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+      <input id="uPassword" type="password" placeholder="Mot de passe * (min 6 caractères)"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+      <select id="uRole"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+        <option value="chef">Chef de service</option>
+        <option value="technicien">Agent terrain</option>
+      </select>
+      <input id="uPhone" type="tel" placeholder="Téléphone (optionnel)"
+        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+    </div>
+    <div id="userErr" class="hidden mt-3 text-red-400 text-sm"></div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeModal('modalUser')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg py-2 text-sm transition-colors">Annuler</button>
+      <button onclick="createUser()" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg py-2 text-sm transition-colors">Créer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Reset mot de passe -->
+<div id="modalReset" class="fixed inset-0 z-50 hidden modal-bg flex items-center justify-center p-4">
+  <div class="bg-gray-900 rounded-2xl p-6 w-full max-w-sm border border-gray-700 shadow-2xl">
+    <h3 class="text-lg font-bold text-white mb-1">🔑 Réinitialiser le mot de passe</h3>
+    <p id="resetUserName" class="text-gray-400 text-sm mb-4"></p>
+    <input id="newPassword" type="password" placeholder="Nouveau mot de passe *"
+      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-2 focus:ring-green-600">
+    <div id="resetErr" class="hidden mt-3 text-red-400 text-sm"></div>
+    <div class="flex gap-3 mt-5">
+      <button onclick="closeModal('modalReset')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white rounded-lg py-2 text-sm transition-colors">Annuler</button>
+      <button onclick="doResetPassword()" class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-semibold rounded-lg py-2 text-sm transition-colors">Réinitialiser</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-4 right-4 z-50 hidden bg-green-700 text-white text-sm px-4 py-3 rounded-xl shadow-lg"></div>
+
+<script>
+const API = 'https://projet-mairie1-production.up.railway.app/api';
+let SECRET = '';
+let municipalities = [];
+let resetUserId = null;
+
+// --- AUTH ---
+function doLogin() {
+  const val = document.getElementById('secretInput').value.trim();
+  if (!val) return;
+  SECRET = val;
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  loadAll();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && !document.getElementById('loginScreen').classList.contains('hidden')) doLogin(); });
+
+function logout() {
+  SECRET = '';
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('secretInput').value = '';
+}
+
+// --- TABS ---
+function switchTab(tab) {
+  ['mairies','users'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('hidden', t !== tab);
+  });
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    const tabs = ['mairies','users'];
+    b.classList.toggle('active', tabs[i] === tab);
+    if (tabs[i] !== tab) b.classList.add('text-gray-400');
+    else b.classList.remove('text-gray-400');
+  });
+  if (tab === 'users') loadUsers();
+}
+
+// --- LOAD ---
+async function loadAll() {
+  await loadMairies();
+  await loadStats();
+}
+
+async function loadStats() {
+  try {
+    const r = await api('GET', '/superadmin/stats');
+    document.getElementById('statsBar').innerHTML = `
+      <span>🏛 ${r.municipalities} mairies</span>
+      <span>👥 ${r.users} utilisateurs</span>
+      <span>🗑 ${r.bins} poubelles</span>
+      <span>✅ ${r.collectionsToday} collectes aujourd'hui</span>
+    `;
+  } catch {}
+}
+
+async function loadMairies() {
+  municipalities = await api('GET', '/superadmin/municipalities');
+  const tbody = document.getElementById('mairieTable');
+  tbody.innerHTML = municipalities.map(m => `
+    <tr class="hover:bg-gray-800 transition-colors">
+      <td class="px-4 py-3 font-medium text-white">${m.name}</td>
+      <td class="px-4 py-3 text-gray-400">${m.email || '—'}</td>
+      <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${planBadge(m.plan)}">${m.plan}</span></td>
+      <td class="px-4 py-3 text-center text-gray-300">${m.userCount}</td>
+      <td class="px-4 py-3 text-center text-gray-300">${m.binCount}</td>
+      <td class="px-4 py-3 text-center text-gray-400 text-xs">${fmtDate(m.createdAt)}</td>
+      <td class="px-4 py-3 text-center">
+        <button onclick="viewMairieUsers('${m.id}','${m.name}')" class="text-blue-400 hover:text-blue-300 text-xs mr-2">👥 Voir users</button>
+        <button onclick="deleteMairie('${m.id}','${m.name}')" class="text-red-400 hover:text-red-300 text-xs">🗑 Supprimer</button>
+      </td>
+    </tr>
+  `).join('');
+
+  // Remplir les selects
+  const opts = municipalities.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+  document.getElementById('filterMairie').innerHTML = '<option value="">Toutes les mairies</option>' + opts;
+  document.getElementById('uMairie').innerHTML = '<option value="">Sélectionner une mairie *</option>' + opts;
+}
+
+async function loadUsers() {
+  const mId = document.getElementById('filterMairie').value;
+  const url = mId ? `/superadmin/users?municipalityId=${mId}` : '/superadmin/users';
+  const users = await api('GET', url);
+  const tbody = document.getElementById('userTable');
+  tbody.innerHTML = users.map(u => `
+    <tr class="hover:bg-gray-800 transition-colors">
+      <td class="px-4 py-3 font-medium text-white">${u.firstName} ${u.lastName}</td>
+      <td class="px-4 py-3 text-gray-400">${u.email}</td>
+      <td class="px-4 py-3 text-gray-300 text-xs">${u.municipalityName}</td>
+      <td class="px-4 py-3 text-center"><span class="px-2 py-0.5 rounded-full text-xs font-medium ${roleBadge(u.role)}">${u.role}</span></td>
+      <td class="px-4 py-3 text-center"><span class="w-2 h-2 rounded-full inline-block ${u.isActive ? 'bg-green-500' : 'bg-red-500'}"></span> ${u.isActive ? 'Actif' : 'Inactif'}</td>
+      <td class="px-4 py-3 text-center text-gray-400 text-xs">${u.lastLoginAt ? fmtDate(u.lastLoginAt) : 'Jamais'}</td>
+      <td class="px-4 py-3 text-center space-x-2">
+        <button onclick="openReset('${u.id}','${u.firstName} ${u.lastName}')" class="text-orange-400 hover:text-orange-300 text-xs">🔑 MDP</button>
+        <button onclick="toggleUser('${u.id}',${u.isActive})" class="text-yellow-400 hover:text-yellow-300 text-xs">${u.isActive ? '⛔ Désactiver' : '✅ Activer'}</button>
+        <button onclick="deleteUser('${u.id}','${u.firstName}')" class="text-red-400 hover:text-red-300 text-xs">🗑</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// --- ACTIONS MAIRIE ---
+async function createMairie() {
+  const name = document.getElementById('mNom').value.trim();
+  const email = document.getElementById('mEmail').value.trim();
+  const plan = document.getElementById('mPlan').value;
+  const err = document.getElementById('mairieErr');
+  if (!name || !email) { err.textContent = 'Nom et email requis'; err.classList.remove('hidden'); return; }
+  try {
+    await api('POST', '/superadmin/municipalities', { name, email, plan });
+    closeModal('modalMairie');
+    ['mNom','mEmail'].forEach(id => document.getElementById(id).value = '');
+    err.classList.add('hidden');
+    toast('Mairie créée ✅');
+    loadAll();
+  } catch (e) {
+    err.textContent = e.message; err.classList.remove('hidden');
+  }
+}
+
+async function deleteMairie(id, name) {
+  if (!confirm(`Supprimer la mairie "${name}" ? Cette action est irréversible.`)) return;
+  try {
+    await api('DELETE', `/superadmin/municipalities/${id}`);
+    toast('Mairie supprimée');
+    loadAll();
+  } catch (e) { alert(e.message); }
+}
+
+function viewMairieUsers(id, name) {
+  document.getElementById('filterMairie').value = id;
+  switchTab('users');
+}
+
+// --- ACTIONS USER ---
+async function createUser() {
+  const mId = document.getElementById('uMairie').value;
+  const firstName = document.getElementById('uPrenom').value.trim();
+  const lastName = document.getElementById('uNom').value.trim();
+  const email = document.getElementById('uEmail').value.trim();
+  const password = document.getElementById('uPassword').value;
+  const role = document.getElementById('uRole').value;
+  const phone = document.getElementById('uPhone').value.trim();
+  const err = document.getElementById('userErr');
+  if (!mId || !firstName || !lastName || !email || !password) {
+    err.textContent = 'Tous les champs obligatoires doivent être remplis';
+    err.classList.remove('hidden'); return;
+  }
+  try {
+    await api('POST', '/superadmin/users', { municipalityId: mId, email, password, firstName, lastName, role, phone });
+    closeModal('modalUser');
+    ['uPrenom','uNom','uEmail','uPassword','uPhone'].forEach(id => document.getElementById(id).value = '');
+    err.classList.add('hidden');
+    toast('Utilisateur créé ✅');
+    loadUsers();
+  } catch (e) {
+    err.textContent = e.message; err.classList.remove('hidden');
+  }
+}
+
+function openReset(id, name) {
+  resetUserId = id;
+  document.getElementById('resetUserName').textContent = name;
+  document.getElementById('newPassword').value = '';
+  document.getElementById('resetErr').classList.add('hidden');
+  openModal('modalReset');
+}
+
+async function doResetPassword() {
+  const password = document.getElementById('newPassword').value;
+  const err = document.getElementById('resetErr');
+  if (!password || password.length < 6) {
+    err.textContent = 'Minimum 6 caractères'; err.classList.remove('hidden'); return;
+  }
+  try {
+    await api('PATCH', `/superadmin/users/${resetUserId}/password`, { password });
+    closeModal('modalReset');
+    toast('Mot de passe réinitialisé ✅');
+  } catch (e) {
+    err.textContent = e.message; err.classList.remove('hidden');
+  }
+}
+
+async function toggleUser(id, isActive) {
+  try {
+    await api('PATCH', `/superadmin/users/${id}`, { isActive: !isActive });
+    toast(isActive ? 'Utilisateur désactivé' : 'Utilisateur activé ✅');
+    loadUsers();
+  } catch (e) { alert(e.message); }
+}
+
+async function deleteUser(id, name) {
+  if (!confirm(`Supprimer l'utilisateur "${name}" ?`)) return;
+  try {
+    await api('DELETE', `/superadmin/users/${id}`);
+    toast('Utilisateur supprimé');
+    loadUsers();
+  } catch (e) { alert(e.message); }
+}
+
+// --- UTILS ---
+async function api(method, path, body) {
+  const res = await fetch(`${API}${path}`, {
+    method,
+    headers: { 'Content-Type': 'application/json', 'x-super-secret': SECRET },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Erreur serveur');
+  return data;
+}
+
+function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.remove('hidden');
+  setTimeout(() => t.classList.add('hidden'), 3000);
+}
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit', year:'numeric' });
+}
+
+function planBadge(p) {
+  return { basic:'bg-gray-700 text-gray-300', starter:'bg-blue-900 text-blue-300', pro:'bg-purple-900 text-purple-300' }[p] || 'bg-gray-700 text-gray-300';
+}
+
+function roleBadge(r) {
+  return r === 'chef' ? 'bg-green-900 text-green-300' : 'bg-blue-900 text-blue-300';
+}
+
+// Fermer modal en cliquant en dehors
+document.querySelectorAll('.modal-bg').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.add('hidden'); });
+});
+</script>
+</body>
+</html>
