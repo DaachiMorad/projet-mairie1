@@ -12,26 +12,8 @@
 </head>
 <body class="bg-gray-950 min-h-screen text-white">
 
-<!-- LOGIN -->
-<div id="loginScreen" class="min-h-screen flex items-center justify-center">
-  <div class="bg-gray-900 rounded-2xl p-8 w-full max-w-sm shadow-2xl border border-gray-800">
-    <div class="text-center mb-6">
-      <div class="text-4xl mb-3">🔐</div>
-      <h1 class="text-2xl font-bold text-white">Super Admin</h1>
-      <p class="text-gray-400 text-sm mt-1">LaRonde — Accès propriétaire</p>
-    </div>
-    <div id="loginErr" class="hidden bg-red-900 border border-red-700 text-red-300 rounded-lg px-3 py-2 text-sm mb-4"></div>
-    <input id="secretInput" type="password" placeholder="Clé secrète" autocomplete="off"
-      class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-600 mb-4">
-    <button onclick="doLogin()"
-      class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg py-3 transition-colors">
-      Accéder
-    </button>
-  </div>
-</div>
-
 <!-- MAIN APP -->
-<div id="app" class="hidden">
+<div id="app">
   <!-- Header -->
   <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
@@ -204,21 +186,24 @@ let municipalities = [];
 let resetUserId = null;
 
 // --- AUTH ---
-function doLogin() {
-  const val = document.getElementById('secretInput').value.trim();
-  if (!val) return;
-  SECRET = val;
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('app').classList.remove('hidden');
+(function checkSession() {
+  const user = JSON.parse(sessionStorage.getItem('ub_user') || 'null');
+  const secret = sessionStorage.getItem('sa_secret');
+  if (!user || user.role !== 'superadmin' || !secret) {
+    window.location.href = 'login.html';
+    return;
+  }
+  SECRET = secret;
+  document.getElementById('app').querySelector('header span.font-bold').insertAdjacentHTML(
+    'afterend', `<span class="text-xs text-gray-400 ml-2">${user.name || user.email}</span>`
+  );
   loadAll();
-}
-document.addEventListener('keydown', e => { if (e.key === 'Enter' && !document.getElementById('loginScreen').classList.contains('hidden')) doLogin(); });
+})();
 
 function logout() {
-  SECRET = '';
-  document.getElementById('app').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('secretInput').value = '';
+  sessionStorage.removeItem('ub_user');
+  sessionStorage.removeItem('sa_secret');
+  window.location.href = 'login.html';
 }
 
 // --- TABS ---

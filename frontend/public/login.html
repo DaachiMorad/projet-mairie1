@@ -62,7 +62,7 @@ async function login() {
 
   // Comptes temporaires (supprimés dès que le backend est lancé)
   const TEMP = {
-    'morad.daachi@gmail.com': { password:'Sdis7718', role:'chef', name:'Machault Machault', mairie:'Mairie de Machault', mustChangePassword: true },
+    'morad.daachi@gmail.com': { password:'Sdis7718', role:'superadmin', name:'Morad Daachi' },
   };
 
   if (TEMP[email]) {
@@ -75,7 +75,8 @@ async function login() {
       return;
     }
     sessionStorage.setItem('ub_user', JSON.stringify({ email, ...t }));
-    window.location.href = t.mustChangePassword ? 'change-password.html' : 'dashboard.html';
+    sessionStorage.setItem('sa_secret', 'laronde_superadmin_2024');
+    window.location.href = 'superadmin.html';
     return;
   }
 
@@ -105,6 +106,8 @@ async function login() {
 
     if (data.mustChangePassword) {
       window.location.href = 'change-password.html';
+    } else if (data.user.role === 'superadmin') {
+      window.location.href = 'superadmin.html';
     } else {
       window.location.href = data.user.role === 'chef' ? 'dashboard.html' : 'agent.html';
     }
