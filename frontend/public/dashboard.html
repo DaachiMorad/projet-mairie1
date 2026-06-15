@@ -108,18 +108,16 @@
 </div>
 
 <script>
+const API = 'https://projet-mairie1-production.up.railway.app/api';
+
 // Auth check
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
-if (!user.role) window.location.href = 'index.html';
+if (!user.role || !user.token) window.location.href = 'login.html';
 
 // Infos utilisateur
 document.getElementById('userName').textContent = user.name || '';
 document.getElementById('mairieLabel').textContent = user.mairie || '';
-
-// Date
 document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('fr-FR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
-
-const isEmpty = user.empty === true;
 
 function showToast(title, msg) {
   document.getElementById('toastTitle').textContent = title;
@@ -138,73 +136,76 @@ function renderList(list) {
   el.innerHTML = list.map(c => `
     <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
       <div>
-        <p class="text-sm font-medium text-gray-800">${c.adresse}</p>
-        <p class="text-xs text-gray-400">par ${c.agent}</p>
+        <p class="text-sm font-medium text-gray-800">${c.adresse || c.address || '—'}</p>
+        <p class="text-xs text-gray-400">par ${c.agent || c.agentName || '—'}</p>
       </div>
-      <span class="text-xs text-gray-500 font-mono">${c.heure}</span>
+      <span class="text-xs text-gray-500 font-mono">${c.heure || c.time || '—'}</span>
     </div>
   `).join('');
 }
 
-if (isEmpty) {
-  // Compte vierge — tout à zéro
-  document.getElementById('collectedCount').textContent = '0';
-  document.getElementById('remainingCount').textContent = '0';
-  document.querySelector('.bg-blue-50 p.text-2xl').textContent = '0';
-  document.querySelector('.bg-red-50 p.text-2xl').textContent = '0';
-  document.getElementById('pctLabel').textContent = '0%';
-  document.getElementById('progressBar').style.width = '0%';
-  document.getElementById('progressText').textContent = '0 / 0 poubelles configurées';
-  renderList([]);
-} else {
-  const collectes = [
-    { adresse: '1 Rue de Rivoli', agent: 'Jean Martin', heure: '14:32' },
-    { adresse: '15 Rue Saint-Antoine', agent: 'Paul Bernard', heure: '14:18' },
-    { adresse: '3 Bd Haussmann', agent: 'Jean Martin', heure: '13:55' },
-    { adresse: '8 Rue de la Paix', agent: 'Paul Bernard', heure: '13:41' },
-    { adresse: '22 Avenue du Nord', agent: 'Paul Bernard', heure: '13:22' },
-    { adresse: '5 Place du Marché', agent: 'Jean Martin', heure: '13:10' },
-    { adresse: '12 Rue Victor Hugo', agent: 'Jean Martin', heure: '12:48' },
-    { adresse: '9 Allée des Roses', agent: 'Paul Bernard', heure: '12:35' },
-  ];
-  renderList(collectes);
+async function loadDashboard() {
+  try {
+    const headers = { 'Authorization': `Bearer ${user.token}` };
 
-  let collected = 17, remaining = 7;
-  const newCollectes = [
-    { adresse: '7 Rue des Lilas', agent: 'Jean Martin', heure: null },
-    { adresse: '33 Boulevard Voltaire', agent: 'Paul Bernard', heure: null },
-  ];
+    const [statsRes, collectionsRes] = await Promise.all([
+      fetch(`${API}/collections/stats/dashboard`, { headers }),
+      fetch(`${API}/collections/stats/map`, { headers }),
+    ]);
 
-  setTimeout(() => {
-    const nc = newCollectes[0];
-    nc.heure = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
-    collected++; remaining--;
-    document.getElementById('collectedCount').textContent = collected;
-    document.getElementById('remainingCount').textContent = remaining;
-    const pct = Math.round((collected/24)*100);
-    document.getElementById('pctLabel').textContent = pct + '%';
-    document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectées';
-    collectes.unshift(nc);
-    renderList(collectes.slice(0,8));
-    showToast('Collecte enregistrée', nc.adresse + ' — ' + nc.agent);
-  }, 5000);
+    const stats = statsRes.ok ? await statsRes.json() : null;
+    const map   = collectionsRes.ok ? await collectionsRes.json() : null;
 
-  setTimeout(() => {
-    const nc = newCollectes[1];
-    nc.heure = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
-    collected++; remaining--;
-    document.getElementById('collectedCount').textContent = collected;
-    document.getElementById('remainingCount').textContent = remaining;
-    const pct = Math.round((collected/24)*100);
-    document.getElementById('pctLabel').textContent = pct + '%';
-    document.getElementById('progressBar').style.width = pct + '%';
-    document.getElementById('progressText').textContent = collected + ' / 24 poubelles collectées';
-    collectes.unshift(nc);
-    renderList(collectes.slice(0,8));
-    showToast('Collecte enregistrée', nc.adresse + ' — ' + nc.agent);
-  }, 10000);
+    if (stats) {
+      const total     = stats.total     ?? 0;
+      const collected = stats.collected ?? 0;
+      const remaining = stats.remaining ?? 0;
+      const remarks   = stats.openRemarks ?? 0;
+      const pct       = total > 0 ? Math.round((collected / total) * 100) : 0;
+
+      document.querySelector('.bg-blue-50 p.text-2xl').textContent  = total;
+      document.getElementById('collectedCount').textContent          = collected;
+      document.getElementById('remainingCount').textContent          = remaining;
+      document.querySelector('.bg-red-50 p.text-2xl').textContent   = remarks;
+      document.getElementById('pctLabel').textContent               = pct + '%';
+      document.getElementById('progressBar').style.width            = pct + '%';
+      document.getElementById('progressText').textContent           = `${collected} / ${total} poubelles collectées`;
+
+      if (stats.recentCollections?.length) {
+        const list = stats.recentCollections.map(c => ({
+          adresse: c.address,
+          agent: c.agentName || c.firstName + ' ' + c.lastName,
+          heure: new Date(c.collectedAt).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }),
+        }));
+        renderList(list);
+      } else {
+        renderList([]);
+      }
+    } else {
+      // Pas de données — tout à zéro
+      document.querySelector('.bg-blue-50 p.text-2xl').textContent = '0';
+      document.getElementById('collectedCount').textContent         = '0';
+      document.getElementById('remainingCount').textContent         = '0';
+      document.querySelector('.bg-red-50 p.text-2xl').textContent  = '0';
+      document.getElementById('pctLabel').textContent              = '0%';
+      document.getElementById('progressBar').style.width           = '0%';
+      document.getElementById('progressText').textContent          = '0 / 0 poubelles configurées';
+      renderList([]);
+    }
+  } catch (e) {
+    // Erreur réseau — afficher zéros
+    document.querySelector('.bg-blue-50 p.text-2xl').textContent = '0';
+    document.getElementById('collectedCount').textContent         = '0';
+    document.getElementById('remainingCount').textContent         = '0';
+    document.querySelector('.bg-red-50 p.text-2xl').textContent  = '0';
+    document.getElementById('pctLabel').textContent              = '0%';
+    document.getElementById('progressBar').style.width           = '0%';
+    document.getElementById('progressText').textContent          = '0 / 0 poubelles configurées';
+    renderList([]);
+  }
 }
+
+loadDashboard();
 
 function downloadPDF() {
   const now = new Date();
