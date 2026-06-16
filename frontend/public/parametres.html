@@ -271,13 +271,28 @@ function toggleAlert(btn) {
   }
 }
 
-function testEmail() {
+async function testEmail() {
   const email = document.getElementById('emailInput').value.trim();
   if (!email || !email.includes('@')) {
     showToast('⚠️', 'Entrez une adresse email valide', 'orange');
     return;
   }
-  showToast('✉️', `Email de test envoyé à ${email}`, 'green');
+  showToast('✉️', 'Envoi en cours…', 'green');
+  try {
+    const res = await fetch(`${API}/email/test`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}` },
+      body: JSON.stringify({ to: email }),
+    });
+    if (res.ok) {
+      showToast('✅', `Email de test envoyé à ${email}`, 'green');
+    } else {
+      const err = await res.json();
+      showToast('⚠️', err.error || 'Erreur lors de l\'envoi', 'orange');
+    }
+  } catch {
+    showToast('⚠️', 'Impossible de joindre le serveur', 'orange');
+  }
 }
 
 function save() {
