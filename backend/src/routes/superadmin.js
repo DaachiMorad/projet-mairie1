@@ -3,11 +3,12 @@ const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 const db = require('../config/db');
 
-const SUPER_SECRET = process.env.SUPER_ADMIN_SECRET || 'laronde_superadmin_2024';
+const SUPER_SECRET = process.env.SUPER_ADMIN_SECRET;
 
 function guard(req, res, next) {
+  if (!SUPER_SECRET) return res.status(503).json({ error: 'Service non configuré' });
   const secret = req.headers['x-super-secret'];
-  if (secret !== SUPER_SECRET) return res.status(403).json({ error: 'Accès refusé' });
+  if (!secret || secret !== SUPER_SECRET) return res.status(403).json({ error: 'Accès refusé' });
   next();
 }
 

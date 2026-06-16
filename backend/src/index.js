@@ -15,8 +15,22 @@ const emailRoutes = require('./routes/email');
 
 const app = express();
 
-app.use(cors({ origin: '*', methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'], allowedHeaders: ['Content-Type','Authorization','x-super-secret'] }));
-app.options('*', cors());
+const ALLOWED_ORIGINS = [
+  'https://projet-mairie1.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500',
+];
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) cb(null, true);
+    else cb(new Error('CORS non autorisé'));
+  },
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization','x-super-secret'],
+};
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: false }));
 app.use(express.json());
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 500 }));

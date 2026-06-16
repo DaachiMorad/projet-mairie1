@@ -106,38 +106,21 @@ async function migrate() {
     )
   `);
 
-  // Seed default municipality + chef if none exists
-  const [rows] = await pool.query('SELECT id FROM municipalities LIMIT 1');
-  if (rows.length === 0) {
-    const { v4: uuidv4 } = require('uuid');
-    const bcrypt = require('bcryptjs');
-    const mId = uuidv4();
-    const uId = uuidv4();
-    await pool.query(
-      'INSERT INTO municipalities (id, name, slug, email) VALUES (?, ?, ?, ?)',
-      [mId, 'Mairie Demo', 'mairie-demo', 'admin@mairie.fr']
-    );
-    const hash = await bcrypt.hash('admin123', 10);
-    await pool.query(
-      'INSERT INTO users (id, municipalityId, email, passwordHash, firstName, lastName, role) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [uId, mId, 'admin@mairie.fr', hash, 'Admin', 'Chef', 'chef']
-    );
-    console.log('Seeded default admin: admin@mairie.fr / admin123');
-  }
-
-  // Seed superadmin si non existant
+  // Seed superadmin si non existant (credentials depuis variables d'environnement uniquement)
   const { v4: uuidv4 } = require('uuid');
   const bcrypt = require('bcryptjs');
-  const SUPERADMIN_EMAIL    = process.env.SUPERADMIN_EMAIL    || 'morad.daachi@gmail.com';
-  const SUPERADMIN_PASSWORD = process.env.SUPERADMIN_PASSWORD || 'Sdis7718';
-  const [saRows] = await pool.query('SELECT id FROM users WHERE role = "superadmin" LIMIT 1');
-  if (saRows.length === 0) {
-    const hash = await bcrypt.hash(SUPERADMIN_PASSWORD, 10);
-    await pool.query(
-      'INSERT INTO users (id, municipalityId, email, passwordHash, firstName, lastName, role) VALUES (?, NULL, ?, ?, ?, ?, "superadmin")',
-      [uuidv4(), SUPERADMIN_EMAIL, hash, 'Morad', 'Daachi']
-    );
-    console.log(`Superadmin créé : ${SUPERADMIN_EMAIL}`);
+  const SUPERADMIN_EMAIL    = process.env.SUPERADMIN_EMAIL;
+  const SUPERADMIN_PASSWORD = process.env.SUPERADMIN_PASSWORD;
+  if (SUPERADMIN_EMAIL && SUPERADMIN_PASSWORD) {
+    const [saRows] = await pool.query('SELECT id FROM users WHERE role = "superadmin" LIMIT 1');
+    if (saRows.length === 0) {
+      const hash = await bcrypt.hash(SUPERADMIN_PASSWORD, 10);
+      await pool.query(
+        'INSERT INTO users (id, municipalityId, email, passwordHash, firstName, lastName, role) VALUES (?, NULL, ?, ?, ?, ?, "superadmin")',
+        [uuidv4(), SUPERADMIN_EMAIL, hash, 'Super', 'Admin']
+      );
+      console.log(`Superadmin créé : ${SUPERADMIN_EMAIL}`);
+    }
   }
 
   console.log('Database migrated');

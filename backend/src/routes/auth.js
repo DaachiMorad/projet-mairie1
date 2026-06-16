@@ -2,11 +2,20 @@ const router = require('express').Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const rateLimit = require('express-rate-limit');
 const db = require('../config/db');
 const { auth, chefOnly } = require('../middleware/auth');
 
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { error: 'Trop de tentatives de connexion, réessayez dans 15 minutes' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // POST /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis' });
 
@@ -27,8 +36,8 @@ router.post('/login', async (req, res) => {
 
     const token = jwt.sign(
       { id: user.id, role: user.role, municipalityId: user.municipalityId },
-      process.env.JWT_SECRET || 'secret_laronde',
-      { expiresIn: '30d' }
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
     );
 
     res.json({
@@ -45,8 +54,8 @@ router.post('/login', async (req, res) => {
         municipalitySlug: user.municipalitySlug,
       }
     });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -58,8 +67,8 @@ router.get('/agents', auth, chefOnly, async (req, res) => {
       [req.user.municipalityId]
     );
     res.json(rows);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -80,8 +89,8 @@ router.post('/agents', auth, chefOnly, async (req, res) => {
       [id, req.user.municipalityId, email, hash, firstName, lastName, phone || null, sector || null]
     );
     res.status(201).json({ id });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 
@@ -93,10 +102,11 @@ router.put('/agents/:id', auth, chefOnly, async (req, res) => {
       [req.body.isActive ? 1 : 0, req.params.id, req.user.municipalityId]
     );
     res.json({ ok: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
+
 // POST /api/auth/register
 router.post('/register', async (req, res) => {
   const { municipalityName, firstName, lastName, email, password } = req.body;
@@ -105,20 +115,23 @@ router.post('/register', async (req, res) => {
   try {
     const [exists] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (exists.length > 0) return res.status(409).json({ error: 'Email déjà utilisé' });
-    const { v4: uuidv4 } = require('uuid');
-    const bcrypt = require('bcryptjs');
+
     const mId = uuidv4();
     const uId = uuidv4();
     await db.query('INSERT INTO municipalities (id, name, slug, email) VALUES (?, ?, ?, ?)',
-      [mId, municipalityName, municipalityName.toLowerCase().replace(/\s+/g,'-'), email]);
+      [mId, municipalityName, municipalityName.toLowerCase().replace(/\s+/g, '-'), email]);
     const hash = await bcrypt.hash(password, 10);
     await db.query('INSERT INTO users (id, municipalityId, email, passwordHash, firstName, lastName, role) VALUES (?, ?, ?, ?, ?, ?, "chef")',
       [uId, mId, email, hash, firstName, lastName]);
-    const jwt = require('jsonwebtoken');
-    const token = jwt.sign({ id: uId, role: 'chef', municipalityId: mId }, process.env.JWT_SECRET || 'secret_laronde', { expiresIn: '30d' });
+
+    const token = jwt.sign(
+      { id: uId, role: 'chef', municipalityId: mId },
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
+    );
     res.status(201).json({ token, user: { id: uId, email, firstName, lastName, role: 'chef', municipalityId: mId, municipalityName } });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch {
+    res.status(500).json({ error: 'Erreur serveur' });
   }
 });
 

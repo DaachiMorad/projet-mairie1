@@ -74,6 +74,7 @@
 
 <script>
 const API = 'https://projet-mairie1-production.up.railway.app/api';
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
 if (!user.role || !user.token) window.location.href = 'login.html';
 
@@ -161,12 +162,12 @@ function renderBins(list) {
     : list.map(b => `
       <div class="flex items-center justify-between px-5 py-3 gap-3">
         <div class="flex-1 min-w-0">
-          <p class="font-medium text-gray-800 truncate">${b.address}</p>
-          <p class="text-sm text-gray-400">${b.neighborhood || '—'} · ${b.sector || '—'} · ${b.frequency}</p>
+          <p class="font-medium text-gray-800 truncate">${esc(b.address)}</p>
+          <p class="text-sm text-gray-400">${esc(b.neighborhood || '—')} · ${esc(b.sector || '—')} · ${esc(b.frequency)}</p>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-          <span class="text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[b.type]||'bg-gray-100 text-gray-700'}">${b.type}</span>
-          <button onclick="archiveBin('${b.id}')" class="text-gray-300 hover:text-red-400 transition-colors text-lg" title="Archiver">📦</button>
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium ${TYPE_COLORS[b.type]||'bg-gray-100 text-gray-700'}">${esc(b.type)}</span>
+          <button onclick="archiveBin('${esc(b.id)}')" class="text-gray-300 hover:text-red-400 transition-colors text-lg" title="Archiver">📦</button>
         </div>
       </div>`).join('');
 }

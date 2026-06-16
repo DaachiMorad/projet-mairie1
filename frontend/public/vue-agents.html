@@ -51,6 +51,7 @@
 
 <script>
 const API = 'https://projet-mairie1-production.up.railway.app/api';
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
 if (!user.role || !user.token) window.location.href = 'login.html';
 const HEADERS = { 'Authorization': `Bearer ${user.token}` };
@@ -91,8 +92,8 @@ function render() {
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="font-semibold text-gray-900">${a.firstName} ${a.lastName}</span>
-            ${a.sector ? `<span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${a.sector}</span>` : ''}
+            <span class="font-semibold text-gray-900">${esc(a.firstName)} ${esc(a.lastName)}</span>
+            ${a.sector ? `<span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${esc(a.sector)}</span>` : ''}
             <span class="text-xs px-2 py-0.5 rounded-full ${a.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}">${a.isActive ? 'Actif' : 'Inactif'}</span>
           </div>
           <p class="text-xs text-gray-400 mt-0.5">Dernière connexion : ${a.lastLoginAt ? new Date(a.lastLoginAt).toLocaleDateString('fr-FR') : 'jamais'}</p>
@@ -119,10 +120,10 @@ function render() {
             <div class="flex items-center gap-3 px-5 py-2.5">
               <span class="shrink-0">${b.collectedToday ? '✅' : '⏳'}</span>
               <div class="flex-1 min-w-0">
-                <p class="text-sm ${b.collectedToday ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'} truncate">${b.address}</p>
-                ${b.neighborhood ? `<p class="text-xs text-gray-400">${b.neighborhood}</p>` : ''}
+                <p class="text-sm ${b.collectedToday ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'} truncate">${esc(b.address)}</p>
+                ${b.neighborhood ? `<p class="text-xs text-gray-400">${esc(b.neighborhood)}</p>` : ''}
               </div>
-              <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full shrink-0">${b.type}</span>
+              <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full shrink-0">${esc(b.type)}</span>
             </div>`).join('')}
           ${!(a.bins||[]).length ? '<p class="text-sm text-gray-400 text-center py-4">Aucune poubelle assignée</p>' : ''}
         </div>

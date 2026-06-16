@@ -77,6 +77,7 @@
 
 <script>
 const API = 'https://projet-mairie1-production.up.railway.app/api';
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
 if (!user.role || !user.token) window.location.href = 'login.html';
 const HEADERS = { 'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}` };
@@ -218,9 +219,9 @@ function render() {
         <div class="bg-white rounded-xl border border-gray-200 p-4 mb-3">
           <div class="flex items-start justify-between gap-3">
             <div class="flex-1 min-w-0">
-              <p class="font-medium text-gray-800 text-sm">${bin.address}</p>
-              <p class="text-xs text-gray-400 mt-0.5">${bin.neighborhood || ''}</p>
-              <span class="inline-block mt-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${bin.type}</span>
+              <p class="font-medium text-gray-800 text-sm">${esc(bin.address)}</p>
+              <p class="text-xs text-gray-400 mt-0.5">${esc(bin.neighborhood || '')}</p>
+              <span class="inline-block mt-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">${esc(bin.type)}</span>
             </div>
             <button onclick="openModal('${bin.id}')" class="shrink-0 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1">
               Collecter ▶
@@ -238,10 +239,10 @@ function render() {
         <div class="bg-white rounded-xl border border-green-100 p-4 mb-2 flex items-center gap-3">
           <span class="text-xl shrink-0">✅</span>
           <div class="flex-1 min-w-0">
-            <p class="text-sm font-medium text-gray-700 truncate">${bin.address}</p>
-            <p class="text-xs text-gray-400">${bin.neighborhood || ''}</p>
+            <p class="text-sm font-medium text-gray-700 truncate">${esc(bin.address)}</p>
+            <p class="text-xs text-gray-400">${esc(bin.neighborhood || '')}</p>
           </div>
-          <span class="text-xs text-gray-500 font-mono shrink-0">${bin.time || ''}</span>
+          <span class="text-xs text-gray-500 font-mono shrink-0">${esc(bin.time || '')}</span>
         </div>
       `).join('');
   }
@@ -279,7 +280,7 @@ function render() {
           <label class="text-xs font-medium text-gray-600 mb-1 block">Poubelle</label>
           <select class="inp" id="remarkBin">
             <option value="">-- Choisir --</option>
-            ${bins.map(b => `<option value="${b.id}">${b.address}</option>`).join('')}
+            ${bins.map(b => `<option value="${esc(b.id)}">${esc(b.address)}</option>`).join('')}
           </select>
         </div>
         <div>

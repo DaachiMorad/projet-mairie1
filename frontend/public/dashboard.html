@@ -109,6 +109,7 @@
 
 <script>
 const API = 'https://projet-mairie1-production.up.railway.app/api';
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
 
 // Auth check
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
@@ -136,8 +137,8 @@ function renderList(list) {
   el.innerHTML = list.map(c => `
     <div class="flex items-center justify-between py-2.5 border-b border-gray-50 last:border-0">
       <div>
-        <p class="text-sm font-medium text-gray-800">${c.adresse || c.address || '—'}</p>
-        <p class="text-xs text-gray-400">par ${c.agent || c.agentName || '—'}</p>
+        <p class="text-sm font-medium text-gray-800">${esc(c.adresse || c.address || '—')}</p>
+        <p class="text-xs text-gray-400">par ${esc(c.agent || c.agentName || '—')}</p>
       </div>
       <span class="text-xs text-gray-500 font-mono">${c.heure || c.time || '—'}</span>
     </div>
