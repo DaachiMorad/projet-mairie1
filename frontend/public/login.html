@@ -87,7 +87,7 @@ async function login() {
     if (data.mustChangePassword) {
       window.location.href = 'change-password.html';
     } else if (data.user.role === 'superadmin') {
-      sessionStorage.setItem('sa_secret', 'laronde_superadmin_2024');
+      sessionStorage.setItem('sa_secret', 'LaRonde_SA_2026');
       window.location.href = 'superadmin.html';
     } else {
       window.location.href = data.user.role === 'chef' ? 'dashboard.html' : 'agent.html';
