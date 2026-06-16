@@ -176,8 +176,6 @@
             <label class="text-xs font-medium text-gray-600 block mb-1">Agent assigné</label>
             <select id="zf-agent" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
               <option value="">— Non assigné —</option>
-              <option>Jean Martin</option>
-              <option>Paul Bernard</option>
             </select>
           </div>
         </div>
@@ -309,11 +307,7 @@ const JOURS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
 const JOURS_FULL = ['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 const ZONE_COLORS = ['#16a34a','#3b82f6','#f97316','#8b5cf6','#ec4899','#14b8a6','#f59e0b'];
 
-let zones = JSON.parse(localStorage.getItem('laronde_zones') || 'null') || [
-  { id:1, name:'Centre-ville', days:[0,2,4], time:'07:00', agent:'Jean Martin' },
-  { id:2, name:'Zone Nord',    days:[1,3],   time:'07:30', agent:'Paul Bernard' },
-  { id:3, name:'Parc & Espaces verts', days:[2], time:'08:00', agent:'Jean Martin' },
-];
+let zones = JSON.parse(localStorage.getItem('laronde_zones') || 'null') || [];
 let editingZoneId = null;
 let selectedDays = [];
 
@@ -452,6 +446,17 @@ function deleteZone(id) {
 
 // Init zones
 renderZones();
+
+// Charger les vrais agents depuis l'API
+const API = 'https://projet-mairie1-production.up.railway.app/api';
+fetch(`${API}/auth/agents`, { headers: { 'Authorization': `Bearer ${user.token}` } })
+  .then(r => r.ok ? r.json() : [])
+  .then(agents => {
+    const sel = document.getElementById('zf-agent');
+    sel.innerHTML = '<option value="">— Non assigné —</option>' +
+      agents.map(a => `<option value="${a.id}">${a.firstName} ${a.lastName}</option>`).join('');
+  })
+  .catch(() => {});
 </script>
 </body>
 </html>

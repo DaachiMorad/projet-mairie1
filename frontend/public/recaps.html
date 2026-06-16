@@ -68,49 +68,15 @@
 </main>
 
 <script>
+const API = 'https://projet-mairie1-production.up.railway.app/api';
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
-if (!user.role) window.location.href = 'index.html';
-
-if (user.empty) {
-  document.querySelector('main').innerHTML = `
-    <div class="flex items-center justify-between mb-6"><h1 class="text-2xl font-bold text-gray-900">Récapitulatifs</h1></div>
-    <div class="bg-white rounded-xl border border-dashed border-gray-300 p-16 text-center text-gray-400">
-      <p class="text-5xl mb-3">📈</p>
-      <p class="font-semibold text-gray-500 text-lg">Pas encore de données</p>
-      <p class="text-sm mt-2">Les statistiques apparaîtront une fois vos premières tournées effectuées.</p>
-    </div>`;
-  throw new Error('empty');
-}
-
-const DATA = {
-  week: {
-    total: 119, bins: 24, rate: 71,
-    chart: [12, 18, 15, 20, 17, 19, 18],
-    labels: ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],
-    agents: [{ name:'Jean Martin', sector:'Centre-ville', count:68 }, { name:'Paul Bernard', sector:'Nord', count:51 }],
-    types:  [{ type:'ordures', count:72 }, { type:'recyclable', count:27 }, { type:'verre', count:14 }, { type:'encombrants', count:6 }],
-    remarks:[{ type:'Débordante', count:2, status:'ouvert' }, { type:'Dégradée', count:1, status:'en cours' }],
-  },
-  month: {
-    total: 504, bins: 24, rate: 75,
-    chart: [16,14,18,17,20,15,19,18,17,16,20,19,18,17,16,20,18,15,17,19,16,14,18,17,20,15,19,18,17,16],
-    labels: Array.from({length:30}, (_,i) => i%5===0 ? `J-${30-i}` : ''),
-    agents: [{ name:'Jean Martin', sector:'Centre-ville', count:286 }, { name:'Paul Bernard', sector:'Nord', count:218 }],
-    types:  [{ type:'ordures', count:304 }, { type:'recyclable', count:112 }, { type:'verre', count:62 }, { type:'encombrants', count:26 }],
-    remarks:[{ type:'Débordante', count:7, status:'ouvert' }, { type:'Dégradée', count:4, status:'résolu' }, { type:'Déchirée', count:2, status:'ouvert' }],
-  },
-  quarter: {
-    total: 1512, bins: 24, rate: 75,
-    chart: Array.from({length:12}, () => Math.floor(100+Math.random()*60)),
-    labels: ['Jan S1','S2','S3','S4','Fév S1','S2','S3','S4','Mar S1','S2','S3','S4'],
-    agents: [{ name:'Jean Martin', sector:'Centre-ville', count:858 }, { name:'Paul Bernard', sector:'Nord', count:654 }],
-    types:  [{ type:'ordures', count:912 }, { type:'recyclable', count:336 }, { type:'verre', count:186 }, { type:'encombrants', count:78 }],
-    remarks:[{ type:'Débordante', count:21, status:'résolu' }, { type:'Dégradée', count:12, status:'résolu' }, { type:'Déchirée', count:6, status:'résolu' }, { type:'Manquante', count:3, status:'résolu' }],
-  }
-};
+if (!user.role || !user.token) window.location.href = 'login.html';
+const HEADERS = { 'Authorization': `Bearer ${user.token}` };
 
 const TYPE_COLORS = { ordures:'#6b7280', recyclable:'#3b82f6', verre:'#22c55e', encombrants:'#f97316' };
+const JOURS_COURT = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 let currentPeriod = 'week';
+let currentData = null;
 
 function setPeriod(p) {
   currentPeriod = p;
@@ -119,18 +85,59 @@ function setPeriod(p) {
       ? 'text-sm px-4 py-1.5 rounded-lg font-medium bg-green-600 text-white'
       : 'text-sm px-4 py-1.5 rounded-lg font-medium bg-white border border-gray-200 text-gray-600';
   });
-  render();
+  load();
+}
+
+async function load() {
+  try {
+    const res = await fetch(`${API}/reports/recap?period=${currentPeriod}`, { headers: HEADERS });
+    if (!res.ok) throw new Error(res.status);
+    currentData = await res.json();
+    render();
+  } catch {
+    currentData = null;
+    renderEmpty();
+  }
+}
+
+function renderEmpty() {
+  document.getElementById('kpis').innerHTML = [
+    { icon:'📈', label:'Collectes totales', val:'0' },
+    { icon:'🗑', label:'Poubelles actives', val:'0' },
+    { icon:'📊', label:'Taux de collecte',  val:'0%' },
+    { icon:'⚠️', label:'Remarques',         val:'0' },
+  ].map(k => `
+    <div class="bg-white rounded-xl border border-gray-200 p-4">
+      <div class="flex items-center gap-2 mb-1 text-gray-500 text-xs">${k.icon} ${k.label}</div>
+      <p class="text-2xl font-bold text-gray-900">${k.val}</p>
+    </div>
+  `).join('');
+  const empty = '<p class="text-sm text-gray-400 text-center py-6">Aucune donnée pour cette période</p>';
+  document.getElementById('barChart').innerHTML = '';
+  document.getElementById('chartLabels').innerHTML = '';
+  document.getElementById('agentBars').innerHTML = empty;
+  document.getElementById('typeBars').innerHTML = empty;
+  document.getElementById('remarkCards').innerHTML = '<p class="text-sm text-gray-400 col-span-4 text-center py-4">Aucune remarque</p>';
+}
+
+function dayLabel(dayStr) {
+  const d = new Date(dayStr + 'T00:00:00');
+  if (currentPeriod === 'week') return JOURS_COURT[d.getDay()];
+  if (currentPeriod === 'month') return String(d.getDate());
+  return d.getDate() + ' ' + d.toLocaleDateString('fr-FR', { month:'short' });
 }
 
 function render() {
-  const d = DATA[currentPeriod];
+  if (!currentData) { renderEmpty(); return; }
+  const d = currentData;
 
   // KPIs
+  const remarkTotal = (d.remarks || []).reduce((s, r) => s + r.count, 0);
   document.getElementById('kpis').innerHTML = [
-    { icon:'📈', label:'Collectes totales', val:d.total.toLocaleString('fr') },
-    { icon:'🗑', label:'Poubelles actives', val:d.bins },
-    { icon:'📊', label:'Taux de collecte',  val:d.rate+'%' },
-    { icon:'⚠️', label:'Remarques',         val:d.remarks.reduce((s,r)=>s+r.count,0) },
+    { icon:'📈', label:'Collectes totales', val: Number(d.totalCollections).toLocaleString('fr') },
+    { icon:'🗑', label:'Poubelles actives', val: d.totalBins },
+    { icon:'📊', label:'Taux de collecte',  val: d.collectionRate + '%' },
+    { icon:'⚠️', label:'Remarques',         val: remarkTotal },
   ].map(k => `
     <div class="bg-white rounded-xl border border-gray-200 p-4">
       <div class="flex items-center gap-2 mb-1 text-gray-500 text-xs">${k.icon} ${k.label}</div>
@@ -139,101 +146,105 @@ function render() {
   `).join('');
 
   // Bar chart
-  const maxVal = Math.max(...d.chart);
-  document.getElementById('barChart').innerHTML = d.chart.map((v,i) => {
-    const h = Math.max(4, Math.round((v/maxVal)*140));
-    return `<div class="flex-1 flex flex-col items-center gap-1 group relative">
-      <div class="w-full bg-green-400 hover:bg-green-500 rounded-t cursor-default" style="height:${h}px">
-        <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">${v}</div>
-      </div>
-      <span class="text-[9px] text-gray-400">${d.labels[i]||''}</span>
-    </div>`;
-  }).join('');
+  const chart = d.dailyChart || [];
+  if (chart.length) {
+    const maxVal = Math.max(...chart.map(c => c.count), 1);
+    document.getElementById('barChart').innerHTML = chart.map(c => {
+      const h = Math.max(4, Math.round((c.count / maxVal) * 140));
+      return `<div class="flex-1 flex flex-col items-center gap-1 group relative">
+        <div class="w-full bg-green-400 hover:bg-green-500 rounded-t cursor-default" style="height:${h}px">
+          <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 whitespace-nowrap z-10">${c.count}</div>
+        </div>
+        <span class="text-[9px] text-gray-400">${dayLabel(c.day)}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('chartLabels').innerHTML = '';
+  } else {
+    document.getElementById('barChart').innerHTML = '<p class="text-sm text-gray-400 w-full text-center self-center py-10">Aucune collecte sur cette période</p>';
+    document.getElementById('chartLabels').innerHTML = '';
+  }
 
   // Agent bars
-  const maxAgent = Math.max(...d.agents.map(a=>a.count));
-  document.getElementById('agentBars').innerHTML = d.agents.map(a => `
-    <div class="mb-4">
-      <div class="flex items-center justify-between mb-1">
-        <span class="text-sm font-medium text-gray-700">${a.name}</span>
-        <span class="text-sm font-bold text-gray-900">${a.count.toLocaleString('fr')}</span>
+  const agents = d.byAgent || [];
+  const maxAgent = Math.max(...agents.map(a => a.count), 1);
+  document.getElementById('agentBars').innerHTML = agents.length
+    ? agents.map(a => `
+      <div class="mb-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-sm font-medium text-gray-700">${a.firstName} ${a.lastName}</span>
+          <span class="text-sm font-bold text-gray-900">${Number(a.count).toLocaleString('fr')}</span>
+        </div>
+        <div class="h-2 bg-gray-100 rounded-full">
+          <div class="h-2 bg-green-500 rounded-full" style="width:${Math.round((a.count/maxAgent)*100)}%"></div>
+        </div>
+        <p class="text-xs text-gray-400 mt-0.5">${a.sector || '—'}</p>
       </div>
-      <div class="h-2 bg-gray-100 rounded-full">
-        <div class="h-2 bg-green-500 rounded-full" style="width:${Math.round((a.count/maxAgent)*100)}%"></div>
-      </div>
-      <p class="text-xs text-gray-400 mt-0.5">${a.sector}</p>
-    </div>
-  `).join('');
+    `).join('')
+    : '<p class="text-sm text-gray-400 text-center py-6">Aucune collecte enregistrée</p>';
 
   // Type bars
-  const totalTypes = d.types.reduce((s,t)=>s+t.count,0);
-  document.getElementById('typeBars').innerHTML = d.types.map(t => {
-    const pct = Math.round((t.count/totalTypes)*100);
-    return `
-    <div class="mb-4">
-      <div class="flex items-center justify-between mb-1">
-        <span class="text-sm font-medium text-gray-700 capitalize">${t.type}</span>
-        <span class="text-sm text-gray-500">${t.count.toLocaleString('fr')} (${pct}%)</span>
-      </div>
-      <div class="h-2 bg-gray-100 rounded-full">
-        <div class="h-2 rounded-full" style="width:${pct}%;background:${TYPE_COLORS[t.type]||'#6b7280'}"></div>
-      </div>
-    </div>`;
-  }).join('');
+  const types = d.byType || [];
+  const totalTypes = types.reduce((s,t) => s + t.count, 0);
+  document.getElementById('typeBars').innerHTML = types.length
+    ? types.map(t => {
+        const pct = totalTypes > 0 ? Math.round((t.count / totalTypes) * 100) : 0;
+        return `
+        <div class="mb-4">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-sm font-medium text-gray-700 capitalize">${t.type}</span>
+            <span class="text-sm text-gray-500">${Number(t.count).toLocaleString('fr')} (${pct}%)</span>
+          </div>
+          <div class="h-2 bg-gray-100 rounded-full">
+            <div class="h-2 rounded-full" style="width:${pct}%;background:${TYPE_COLORS[t.type]||'#6b7280'}"></div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<p class="text-sm text-gray-400 text-center py-6">Aucune donnée</p>';
 
   // Remarks
-  document.getElementById('remarkCards').innerHTML = d.remarks.map(r => `
-    <div class="bg-orange-50 rounded-lg p-3">
-      <p class="font-semibold text-orange-800">${r.type}</p>
-      <p class="text-xs text-orange-600">${r.count}x · ${r.status}</p>
-    </div>
-  `).join('');
+  const remarks = d.remarks || [];
+  document.getElementById('remarkCards').innerHTML = remarks.length
+    ? remarks.map(r => `
+      <div class="bg-orange-50 rounded-lg p-3">
+        <p class="font-semibold text-orange-800">${r.type}</p>
+        <p class="text-xs text-orange-600">${r.count}x · ${r.status}</p>
+      </div>
+    `).join('')
+    : '<p class="text-sm text-gray-400 col-span-4 text-center py-4">Aucune remarque pour cette période</p>';
 }
 
-render();
+load();
 
 function exportCSV() {
-  const d = DATA[currentPeriod];
+  if (!currentData) return;
+  const d = currentData;
   const periodLabel = { week: '7-jours', month: '30-jours', quarter: '3-mois' }[currentPeriod];
   const today = new Date().toISOString().slice(0, 10);
 
-  // ── Feuille 1 : Collectes par jour ───────────────────────────────────────
-  let csv = '﻿'; // BOM UTF-8 pour Excel
+  let csv = '﻿';
   csv += '=== COLLECTES PAR JOUR ===\r\n';
   csv += 'Jour,Nombre de collectes\r\n';
-  d.chart.forEach((v, i) => {
-    const label = d.labels[i] || `J${i + 1}`;
-    csv += `"${label}",${v}\r\n`;
-  });
+  (d.dailyChart || []).forEach(c => { csv += `"${c.day}",${c.count}\r\n`; });
 
   csv += '\r\n=== PERFORMANCE PAR AGENT ===\r\n';
   csv += 'Agent,Secteur,Collectes\r\n';
-  d.agents.forEach(a => {
-    csv += `"${a.name}","${a.sector}",${a.count}\r\n`;
-  });
+  (d.byAgent || []).forEach(a => { csv += `"${a.firstName} ${a.lastName}","${a.sector||''}",${a.count}\r\n`; });
 
   csv += '\r\n=== RÉPARTITION PAR TYPE ===\r\n';
-  csv += 'Type,Collectes,Pourcentage\r\n';
-  const totalTypes = d.types.reduce((s, t) => s + t.count, 0);
-  d.types.forEach(t => {
-    const pct = Math.round((t.count / totalTypes) * 100);
-    csv += `"${t.type}",${t.count},${pct}%\r\n`;
-  });
+  csv += 'Type,Collectes\r\n';
+  (d.byType || []).forEach(t => { csv += `"${t.type}",${t.count}\r\n`; });
 
   csv += '\r\n=== INCIDENTS & REMARQUES ===\r\n';
   csv += 'Type,Nombre,Statut\r\n';
-  d.remarks.forEach(r => {
-    csv += `"${r.type}",${r.count},"${r.status}"\r\n`;
-  });
+  (d.remarks || []).forEach(r => { csv += `"${r.type}",${r.count},"${r.status}"\r\n`; });
 
   csv += '\r\n=== RÉSUMÉ ===\r\n';
   csv += `Période,${periodLabel}\r\n`;
-  csv += `Total collectes,${d.total}\r\n`;
-  csv += `Poubelles actives,${d.bins}\r\n`;
-  csv += `Taux de collecte,${d.rate}%\r\n`;
+  csv += `Total collectes,${d.totalCollections}\r\n`;
+  csv += `Poubelles actives,${d.totalBins}\r\n`;
+  csv += `Taux de collecte,${d.collectionRate}%\r\n`;
   csv += `Exporté le,${today}\r\n`;
 
-  // Téléchargement
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

@@ -50,89 +50,52 @@
 </div>
 
 <script>
+const API = 'https://projet-mairie1-production.up.railway.app/api';
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
-if (!user.role) window.location.href = 'index.html';
+if (!user.role || !user.token) window.location.href = 'login.html';
+const HEADERS = { 'Authorization': `Bearer ${user.token}` };
 
-document.querySelector('nav .text-xs.text-gray-400').textContent = user.mairie || '';
-
-if (user.empty) {
-  document.getElementById('globalPct').textContent = '—';
-  document.getElementById('globalLabel').textContent = 'Aucun agent configuré';
-  document.getElementById('agentList').innerHTML = `
-    <div class="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center text-gray-400">
-      <p class="text-4xl mb-3">👥</p>
-      <p class="font-semibold text-gray-500">Aucun agent pour le moment</p>
-      <p class="text-sm mt-1">Ajoutez vos agents depuis le panneau d'administration.</p>
-    </div>`;
-  // stop script here for empty mode
-  throw new Error('empty');
-}
-
-const AGENTS = [
-  {
-    id: 1, firstName: 'Jean', lastName: 'Martin', sector: 'Centre-ville', isActive: true,
-    lastActivity: '14:32', lastAddress: '1 Rue de Rivoli',
-    total: 13, collected: 10,
-    bins: [
-      { address:'1 Rue de Rivoli', neighborhood:'Centre-ville', type:'ordures', collected:true },
-      { address:'3 Bd Haussmann', neighborhood:'Centre-ville', type:'recyclable', collected:true },
-      { address:'15 Rue Saint-Antoine', neighborhood:'Centre-ville', type:'ordures', collected:true },
-      { address:'9 Allée des Roses', neighborhood:'Centre', type:'verre', collected:true },
-      { address:'12 Av. de la République', neighborhood:'Est', type:'recyclable', collected:true },
-      { address:'5 Place du Marché', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'18 Rue François Miron', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'20 Rue des Archives', neighborhood:'Marais', type:'ordures', collected:true },
-      { address:'22 Rue Rambuteau', neighborhood:'Marais', type:'ordures', collected:true },
-      { address:'14 Rue du Renard', neighborhood:'Marais', type:'recyclable', collected:true },
-      { address:'7 Rue des Lilas', neighborhood:'Sud', type:'ordures', collected:false },
-      { address:'16 Rue de Rivoli', neighborhood:'Centre-ville', type:'encombrants', collected:false },
-      { address:'10 Rue de Turbigo', neighborhood:'Centre', type:'verre', collected:false },
-    ]
-  },
-  {
-    id: 2, firstName: 'Paul', lastName: 'Bernard', sector: 'Nord', isActive: true,
-    lastActivity: '13:41', lastAddress: '22 Avenue du Nord',
-    total: 11, collected: 7,
-    bins: [
-      { address:'22 Avenue du Nord', neighborhood:'Nord', type:'ordures', collected:true },
-      { address:'8 Rue de la Paix', neighborhood:'Centre', type:'verre', collected:true },
-      { address:'11 Rue de Bretagne', neighborhood:'Nord', type:'ordures', collected:true },
-      { address:'13 Pl. du Marché', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'17 Quai des Célestins', neighborhood:'Centre', type:'ordures', collected:true },
-      { address:'19 Bd de Sébastopol', neighborhood:'Centre', type:'recyclable', collected:true },
-      { address:'21 Rue de Turbigo', neighborhood:'Centre', type:'verre', collected:true },
-      { address:'33 Bd Voltaire', neighborhood:'Est', type:'recyclable', collected:false },
-      { address:'2 Place de la Bastille', neighborhood:'Est', type:'ordures', collected:false },
-      { address:'44 Rue Saint-Denis', neighborhood:'Centre', type:'ordures', collected:false },
-      { address:'6 Rue Beaubourg', neighborhood:'Centre', type:'ordures', collected:false },
-    ]
-  }
-];
-
+let AGENTS = [];
 let expanded = null;
 
 function pctColor(pct) {
-  if (pct === 100) return 'bg-green-500';
-  if (pct > 0)    return 'bg-blue-500';
+  if (pct >= 100) return 'bg-green-500';
+  if (pct > 0)   return 'bg-blue-500';
   return 'bg-gray-300';
 }
 
 function render() {
+  if (!AGENTS.length) {
+    document.getElementById('agentList').innerHTML = `
+      <div class="bg-white rounded-xl border border-dashed border-gray-300 p-12 text-center text-gray-400">
+        <p class="text-4xl mb-3">👥</p>
+        <p class="font-semibold text-gray-500">Aucun agent configuré</p>
+        <p class="text-sm mt-1">Ajoutez vos agents depuis le panneau super admin.</p>
+      </div>`;
+    return;
+  }
+  const totalAll = AGENTS.reduce((s,a) => s + a.total, 0);
+  const collAll  = AGENTS.reduce((s,a) => s + a.collected, 0);
+  const pctAll   = totalAll > 0 ? Math.round((collAll/totalAll)*100) : 0;
+  document.getElementById('globalPct').textContent  = pctAll + '%';
+  document.getElementById('globalLabel').textContent = collAll + '/' + totalAll + ' collectées';
+
   document.getElementById('agentList').innerHTML = AGENTS.map(a => {
-    const pct = Math.round((a.collected / a.total) * 100);
+    const pct   = a.total > 0 ? Math.round((a.collected / a.total) * 100) : 0;
     const isExp = expanded === a.id;
     return `
     <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <button onclick="toggle(${a.id})" class="w-full px-5 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors text-left">
-        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0 ${pct===100?'bg-green-500':'bg-blue-500'}">
+      <button onclick="toggle('${a.id}')" class="w-full px-5 py-4 flex items-center gap-4 hover:bg-gray-50 transition-colors text-left">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0 ${pctColor(pct)}">
           ${a.firstName[0]}${a.lastName[0]}
         </div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
             <span class="font-semibold text-gray-900">${a.firstName} ${a.lastName}</span>
-            <span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${a.sector}</span>
+            ${a.sector ? `<span class="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">${a.sector}</span>` : ''}
+            <span class="text-xs px-2 py-0.5 rounded-full ${a.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}">${a.isActive ? 'Actif' : 'Inactif'}</span>
           </div>
-          <p class="text-xs text-gray-400 mt-0.5">📍 Dernière collecte il y a quelques min · ${a.lastAddress}</p>
+          <p class="text-xs text-gray-400 mt-0.5">Dernière connexion : ${a.lastLoginAt ? new Date(a.lastLoginAt).toLocaleDateString('fr-FR') : 'jamais'}</p>
         </div>
         <div class="shrink-0 text-right mr-2">
           <p class="text-lg font-bold text-gray-900">${pct}%</p>
@@ -140,79 +103,64 @@ function render() {
         </div>
         <div class="w-24 shrink-0">
           <div class="h-2 bg-gray-100 rounded-full">
-            <div class="${pctColor(pct)} h-2 rounded-full transition-all" style="width:${pct}%"></div>
+            <div class="${pctColor(pct)} h-2 rounded-full" style="width:${pct}%"></div>
           </div>
         </div>
         <span class="text-gray-300 text-lg">${isExp ? '▲' : '▼'}</span>
       </button>
-
       ${isExp ? `
       <div class="border-t border-gray-100">
         <div class="px-5 py-3 bg-gray-50 flex gap-4 text-xs text-gray-500">
           <span>✅ ${a.collected} collectées</span>
           <span>⏳ ${a.total - a.collected} restantes</span>
-          <span>Dernière connexion aujourd'hui à 08:15</span>
         </div>
         <div class="divide-y divide-gray-50 max-h-72 overflow-y-auto">
-          ${a.bins.map(b => `
+          ${(a.bins||[]).map(b => `
             <div class="flex items-center gap-3 px-5 py-2.5">
-              <span class="shrink-0 text-sm">${b.collected ? '✅' : '⏳'}</span>
+              <span class="shrink-0">${b.collectedToday ? '✅' : '⏳'}</span>
               <div class="flex-1 min-w-0">
-                <p class="text-sm ${b.collected ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'} truncate">${b.address}</p>
+                <p class="text-sm ${b.collectedToday ? 'text-gray-400 line-through' : 'text-gray-700 font-medium'} truncate">${b.address}</p>
                 ${b.neighborhood ? `<p class="text-xs text-gray-400">${b.neighborhood}</p>` : ''}
               </div>
               <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full shrink-0">${b.type}</span>
-            </div>
-          `).join('')}
+            </div>`).join('')}
+          ${!(a.bins||[]).length ? '<p class="text-sm text-gray-400 text-center py-4">Aucune poubelle assignée</p>' : ''}
         </div>
       </div>` : ''}
     </div>`;
   }).join('');
 }
 
-function toggle(id) {
-  expanded = expanded === id ? null : id;
-  render();
+function toggle(id) { expanded = expanded === id ? null : id; render(); }
+
+async function load() {
+  try {
+    const [agentsRes, binsRes, mapRes] = await Promise.all([
+      fetch(`${API}/auth/agents`, { headers: HEADERS }),
+      fetch(`${API}/bins`, { headers: HEADERS }),
+      fetch(`${API}/collections/stats/map`, { headers: HEADERS }),
+    ]);
+    const agents  = agentsRes.ok  ? await agentsRes.json()  : [];
+    const bins    = binsRes.ok    ? await binsRes.json()    : [];
+    const mapData = mapRes.ok     ? await mapRes.json()     : [];
+    const collectedIds = new Set((mapData||[]).map(c => c.binId));
+
+    AGENTS = agents.map(a => {
+      const myBins = bins
+        .filter(b => b.assignedUserId === a.id)
+        .map(b => ({ ...b, collectedToday: collectedIds.has(b.id) }));
+      return {
+        ...a,
+        bins: myBins,
+        total: myBins.length,
+        collected: myBins.filter(b => b.collectedToday).length,
+      };
+    });
+    render();
+  } catch { render(); }
 }
 
-render();
-
-// Simulation temps réel
-function showToast(title, msg) {
-  document.getElementById('toastTitle').textContent = title;
-  document.getElementById('toastMsg').textContent = msg;
-  const t = document.getElementById('toast');
-  t.classList.remove('hidden');
-  setTimeout(() => t.classList.add('hidden'), 4000);
-}
-
-setTimeout(() => {
-  AGENTS[0].bins[10].collected = true;
-  AGENTS[0].collected++;
-  AGENTS[0].lastActivity = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
-  AGENTS[0].lastAddress = '7 Rue des Lilas';
-  const total = AGENTS.reduce((s,a)=>s+a.total,0);
-  const coll  = AGENTS.reduce((s,a)=>s+a.collected,0);
-  const pct   = Math.round((coll/total)*100);
-  document.getElementById('globalPct').textContent = pct + '%';
-  document.getElementById('globalLabel').textContent = coll + '/' + total + ' collectées';
-  render();
-  showToast('Jean Martin vient de collecter', '7 Rue des Lilas');
-}, 6000);
-
-setTimeout(() => {
-  AGENTS[1].bins[7].collected = true;
-  AGENTS[1].collected++;
-  AGENTS[1].lastActivity = new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'});
-  AGENTS[1].lastAddress = '33 Bd Voltaire';
-  const total = AGENTS.reduce((s,a)=>s+a.total,0);
-  const coll  = AGENTS.reduce((s,a)=>s+a.collected,0);
-  const pct   = Math.round((coll/total)*100);
-  document.getElementById('globalPct').textContent = pct + '%';
-  document.getElementById('globalLabel').textContent = coll + '/' + total + ' collectées';
-  render();
-  showToast('Paul Bernard vient de collecter', '33 Bd Voltaire');
-}, 12000);
+load();
 </script>
 </body>
 </html>
