@@ -15,16 +15,14 @@ const emailRoutes = require('./routes/email');
 
 const app = express();
 
-const ALLOWED_ORIGINS = [
-  'https://projet-mairie1.vercel.app',
-  'http://localhost:3000',
-  'http://localhost:5500',
-  'http://127.0.0.1:5500',
-];
 const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) cb(null, true);
-    else cb(new Error('CORS non autorisé'));
+    // Autoriser Vercel (tous sous-domaines du projet), localhost, et requêtes sans origin (Postman, curl)
+    if (!origin || origin.includes('vercel.app') || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+      cb(null, true);
+    } else {
+      cb(new Error('CORS non autorisé'));
+    }
   },
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
   allowedHeaders: ['Content-Type','Authorization','x-super-secret'],
