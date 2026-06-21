@@ -1,10 +1,10 @@
 const router = require('express').Router();
 const db = require('../config/db');
-const { auth, chefOnly } = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 const { sendTestEmail, sendRecapEmail } = require('../services/mailer');
 
 // POST /api/email/test
-router.post('/test', auth, chefOnly, async (req, res) => {
+router.post('/test', auth, async (req, res) => {
   const { to } = req.body;
   if (!to) return res.status(400).json({ error: 'Adresse email requise' });
   try {

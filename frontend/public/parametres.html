@@ -211,8 +211,9 @@
 </div>
 
 <script>
+const API = 'https://projet-mairie1-production.up.railway.app/api';
 const user = JSON.parse(sessionStorage.getItem('ub_user') || '{}');
-if (!user.role) window.location.href = 'index.html';
+if (!user.role || !user.token) window.location.href = 'login.html';
 document.getElementById('mairieLabel').textContent = user.mairie || '';
 
 // Charger les paramètres sauvegardés
@@ -463,7 +464,6 @@ function deleteZone(id) {
 renderZones();
 
 // Charger les vrais agents depuis l'API
-const API = 'https://projet-mairie1-production.up.railway.app/api';
 fetch(`${API}/auth/agents`, { headers: { 'Authorization': `Bearer ${user.token}` } })
   .then(r => r.ok ? r.json() : [])
   .then(agents => {
