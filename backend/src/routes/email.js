@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const db = require('../config/db');
-const { auth } = require('../middleware/auth');
+const { auth, chefOnly } = require('../middleware/auth');
 const { sendTestEmail, sendRecapEmail } = require('../services/mailer');
 
 // POST /api/email/test
