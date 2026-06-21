@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -8,22 +8,33 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  #map { height: calc(100vh - 160px); border-radius: 12px; }
+  #map { height: calc(100vh - 170px); border-radius: 12px; }
+  .leaflet-tooltip {
+    background: #1f2937;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    pointer-events: none;
+  }
+  .leaflet-tooltip::before { display: none; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
-<!-- Navbar -->
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-[1000]">
   <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-14">
     <div class="flex items-center gap-2"><span class="text-xl">🗑</span><span class="font-bold text-green-700">LaRonde</span></div>
     <div class="flex gap-1 overflow-x-auto">
-      <a href="dashboard.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📊 Dashboard</a>
-      <a href="carte.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">🗺 Carte</a>
+      <a href="dashboard.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📊 Dashboard</a>
+      <a href="carte.html"      class="px-3 py-1.5 rounded-lg text-sm font-medium bg-green-50 text-green-700">🗺 Carte</a>
       <a href="vue-agents.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">👥 Agents live</a>
-      <a href="poubelles.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗑 Poubelles</a>
-      <a href="recaps.html"    class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📈 Récaps</a>
-      <a href="parametres.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">⚙️ Paramètres</a>
+      <a href="poubelles.html"  class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">🗑 Poubelles</a>
+      <a href="recaps.html"     class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">📈 Récaps</a>
+      <a href="parametres.html" class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100">⚙️ Paramètres</a>
     </div>
     <a href="login.html" class="text-gray-400 hover:text-red-500 text-sm">⬅ Déco</a>
   </div>
@@ -31,14 +42,19 @@
 
 <main class="max-w-7xl mx-auto px-4 py-4">
   <div class="flex items-center justify-between mb-3 flex-wrap gap-3">
-    <h1 class="text-xl font-bold text-gray-900">Carte des poubelles</h1>
-    <div class="flex items-center gap-2">
-      <span class="text-xs font-medium px-2 py-1 bg-red-100 text-red-700 rounded-full">🔴 7 restantes</span>
-      <span class="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded-full">🟢 17 collectées</span>
+    <div>
+      <h1 class="text-xl font-bold text-gray-900">Carte des poubelles</h1>
+      <p class="text-xs text-gray-400 mt-0.5">Mise à jour : <span id="lastUpdate">—</span></p>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap">
+      <span id="stat-remaining" class="text-xs font-medium px-2 py-1 bg-red-100 text-red-700 rounded-full">🔴 — restantes</span>
+      <span id="stat-collected" class="text-xs font-medium px-2 py-1 bg-green-100 text-green-700 rounded-full">🟢 — collectées</span>
+      <span id="stat-total"     class="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-600 rounded-full">📍 — total</span>
+      <button onclick="load()" class="text-xs px-3 py-1 bg-white border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">🔄 Actualiser</button>
     </div>
   </div>
   <div class="flex gap-2 mb-3">
-    <button onclick="setFilter('all')" id="btn-all" class="text-sm px-3 py-1.5 rounded-lg font-medium bg-green-600 text-white">Tout</button>
+    <button onclick="setFilter('all')"       id="btn-all"       class="text-sm px-3 py-1.5 rounded-lg font-medium bg-green-600 text-white">Tout</button>
     <button onclick="setFilter('remaining')" id="btn-remaining" class="text-sm px-3 py-1.5 rounded-lg font-medium bg-white border border-gray-200 text-gray-600">Restantes</button>
     <button onclick="setFilter('collected')" id="btn-collected" class="text-sm px-3 py-1.5 rounded-lg font-medium bg-white border border-gray-200 text-gray-600">Collectées</button>
   </div>
@@ -54,6 +70,8 @@ if (!user.role || !user.token) window.location.href = 'login.html';
 const HEADERS = { 'Authorization': `Bearer ${user.token}` };
 let BINS = [];
 let currentFilter = 'all';
+let firstLoad = true;
+
 const map = L.map('map').setView([46.6, 2.3], 6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:'© OpenStreetMap', maxZoom:19 }).addTo(map);
 let markers = [];
@@ -61,40 +79,72 @@ let markers = [];
 function renderMarkers() {
   markers.forEach(m => map.removeLayer(m));
   markers = [];
+
   const filtered = BINS.filter(b => {
     if (currentFilter === 'collected') return b.collectedToday;
     if (currentFilter === 'remaining') return !b.collectedToday;
     return true;
   });
+
   if (!filtered.length) return;
   const bounds = [];
+
   filtered.forEach(bin => {
     if (!bin.latitude || !bin.longitude) return;
-    const color = bin.collectedToday ? '#16a34a' : '#ef4444';
+
+    const color     = bin.collectedToday ? '#16a34a' : '#ef4444';
+    const colorBg   = bin.collectedToday ? '#dcfce7' : '#fee2e2';
+    const stateText = bin.collectedToday
+      ? (bin.collectedAt ? '✅ Collectée à ' + new Date(bin.collectedAt).toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' }) : '✅ Collectée aujourd\'hui')
+      : '⏳ Non collectée';
+
     const icon = L.divIcon({
-      html: `<div style="background:${color};width:16px;height:16px;border-radius:50%;border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3)"></div>`,
+      html: `<div style="background:${color};width:16px;height:16px;border-radius:50%;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.35);cursor:pointer"></div>`,
       className:'', iconSize:[16,16], iconAnchor:[8,8]
     });
-    const popup = `<div style="font-family:sans-serif;font-size:13px;min-width:180px">
-      <p style="font-weight:700;margin-bottom:4px">${esc(bin.address)}</p>
-      <p style="color:#6b7280;margin-bottom:4px">${esc(bin.neighborhood || '')}</p>
-      <p style="margin-bottom:6px">Type : <strong>${esc(bin.type)}</strong></p>
-      ${bin.collectedToday
-        ? `<p style="color:#16a34a;font-weight:600">✓ Collectée aujourd'hui</p>`
-        : `<p style="color:#ef4444;font-weight:600">⏳ Non collectée</p>`}
+
+    // Tooltip au survol (sticky = suit la souris)
+    const tooltipContent = `<div>
+      <div style="font-weight:700;margin-bottom:2px">${esc(bin.address)}</div>
+      ${bin.neighborhood ? `<div style="opacity:0.75;margin-bottom:2px">${esc(bin.neighborhood)}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+        <span style="background:${colorBg};color:${color};padding:2px 6px;border-radius:4px;font-size:11px">${esc(bin.type)}</span>
+        <span>${stateText}</span>
+      </div>
     </div>`;
-    const m = L.marker([bin.latitude, bin.longitude], { icon }).bindPopup(popup).addTo(map);
+
+    // Popup au clic (plus détaillé)
+    const popup = `<div style="font-family:sans-serif;font-size:13px;min-width:200px;padding:4px">
+      <p style="font-weight:700;margin:0 0 4px">${esc(bin.address)}</p>
+      ${bin.neighborhood ? `<p style="color:#6b7280;margin:0 0 4px;font-size:12px">${esc(bin.neighborhood)}</p>` : ''}
+      <p style="margin:0 0 6px">Type : <strong>${esc(bin.type)}</strong></p>
+      <p style="margin:0;font-weight:600;color:${color}">${stateText}</p>
+      ${bin.assignedAgentName ? `<p style="margin:4px 0 0;font-size:11px;color:#9ca3af">Agent : ${esc(bin.assignedAgentName)}</p>` : ''}
+    </div>`;
+
+    const m = L.marker([bin.latitude, bin.longitude], { icon })
+      .bindTooltip(tooltipContent, { sticky: true, opacity: 1, className: '' })
+      .bindPopup(popup)
+      .addTo(map);
+
     markers.push(m);
     bounds.push([bin.latitude, bin.longitude]);
   });
-  if (bounds.length) map.fitBounds(bounds, { padding:[40,40] });
+
+  // Centrer sur les marqueurs seulement au premier chargement
+  if (firstLoad && bounds.length) {
+    map.fitBounds(bounds, { padding:[40,40] });
+    firstLoad = false;
+  }
 }
 
 function updateStats() {
   const collected = BINS.filter(b => b.collectedToday).length;
   const remaining = BINS.filter(b => !b.collectedToday).length;
-  document.querySelector('.bg-red-100').textContent = `🔴 ${remaining} restantes`;
-  document.querySelector('.bg-green-100').textContent = `🟢 ${collected} collectées`;
+  document.getElementById('stat-remaining').textContent = `🔴 ${remaining} restantes`;
+  document.getElementById('stat-collected').textContent = `🟢 ${collected} collectées`;
+  document.getElementById('stat-total').textContent     = `📍 ${BINS.length} total`;
+  document.getElementById('lastUpdate').textContent     = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
 }
 
 function setFilter(f) {
@@ -113,20 +163,24 @@ async function load() {
       fetch(`${API}/bins`, { headers: HEADERS }),
       fetch(`${API}/collections/stats/map`, { headers: HEADERS }),
     ]);
-    const bins = binsRes.ok ? await binsRes.json() : [];
-    const mapData = mapRes.ok ? await mapRes.json() : [];
-    const collectedIds = new Set((mapData || []).map(c => c.binId));
-    BINS = bins.map(b => ({ ...b, collectedToday: collectedIds.has(b.id) }));
+    const bins    = binsRes.ok ? await binsRes.json() : [];
+    const mapData = mapRes.ok  ? await mapRes.json()  : [];
+    const collectedMap = new Map((mapData || []).map(c => [c.binId || c.id, c.collectedAt]));
+    BINS = bins.map(b => ({
+      ...b,
+      collectedToday: collectedMap.has(b.id),
+      collectedAt:    collectedMap.get(b.id) || null,
+    }));
     updateStats();
     renderMarkers();
-  } catch { renderMarkers(); }
+  } catch {
+    renderMarkers();
+  }
 }
 
 load();
+// Rafraîchissement automatique toutes les 30 secondes
+setInterval(load, 30000);
 </script>
 </body>
 </html>
-
-
-
-
