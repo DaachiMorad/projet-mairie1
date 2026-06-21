@@ -89,14 +89,27 @@ function setPeriod(p) {
 }
 
 async function load() {
+  document.getElementById('kpis').innerHTML =
+    '<div class="col-span-4 flex justify-center items-center py-8 text-sm text-gray-400 gap-2">' +
+    '<svg class="animate-spin h-4 w-4 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>' +
+    'Chargement…</div>';
   try {
     const res = await fetch(`${API}/reports/recap?period=${currentPeriod}`, { headers: HEADERS });
-    if (!res.ok) throw new Error(res.status);
+    if (res.status === 401) { window.location.href = 'login.html'; return; }
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Erreur ${res.status}`);
+    }
     currentData = await res.json();
-    render();
-  } catch {
+    try { render(); } catch (e) { console.error('render error', e); renderEmpty(); }
+  } catch (e) {
     currentData = null;
-    renderEmpty();
+    if (e.message && e.message !== 'Failed to fetch') {
+      document.getElementById('kpis').innerHTML =
+        `<div class="col-span-4 text-center py-6 text-sm text-red-500">⚠️ ${e.message}</div>`;
+    } else {
+      renderEmpty();
+    }
   }
 }
 
@@ -121,7 +134,9 @@ function renderEmpty() {
 }
 
 function dayLabel(dayStr) {
-  const d = new Date(dayStr + 'T00:00:00');
+  const s = dayStr instanceof Date ? dayStr.toISOString().slice(0,10) : String(dayStr).slice(0,10);
+  const d = new Date(s + 'T00:00:00');
+  if (isNaN(d)) return '';
   if (currentPeriod === 'week') return JOURS_COURT[d.getDay()];
   if (currentPeriod === 'month') return String(d.getDate());
   return d.getDate() + ' ' + d.toLocaleDateString('fr-FR', { month:'short' });
